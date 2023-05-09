@@ -415,9 +415,12 @@ const ViewPollPostPage = ({route, navigation}) => {
             });
         }
 
-        const url = `${serverUrl}/tempRoute/searchforpollcomments/${pollId}`;
+        const url = `${serverUrl}/tempRoute/searchforpollcomments`;
+        const toSend = {
+            pollId
+        }
         setLoadingMoreComments(true)
-        axios.get(url).then((response) => {
+        axios.post(url, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
 
