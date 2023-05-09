@@ -50,6 +50,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import { withRepeat } from 'react-native-reanimated';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
+import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
 
 
 const ChangeEmailPage = ({navigation}) => {
@@ -62,6 +63,8 @@ const ChangeEmailPage = ({navigation}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {email} = storedCredentials}
 
+    const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
+
     const handleChangeDisplayName = (credentials, setSubmitting) => {
         handleMessage(null);
         const url = serverUrl + "/tempRoute/changeemail";
@@ -73,7 +76,7 @@ const ChangeEmailPage = ({navigation}) => {
             if (status !== 'SUCCESS') {
                 handleMessage(message,status);
             } else {
-                persistLogin({...data[0]}, message, status);
+                persistLogin(credentials.desiredEmail);
             }
             setSubmitting(false);
 
@@ -89,17 +92,28 @@ const ChangeEmailPage = ({navigation}) => {
         setMessageType(type);
     }
 
-    const persistLogin = (credentials, message, status) => {
-        AsyncStorage.removeItem('socialSquareCredentials')
-        .then(() => {
-            setStoredCredentials("");
-        })
-        .catch(error => console.error(error))
+    const persistLogin = (desiredEmail) => {
+        const newCredentials = {...storedCredentials}
+        const newAllCredentialsStoredList = [...allCredentialsStoredList]
 
-        AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(credentials))
+        const userIndex = allCredentialsStoredList.findIndex(account => String(account._id) === String(storedCredentials._id))
+
+        newCredentials.email = desiredEmail;
+        newAllCredentialsStoredList[userIndex].email = desiredEmail;
+
+        setStoredCredentials(newCredentials)
+        setAllCredentialsStoredList(newAllCredentialsStoredList)
+
+        AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(newCredentials))
         .then(() => {
-            handleMessage(message, status);
-            setStoredCredentials(credentials);
+            AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(newAllCredentialsStoredList)).then(() => {
+                handleMessage('Changed email successfully', 'SUCCESS');
+                setStoredCredentials(newCredentials);
+                setAllCredentialsStoredList(newAllCredentialsStoredList)
+            }).catch(error => {
+                console.error(error)
+                handleMessage('Persisting login failed');
+            })
         })
         .catch((error) => {
             console.error(error);
