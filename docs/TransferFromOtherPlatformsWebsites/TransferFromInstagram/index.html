@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Transfer Data To SocialSquare</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="styling.css">
+    </head>
+    <body>
+        <h1>Transfer Data from Instagram to SocialSquare</h1>
+        <form id="form">
+            <fieldset>
+                <label for="email">SocialSquare email:</label>
+                <input type="text" name="email" id="email">
+                <label for="password">SocialSquare password:</label>
+                <input type="password" name="password" id="password">
+                <label for="jsonFile">Put JSON file here:</label>
+                <input type="file" name="jsonFile" id="jsonFile">
+                <label for="images">Put images here:</label>
+                <input type="file" name="images" id="images" webkitdirectory>
+                <label for="allowScreenshots">Allow Screenshots on posts</label>
+                <input type="checkbox" name="allowScreenshots" id="allowScreenshots">
+                <button type ="submit">Submit</button>
+            </fieldset>
+        </form>
+    </body>
+    <script src="upload.js"></script>
+</html>

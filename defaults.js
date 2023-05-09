@@ -1,0 +1,1 @@
+export const SERVER_URL = 'https://socialsquare.app:9443'

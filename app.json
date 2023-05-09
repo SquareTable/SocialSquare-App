@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "SocialSquare",
+    "slug": "SocialSquare",
+    "version": "0.0.1",
+    "owner": "squaretabledevelopment",
+    "orientation": "portrait",
+    "icon": "./assets/NewLogo_WithBackground.png",
+    "splash": {
+      "image": "./assets/Splash_Screen.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#3B4252"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.squaretabledevelopment.socialsquare",
+      "userInterfaceStyle": "automatic",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-6980968247752885~4685804835"
+      },
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "SocialSquare will use FaceID to unlock SocialSquare when you open the app.",
+        "NSCameraUsageDescription": "Camera permissions allows you to do things like posting photos taken directly from your camera and sending photos from your camera to friends and family.",
+        "NSMicrophoneUsageDescription": "Microphone permissions allows you to do things like record and post videos taken from your camera with sound, and to send voice snippets to friends and family or post voice snippets.",
+        "NSPhotoLibraryUsageDescription": "Photo Library permissions allows you to do things like post photos and video from your photo library or sending photos to family and friends.",
+        "NSPhotoLibraryAddUsageDescription": "If allowed, SocialSquare can save images to your photo library when you want, like saving a profile picture or a photo a friend sent you."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "userInterfaceStyle": "automatic",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-6980968247752885~2757645493"
+      },
+      "package": "com.squaretabledevelopment.socialsquare"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "description": "SquareTable Social Media Platform",
+    "githubUrl": "https://github.com/SquareTable/social-media-platform"
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-6980968247752885~2757645493",
+    "ios_app_id": "ca-app-pub-6980968247752885~4685804835"
+  }
+}

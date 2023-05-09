@@ -1,0 +1,1 @@
+export const SimpleStylingVersion = 3;
