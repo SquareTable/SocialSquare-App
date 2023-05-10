@@ -350,14 +350,19 @@ const CommentViewPage = ({route, navigation}) => {
 
         var urlTwo = ""
         if (postFormat == "Poll") {
-            urlTwo = `${serverUrl}/tempRoute/searchforpollcommentreplies/${postId}/${commentId}/`;
+            urlTwo = `${serverUrl}/tempRoute/searchforpollcommentreplies`;
         } else if (postFormat == "Image") {
-            urlTwo = `${serverUrl}/tempRoute/searchforimagecommentreplies/${postId}/${commentId}/`;
+            urlTwo = `${serverUrl}/tempRoute/searchforimagecommentreplies`;
         } else if (postFormat == "Thread") {
-            urlTwo = `${serverUrl}/tempRoute/searchforthreadcommentreplies/${postId}/${commentId}/`;
+            urlTwo = `${serverUrl}/tempRoute/searchforthreadcommentreplies`;
         }
+
+        const toSend = {
+            postId, commentId
+        }
+
         setLoadingMoreComments(true)
-        axios.get(urlTwo).then((response) => {
+        axios.post(urlTwo, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
 
