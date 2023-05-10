@@ -216,14 +216,18 @@ const CommentViewPage = ({route, navigation}) => {
         }
         var url = ""
         if (postFormat == "Poll") {
-            url = `${serverUrl}/tempRoute/getsinglepollcomment/${postId}/${commentId}`;
+            url = `${serverUrl}/tempRoute/getsinglepollcomment`;
         } else if (postFormat == "Image") {
-            url = `${serverUrl}/tempRoute/getsingleimagecomment/${postId}/${commentId}`;
+            url = `${serverUrl}/tempRoute/getsingleimagecomment`;
         } else if (postFormat == "Thread") {
-            url = `${serverUrl}/tempRoute/getsinglethreadcomment/${postId}/${commentId}`;
+            url = `${serverUrl}/tempRoute/getsinglethreadcomment`;
+        }
+
+        const toSend = {
+            postId, commentId
         }
         
-        axios.get(url).then((response) => {
+        axios.post(url, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
     
