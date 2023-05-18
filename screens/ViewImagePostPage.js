@@ -353,7 +353,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                             <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                             <CommentsHorizontalView writeCommentArea={true}>
                                 <Formik
-                                    initialValues={{comment: '', userName: name, imageKey: post.imageKey}}
+                                    initialValues={{comment: '', userName: name, imageId: post._id}}
                                     onSubmit={(values, {setSubmitting}) => {
                                         if (values.comment == "") {
                                             handleMessage('You cant post and empty comment');
