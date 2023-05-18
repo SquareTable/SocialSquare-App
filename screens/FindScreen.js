@@ -316,9 +316,12 @@ const FindScreen = ({navigation}) => {
 
             setLoadingTwo(true)
             setErrorOccured(null)
-            const url = serverUrl + '/tempRoute/searchpagesearchcategories/' + val
+            const url = serverUrl + '/tempRoute/searchpagesearchcategories'
+            const toSend = {
+                val
+            }
             submitting = true;
-            axios.get(url).then((response) => {
+            axios.post(url, toSend).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
 
