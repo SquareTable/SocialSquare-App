@@ -109,7 +109,7 @@ class CategoryItem extends PureComponent {
 
     render() {
         return (
-            <SearchFrame onPress={() => this.props.navigation.navigate("CategoryViewPage", {categoryTitle: this.props.categoryTitle, NSFL: this.props.NSFL, NSFW: this.props.NSFW, allowScreenShots: (this.props.allowScreenShots != undefined ? this.props.allowScreenShots : true)})}>
+            <SearchFrame onPress={() => this.props.navigation.navigate("CategoryViewPage", {categoryTitle: this.props.categoryTitle, NSFL: this.props.NSFL, NSFW: this.props.NSFW, allowScreenShots: (this.props.allowScreenShots != undefined ? this.props.allowScreenShots : true), categoryId: this.props.categoryId})}>
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: this.props.image != undefined && this.props.image != null && this.props.image != '' ? this.props.image : SocialSquareLogo_B64_png}} />
                 {this.props.NSFW == false && (
                     <View>
@@ -293,7 +293,7 @@ const FindScreen = ({navigation}) => {
                     if (allData[index].imageKey !== "") {   
                         async function asyncFunctionForImages() {
                             const imageB64 = await getImageInCategory(allData[index].imageKey)
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
+                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
@@ -303,7 +303,7 @@ const FindScreen = ({navigation}) => {
                         }
                         asyncFunctionForImages()
                     } else {     
-                        var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
+                        var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
                         tempSections.push(tempSectionsTemp)
                         itemsProcessed++;
                         if(itemsProcessed === allData.length) {
@@ -491,7 +491,7 @@ const FindScreen = ({navigation}) => {
                         <SectionList
                             sections={changeSectionsTwo}
                             keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots} colors={colors} navigation={navigation}/>}
+                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots} categoryId={item.categoryId} colors={colors} navigation={navigation}/>}
                             ListFooterComponent={
                                 <>
                                     <View style={{marginTop: 20}}>
