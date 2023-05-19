@@ -89,7 +89,7 @@ const CategoryViewPage = ({route, navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
-    const {categoryTitle, NSFW, NSFL, allowScreenShots} = route.params;
+    const {categoryTitle, NSFW, NSFL, allowScreenShots, categoryId} = route.params;
     const [AvatarImg, setAvatarImage] = useState(null)
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
@@ -174,9 +174,12 @@ const CategoryViewPage = ({route, navigation}) => {
     }
 
     const getAllCategoryItems = () => {
-        const url = `${serverUrl}/tempRoute/findcategorywithname/${categoryTitle}`;
+        const url = `${serverUrl}/tempRoute/findcategorybyid`;
+        const toSend = {
+            categoryId
+        }
     
-        axios.get(url).then((response) => {
+        axios.post(url, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
 
