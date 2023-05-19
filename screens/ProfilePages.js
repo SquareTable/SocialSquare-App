@@ -238,8 +238,8 @@ const ProfilePages = ({ route, navigation }) => {
         }
     }
 
-    const CategoryItem = ({ categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted }) => (
-        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", { categoryTitle: categoryTitle, NSFW: NSFW, NSFL: NSFL })}>
+    const CategoryItem = ({ categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, categoryId }) => (
+        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", { categoryTitle, NSFW, NSFL, categoryId })}>
             <View style={{ paddingHorizontal: '50%' }}>
             </View>
             <Avatar resizeMode="cover" searchPage={true} source={{ uri: image != null || '' ? image : SocialSquareLogo_B64_png}} />
@@ -726,7 +726,7 @@ const ProfilePages = ({ route, navigation }) => {
                         if (index + 1 <= userLoadMax) {
                             async function asyncFunctionForImages() {
                                 const imageB64 = await getImageWithKeyFive(allData[index].imageKey)
-                                var tempSectionsTemp = { data: [{ categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted }] }
+                                var tempSectionsTemp = { data: [{ categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, categoryId: allData[index].categoryId }] }
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if (itemsProcessed === allData.length) {
@@ -738,7 +738,7 @@ const ProfilePages = ({ route, navigation }) => {
                         }
                     } else {
                         if (index + 1 <= userLoadMax) {
-                            var tempSectionsTemp = { data: [{ categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted }] }
+                            var tempSectionsTemp = { data: [{ categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, categoryId: allData[index].categoryId }] }
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if (itemsProcessed === allData.length) {
@@ -1390,7 +1390,7 @@ const ProfilePages = ({ route, navigation }) => {
                                     {selectedPostFormat == "Five" && (<SectionList
                                         sections={changeSectionsFive}
                                         keyExtractor={(item, index) => item + index}
-                                        renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} />}
+                                        renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} categoryId={item.categoryId}/>}
                                         ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={images.reloadingFeed} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={polls.reloadingFeed} loadingPostsThread={threads.reloadingFeed} loadingPostsCategory={loadingPostsCategory}/>}
                                         ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
                                     />)}
