@@ -163,10 +163,13 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             }
 
             handleMessage(null);
-            const url = `${serverUrl}/tempRoute/searchpagesearchcategories/${val}`;
+            const url = `${serverUrl}/tempRoute/searchpagesearchcategories`;
+            const toSend = {
+                val
+            }
             submitting = true;
             setLoadingResults(true);
-            axios.get(url).then((response) => {
+            axios.post(url, toSend).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
 
