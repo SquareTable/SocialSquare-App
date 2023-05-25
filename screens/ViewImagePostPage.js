@@ -263,9 +263,12 @@ const ViewImagePostPage = ({route, navigation}) => {
             }
         }
 
-        const urlTwo = `${serverUrl}/tempRoute/getimagecommentswithkey/${post.imageKey}`;
+        const urlTwo = `${serverUrl}/tempRoute/getimagepostcomments`;
+        const toSend = {
+            postId: post._id
+        }
         setLoadingMoreComments(true)
-        axios.get(urlTwo).then((response) => {
+        axios.post(urlTwo, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
 

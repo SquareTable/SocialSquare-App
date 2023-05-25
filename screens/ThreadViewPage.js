@@ -385,9 +385,13 @@ const ThreadViewPage = ({navigation, route}) => {
             });
         }
 
-        const urlTwo = `${serverUrl}/tempRoute/searchforthreadcomments/${threadId}`;
+        const urlTwo = `${serverUrl}/tempRoute/searchforthreadcomments`;
+        const toSend = {
+            threadId
+        }
+
         setLoadingMoreComments(true)
-        axios.get(urlTwo).then((response) => {
+        axios.post(urlTwo, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
 
