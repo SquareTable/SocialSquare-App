@@ -258,9 +258,12 @@ const ThreadViewPage = ({navigation, route}) => {
             setImageInThreadB64(imageB64Var)
             setCategoryImageB64(categoryB64Var)
         }
-        const url = `${serverUrl}/tempRoute/getthreadbyid/${threadId}`;
+        const url = `${serverUrl}/tempRoute/getthreadbyid`;
+        const toSend = {
+            threadId
+        }
         
-        axios.get(url).then((response) => {
+        axios.post(url, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
     
