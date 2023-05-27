@@ -185,10 +185,14 @@ const ProfilePages = ({ route, navigation }) => {
     const [blockingUser, setBlockingUser] = useState(false)
 
     const getFollowersEtc = () => {
-        const url = `${serverUrl}/tempRoute/reloadUsersDetails/${pubId}`;
+        const url = `${serverUrl}/tempRoute/reloadUsersDetails`;
+        const toSend = {
+            usersPubId: pubId
+        }
+
         changeToOne()
         
-        axios.get(url).then((response) => {
+        axios.post(url, toSend).then((response) => {
             const result = response.data;
             const { message, status, data } = result;
 
