@@ -179,9 +179,9 @@ const CategoryCreationPage = ({navigation, route}) => {
                                         handleMessage('Please fill all the fields.');
                                         setSubmitting(false);
                                     } else {
-                                        const url = serverUrl + '/tempRoute/checkIfCategoryExists/' + values.categoryTitle;
+                                        const url = serverUrl + '/tempRoute/checkIfCategoryExists';
                                         try {
-                                            const response = await axios.get(url);
+                                            const response = await axios.post(url, {categoryTitle: values.categoryTitle});
                                             const result = response.data;
                                             const {message, status} = result;
 
