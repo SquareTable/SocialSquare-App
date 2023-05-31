@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, ScrollView } from 'react-native'
 import { useTheme } from '@react-navigation/native';
 import { CredentialsContext } from '../components/CredentialsContext';
 import {
@@ -32,29 +32,29 @@ const ActivityScreen = ({navigation}) => {
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Activity</TestText>
             </ChatScreen_Title>
             {storedCredentials ?
-                <>
-                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PollUpvotesActivityScreen")}>
+                <ScrollView>
+                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PostUpvoteDownvoteActivity", {postFormat: 'Image', voteType: 'Upvote'})}>
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Image Upvotes</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
-                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PollDownvotesActivityScreen")}>
+                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PostUpvoteDownvoteActivity", {postFormat: 'Image', voteType: 'Downvote'})}>
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Image Downvotes</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
                     {/*ADD VIDEO OPTIONS WHEN WE IMPLEMENT VIDEOS*/}
-                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PollUpvotesActivityScreen")}>
+                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PostUpvoteDownvoteActivity", {postFormat: 'Poll', voteType: 'Upvote'})}>
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Poll Upvotes</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
-                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PollDownvotesActivityScreen")}>
+                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PostUpvoteDownvoteActivity", {postFormat: 'Poll', voteType: 'Downvote'})}>
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Poll Downvotes</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
-                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PollUpvotesActivityScreen")}>
+                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PostUpvoteDownvoteActivity", {postFormat: 'Thread', voteType: 'Upvote'})}>
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Thread Upvotes</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
-                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PollDownvotesActivityScreen")}>
+                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PostUpvoteDownvoteActivity", {postFormat: 'Thread', voteType: 'Downvote'})}>
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Thread Downvotes</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
@@ -62,7 +62,7 @@ const ActivityScreen = ({navigation}) => {
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Categories you're a part of</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
-                </>
+                </ScrollView>
             :
                 <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
                     <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to see your activity.</Text>

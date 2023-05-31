@@ -78,10 +78,9 @@ import DataControl from "../screens/SecuritySettingsScreens/DataControl.js";
 import DeleteAccountConfirmation from "../screens/DeleteAccountConfirmation.js";
 import ExperimentalFeatures from "../screens/ExperimentalFeatures.js";
 import ActivityScreen from "../screens/ActivityScreen.js";
-import PollUpvotes_Activity from "../screens/ActivityScreens/PollUpvotes_Activity.js";
-import PollDownvotes_Activity from "../screens/ActivityScreens/PollDownvotes_Activity.js";
 import PrivacySettings from "../screens/PrivacySettings.js";
 import LoginActivitySettings from "../screens/SecuritySettingsScreens/LoginActivitySettings.js";
+import PostUpvoteDownvoteActivity from "../screens/ActivityScreens/PostUpvoteDownvoteActivity.js";
 
 
 const Stack = createStackNavigator();
@@ -285,9 +284,8 @@ const SettingsStack = () => {
       <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
       <Stack.Screen name="ExperimentalFeatures" component={ExperimentalFeatures}/>
       <Stack.Screen name="ActivityScreen" component={ActivityScreen}/>
-      <Stack.Screen name="PollUpvotesActivityScreen" component={PollUpvotes_Activity}/>
-      <Stack.Screen name="PollDownvotesActivityScreen" component={PollDownvotes_Activity}/>
       <Stack.Screen name="LoginActivitySettings" component={LoginActivitySettings}/>
+      <Stack.Screen name="PostUpvoteDownvoteActivity" component={PostUpvoteDownvoteActivity}/>
     </Stack.Navigator>
   )
 }
