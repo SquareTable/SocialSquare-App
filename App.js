@@ -216,6 +216,8 @@ const App = () => {
           }
           let response = forAsync()
           return response;
+        } else if (error?.response?.data?.logout !== true) {
+            return Promise.reject(error) //let continue as normal since the user has not been logged out (refresh token hasn't expired)
         } else {
           console.log("Invalid refresh token, should only be refresh token that sends this as a response so new login required.")
           handleInvalidRefreshToken()
