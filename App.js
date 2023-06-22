@@ -94,7 +94,6 @@ const App = () => {
   const ActualStatusBarHeight = Constants.statusBarHeight;
   const [StatusBarHeight, setStatusBarHeight] = useState(ActualStatusBarHeight)
   const [AppStylingContextState, setAppStylingContextState] = useState(null)
-  const [AdID, setAdID] = useState('');
   const [showPlaceholderScreen, setShowPlaceholderScreen] = useState(null)
   const [lockSocialSquare, setLockSocialSquare] = useState(null)
   const [refreshAppStyling, setRefreshAppStyling] = useState(false);
@@ -105,6 +104,7 @@ const App = () => {
   const productionID = Platform.OS == 'ios' ? IOSADID : ANDROIDADID;
   // Is a real device and running in production.
   const adUnitID = Device.isDevice && !__DEV__ ? productionID : testID;
+  const [AdID, setAdID] = useState(adUnitID);
   const previousStylingState = useRef(null)
   const AsyncSimpleStyling_ParsedRef = useRef(null)
   // Check App State code
@@ -1389,7 +1389,6 @@ const App = () => {
             setAppStylingContextState(result)
           }
         }).catch((error) => {console.error(error)})
-        setAdID(adUnitID);
         const images = [
           require('./assets/img/Logo.png'),
           require('./assets/app_icons/3dots.png'),
