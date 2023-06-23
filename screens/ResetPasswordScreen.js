@@ -117,7 +117,7 @@ const ResetPasswordScreen = ({route, navigation}) => {
         setContainerIsFocused(false);
         setSubmitting(true);
         const url = serverUrl + '/user/sendemailverificationcode';
-        const toSend = {username: username, getAccountMethod: 'username'};
+        const toSend = {username: username, getAccountMethod: 'username', task: 'Check Before Reset Password'};
         axios.post(url, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
