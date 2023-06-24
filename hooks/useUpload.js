@@ -116,7 +116,6 @@ const useUpload = (serverUrl, storedCredentials) => {
 
     const postPoll = (postObj) => { // Creating poll post
         const {post: pollValues, uploadId} = postObj;
-        console.log(pollValues)
         const url = serverUrl + '/tempRoute/createpollpost';
 
         axios.post(url, pollValues).then((response) => {
