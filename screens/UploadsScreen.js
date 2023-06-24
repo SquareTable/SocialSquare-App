@@ -15,8 +15,6 @@ const UploadsScreen = ({navigation}) => {
     const postsToDisplay = Object.values(postsToUpload)
     const StatusBarHeight = useContext(StatusBarHeightContext);
 
-    console.error(uploadErrors)
-
     const renderUploadItem = ({item}) => {
         const uploading = postsUploading.includes(item.uploadId)
         return (
