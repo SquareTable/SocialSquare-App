@@ -39,57 +39,35 @@ const useUpload = (serverUrl, storedCredentials) => {
         }
     }
 
-    const retryUpload = (uploadId) => {
+    const retryUpload = (uploadObj) => {
+        const uploadId = uploadObj.uploadId
         const toUpload = posts[uploadId]
         if (toUpload === undefined) throw new Error(`Post with provided uploadId could not be found (${uploadId})`)
 
-        const errorIndex = uploadErrors.findIndex(id => id === uploadId)
-        if (errorIndex !== -1) {
-            setUploadErrors(array => {
-                const newArray = [...array]
-                newArray.splice(errorIndex, 1)
-                return newArray
-            })
-        }
+        setUploadErrors(array => array.filter(uploadObj => uploadObj.uploadId !== uploadId))
 
         setPostsUploading(array => [...array, uploadId])
 
         upload(toUpload)
     }
 
-    const cancelRetry = (uploadId) => {
-        if (uploadErrors.includes(uploadId)) {
-            setPosts(object => {
-                const newPosts = {
-                    ...object
-                }
-                delete newPosts[uploadId]
-                return newPosts
-            })
+    const cancelRetry = (uploadObj) => {
+        const uploadId = uploadObj.uploadId
 
-            const errorIndex = uploadErrors.findIndex(id => id === uploadId)
-            if (errorIndex !== -1) setUploadErrors(array => {
-                const newArray = [...array]
-                newArray.splice(errorIndex, 1)
-                return newArray
-            })
-        } else {
-            throw new Error(`uploadId (${uploadId}) was not found in uploadErrors`)
-        }
+        setPosts(object => {
+            const newPosts = {...object}
+            delete newPosts[objectId]
+            return newPosts
+        })
+
+        setUploadErrors(array => array.filter(uploadObj => uploadObj.uploadId !== uploadId))
     }
 
     handleError = (error, uploadId) => {
         console.error(error)
-        setUploadErrors(errors => [...errors, uploadId])
+        setUploadErrors(errors => [...errors, {uploadId, error}])
 
-        const postIndex = postsUploading.findIndex(id => id === uploadId)
-        if (postIndex !== -1) {
-            setPostsUploading(array => {
-                const newArray = [...array]
-                newArray.splice(postIndex, 1)
-                return newArray
-            })
-        }
+        setPostsUploading(array => array.filter(uploadIdInArray => uploadIdInArray !== uploadId))
     }
 
     handleUploadComplete = (postId) => {
@@ -101,14 +79,7 @@ const useUpload = (serverUrl, storedCredentials) => {
             return newObject
         })
 
-        const uploadingIndex = postsUploading.findIndex(id => id === postId)
-        if (uploadingIndex !== -1) {
-            setPostsUploading(array => {
-                const newArray = [...array];
-                newArray.splice(uploadingIndex, 1)
-                return newArray
-            })
-        }
+        setPostsUploading(array => array.filter(uploadIdInArray => uploadIdInArray !== postId))
     }
 
     const postMultiMedia = (postObj) => { // Creating multimedia post
@@ -140,7 +111,7 @@ const useUpload = (serverUrl, storedCredentials) => {
             }
 
         }).catch(error => {
-            handleError(error, uploadId)
+            handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
         })
     }
 
@@ -160,7 +131,7 @@ const useUpload = (serverUrl, storedCredentials) => {
             }
 
         }).catch(error => {
-            handleError(error, uploadId)
+            handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
         })
     }
 
@@ -182,7 +153,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error, uploadId)
+                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
             })
         } else if (selectFormat == "Images") {
             //Set up formdata
@@ -221,7 +192,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error, uploadId)
+                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
             })
         }
     }
@@ -260,7 +231,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error, uploadId)
+                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
             })
         } else {
             const url = serverUrl + '/tempRoute/postcategorywithoutimage';
@@ -277,7 +248,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error, uploadId)
+                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
             })
         }
     }

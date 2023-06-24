@@ -15,6 +15,8 @@ const UploadsScreen = ({navigation}) => {
     const postsToDisplay = Object.values(postsToUpload)
     const StatusBarHeight = useContext(StatusBarHeightContext);
 
+    console.error(uploadErrors)
+
     const renderUploadItem = ({item}) => {
         const uploading = postsUploading.includes(item.uploadId)
         return (
@@ -24,6 +26,7 @@ const UploadsScreen = ({navigation}) => {
                         <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row'}}>
                             <Image source={item.post.image} style={{height: 50, width: 50, borderRadius: 5}}/>
                             <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
+                            {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
                         </View>
                         <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row'}}>
                             {uploading ?
@@ -46,6 +49,7 @@ const UploadsScreen = ({navigation}) => {
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>Title: {item.post.pollTitle}</Text>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Subtitle: {item.post.pollSubTitle}</Text>
                         <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
+                        {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
                         <View style={{flexDirection: 'row'}}>
                             {uploading ?
                                 <ActivityIndicator color={colors.brand} size="large"/>
@@ -69,6 +73,7 @@ const UploadsScreen = ({navigation}) => {
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginVertical: 10}}>Body: {item.post.threadBody}</Text>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Category: {item.post.selectedCategory}</Text>
                         <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
+                        {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
                         <View style={{flexDirection: 'row'}}>
                             {uploading ?
                                 <ActivityIndicator color={colors.brand} size="large"/>
@@ -93,6 +98,7 @@ const UploadsScreen = ({navigation}) => {
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginVertical: 10}}>Body: {item.post.threadBody}</Text>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Category: {item.post.selectedCategory}</Text>
                         <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
+                        {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
                         <View style={{flexDirection: 'row'}}>
                             {uploading ?
                                 <ActivityIndicator color={colors.brand} size="large"/>
@@ -114,6 +120,7 @@ const UploadsScreen = ({navigation}) => {
                         {item.post.image && <Image source={item.post.image} style={{height: 100, width: 100}}/>}
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Title: {item.post.categoryTitle}</Text>
                         <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
+                        {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
                         <View style={{flexDirection: 'row'}}>
                             {uploading ?
                                 <ActivityIndicator color={colors.brand} size="large"/>
