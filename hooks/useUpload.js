@@ -39,8 +39,7 @@ const useUpload = (serverUrl, storedCredentials) => {
         }
     }
 
-    const retryUpload = (uploadObj) => {
-        const uploadId = uploadObj.uploadId
+    const retryUpload = (uploadId) => {
         const toUpload = posts[uploadId]
         if (toUpload === undefined) throw new Error(`Post with provided uploadId could not be found (${uploadId})`)
 
