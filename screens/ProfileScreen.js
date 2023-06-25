@@ -1367,7 +1367,7 @@ const Welcome = ({navigation, route}) => {
                             />)}
                             {selectedPostFormat == "Three" && (<FlatList
                                 data={polls.posts}
-                                keyExtractor={(item) => item === 'No More Posts' ? 'No More Posts' : item._id}
+                                keyExtractor={(item) => item._id}
                                 renderItem={({ item, index }) => <PollPost post={item} index={index} dispatch={dispatchPolls} colors={colors} colorsIndexNum={indexNum}/>}
                                 ListFooterComponent={<ListFooters feedData={polls} loadMoreFunction={loadPolls} postFormat="poll"/>}
                                 ItemSeparatorComponent={() => <View style={{height: 10}}/>}

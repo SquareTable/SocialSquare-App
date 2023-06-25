@@ -470,7 +470,7 @@ const HomeScreen = ({navigation, route}) => {
 
     const loadMorePosts = () => {
         if (currentFeed == "Following") {
-            if (followingFeed.posts[followingFeed.posts.length-1] != 'No More Posts') { //Stop loading more posts if there are no more posts to load
+            if (!followingFeed.noMorePosts) { //Stop loading more posts if there are no more posts to load
                 //is reload so bottom two isnt needed
                 const imagePosts = followingFeed.posts.filter(x => x._id).map(x => x._id)
                 const pollPosts = followingFeed.posts.filter(x => x.pollId).map(x => x.pollId)
@@ -508,7 +508,7 @@ const HomeScreen = ({navigation, route}) => {
                 })
             }
         } else if ("For You") {
-            if (forYouFeed.posts[forYouFeed.posts.length-1] != 'No More Posts') { //Stop loading more posts if there are no more posts to load
+            if (!forYouFeed.noMorePosts) { //Stop loading more posts if there are no more posts to load
                 //is reload so bottom two isnt needed
                 const imagePosts = forYouFeed.posts.filter(x => x._id).map(x => x._id)
                 const pollPosts = forYouFeed.posts.filter(x => x.pollId).map(x => x.pollId)
@@ -994,88 +994,66 @@ const HomeScreen = ({navigation, route}) => {
     }
 
     const renderFollowingFeedPost = ({item, index}) => {
-        if (item == 'No More Posts') {
-            return (
-                <View style={{borderColor: colors.tertiary, borderTopWidth: 3, borderBottomWidth: 3, borderLeftWidth: 1, borderRightWidth: 1, paddingVertical: 15, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>No More Posts</Text>
-                </View>
-            )
-        } else {
-            return(
-                <View>
-                    {item.hasSeenPosts == true && (
-                        <View>
-                            {index-1 == -1 && (
-                                <View>
-                                    <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
-                                    <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
-                                </View>
-                            )}
-                            {index-1 !== -1 && (
-                                <View>
-                                    {followingFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) == -1 && (
-                                        <View>
-                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
-                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
-                                        </View>
-                                    )}
-                                </View>
-                            )}
-                        </View>
-                    )}
-                    
-                    {item.hasSeenPosts == false && (
-                        <View>
-                            {index-1 !== -1 && (
-                                <View>
-                                    {followingFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) !== -1 && ( //has seen one above somewhere
-                                        <View>
-                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>New Post</SubTitle>
-                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>You may have not seen the following post</SubTitle>
-                                        </View>
-                                    )}
-                                </View>
-                            )}
-                        </View>
-                    )}
+        return(
+            <View>
+                {item.hasSeenPosts == true && (
+                    <View>
+                        {index-1 == -1 && (
+                            <View>
+                                <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                            </View>
+                        )}
+                        {index-1 !== -1 && (
+                            <View>
+                                {followingFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) == -1 && (
+                                    <View>
+                                        <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                        <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                                    </View>
+                                )}
+                            </View>
+                        )}
+                    </View>
+                )}
+                
+                {item.hasSeenPosts == false && (
+                    <View>
+                        {index-1 !== -1 && (
+                            <View>
+                                {followingFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) !== -1 && ( //has seen one above somewhere
+                                    <View>
+                                        <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>New Post</SubTitle>
+                                        <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>You may have not seen the following post</SubTitle>
+                                    </View>
+                                )}
+                            </View>
+                        )}
+                    </View>
+                )}
 
-                    {index % 5 == 0 && index !== 0 && (
-                        <View style={{alignItems: 'center'}}>
-                            <BannerAd
-                                unitId={AdID}
-                                size={BannerAdSize.MEDIUM_RECTANGLE}
-                                requestOptions={{
-                                    requestNonPersonalizedAdsOnly: true,
-                                }}
-                                onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
-                            />
-                        </View>
-                    )}
+                {index % 5 == 0 && index !== 0 && (
+                    <View style={{alignItems: 'center'}}>
+                        <BannerAd
+                            unitId={AdID}
+                            size={BannerAdSize.MEDIUM_RECTANGLE}
+                            requestOptions={{
+                                requestNonPersonalizedAdsOnly: true,
+                            }}
+                            onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
+                        />
+                    </View>
+                )}
 
-                    {item.format == "Image" ? (
-                        <ImagePost post={item} index={index} dispatch={dispatchFollowingFeed} colors={colors} colorsIndexNum={indexNum}/>
-                    ) : item.format == "Poll" ? (
-                        <PollPost post={item} index={index} dispatch={dispatchFollowingFeed} colors={colors} colorsIndexNum={indexNum}/>
-                    ) : item.format == "Thread" ? (
-                        <ThreadPost post={item} index={index} dispatch={dispatchFollowingFeed} colors={colors} colorsIndexNum={indexNum}/>
-                    ) : <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>An error occured while displaying post.</Text>}
-
-                    {/*Check if its last index*/}
-                    {index == followingFeed.posts.length-1 && (
-                        <View>
-                            {followingFeed.loadingFeed == true && (
-                                <ActivityIndicator size="large" color={colors.brand} />  
-                            )}
-                            {followingFeed.loadingFeed == false && (
-                                <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => loadMorePosts()}>
-                                    <SubTitle style={{textAlign: 'center', alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>Load More</SubTitle>
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                    )}
-                </View>
-            )
-        }
+                {item.format == "Image" ? (
+                    <ImagePost post={item} index={index} dispatch={dispatchFollowingFeed} colors={colors} colorsIndexNum={indexNum}/>
+                ) : item.format == "Poll" ? (
+                    <PollPost post={item} index={index} dispatch={dispatchFollowingFeed} colors={colors} colorsIndexNum={indexNum}/>
+                ) : item.format == "Thread" ? (
+                    <ThreadPost post={item} index={index} dispatch={dispatchFollowingFeed} colors={colors} colorsIndexNum={indexNum}/>
+                ) : <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>An error occured while displaying post.</Text>}
+            </View>
+        )
     }
 
     return(
@@ -1277,8 +1255,25 @@ const HomeScreen = ({navigation, route}) => {
                                 }
                             }}
                             renderItem={renderFollowingFeedPost}
-                            keyExtractor={item => item._id || 'No More Posts'}
+                            keyExtractor={item => item._id}
                             showsVerticalScrollIndicator={false}
+                            ListFooterComponent={() => {
+                                return (
+                                    <View>
+                                        {followingFeed.noMorePosts ?
+                                            <View style={{borderColor: colors.tertiary, borderTopWidth: 3, borderBottomWidth: 3, borderLeftWidth: 1, borderRightWidth: 1, paddingVertical: 15, justifyContent: 'center', alignItems: 'center'}}>
+                                                <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>No More Posts</Text>
+                                            </View>
+                                        : followingFeed.loadingFeed ?
+                                            <ActivityIndicator size="large" color={colors.brand} />
+                                        :
+                                            <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => loadMorePosts()}>
+                                                <SubTitle style={{textAlign: 'center', alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>Load More</SubTitle>
+                                            </TouchableOpacity>
+                                        }
+                                    </View>
+                                )
+                            }}
                         />
 
                         {postNumForMsg == null && (<MsgBox type={messageType}>{message}</MsgBox>)}
@@ -1319,86 +1314,81 @@ const HomeScreen = ({navigation, route}) => {
                             }
                         }}
                         renderItem={({item, index}) => {
-                            if (item == 'No More Posts') {
-                                return (
-                                    <View style={{borderColor: colors.tertiary, borderTopWidth: 3, borderBottomWidth: 3, borderLeftWidth: 1, borderRightWidth: 1, paddingVertical: 15, justifyContent: 'center', alignItems: 'center'}}>
-                                        <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>No More Posts</Text>
-                                    </View>
-                                )
-                            } else {
-                                return(
-                                    <View>
-                                        {item.hasSeenPosts == true && (
-                                            <View>
-                                                {index-1 == -1 && (
-                                                    <View>
-                                                        <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
-                                                        <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
-                                                    </View>
-                                                )}
-                                                {index-1 !== -1 && (
-                                                    <View>
-                                                        {forYouFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) == -1 && (
-                                                            <View>
-                                                                <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
-                                                                <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
-                                                            </View>
-                                                        )}
-                                                    </View>
-                                                )}
-                                            </View>
-                                        )}
-                                        
-                                        {item.hasSeenPosts == false && (
-                                            <View>
-                                                {index-1 !== -1 && (
-                                                    <View>
-                                                        {forYouFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) !== -1 && ( //has seen one above somewhere
-                                                            <View>
-                                                                <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>New Post</SubTitle>
-                                                                <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>You may have not seen the following post</SubTitle>
-                                                            </View>
-                                                        )}
-                                                    </View>
-                                                )}
-                                            </View>
-                                        )}
+                            return(
+                                <View>
+                                    {item.hasSeenPosts == true && (
+                                        <View>
+                                            {index-1 == -1 && (
+                                                <View>
+                                                    <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                                    <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                                                </View>
+                                            )}
+                                            {index-1 !== -1 && (
+                                                <View>
+                                                    {forYouFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) == -1 && (
+                                                        <View>
+                                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            )}
+                                        </View>
+                                    )}
+                                    
+                                    {item.hasSeenPosts == false && (
+                                        <View>
+                                            {index-1 !== -1 && (
+                                                <View>
+                                                    {forYouFeed.posts.slice(0, index).findIndex(x => x.hasSeenPosts == true) !== -1 && ( //has seen one above somewhere
+                                                        <View>
+                                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>New Post</SubTitle>
+                                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>You may have not seen the following post</SubTitle>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            )}
+                                        </View>
+                                    )}
 
-                                        {index % 5 == 0 && index !== 0 && (
-                                            <View style={{alignItems: 'center'}}>
-                                                <BannerAd
-                                                    unitId={AdID}
-                                                    size={BannerAdSize.MEDIUM_RECTANGLE}
-                                                    requestOptions={{
-                                                        requestNonPersonalizedAdsOnly: true,
-                                                    }}
-                                                    onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
-                                                />
-                                            </View>
-                                        )}
+                                    {index % 5 == 0 && index !== 0 && (
+                                        <View style={{alignItems: 'center'}}>
+                                            <BannerAd
+                                                unitId={AdID}
+                                                size={BannerAdSize.MEDIUM_RECTANGLE}
+                                                requestOptions={{
+                                                    requestNonPersonalizedAdsOnly: true,
+                                                }}
+                                                onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
+                                            />
+                                        </View>
+                                    )}
 
-                                        {item.format == "Image" && (
-                                            <ImagePost post={item} index={index} dispatch={dispatchForYouFeed} colors={colors} colorsIndexNum={indexNum}/>
-                                        )}
-
-                                        {/*Check if its last index*/}
-                                        {index == forYouFeed.posts.length-1 && (
-                                            <View>
-                                                {forYouFeed.loadingFeed == true && (
-                                                    <ActivityIndicator size="large" color={colors.brand} />  
-                                                )}
-                                                {forYouFeed.loadingFeed == false && (
-                                                    <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => loadMorePosts()}>
-                                                        <SubTitle style={{textAlign: 'center', alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>Load More</SubTitle>
-                                                    </TouchableOpacity>
-                                                )}
-                                            </View>
-                                        )}
-                                    </View>
-                                )
-                            }
+                                    {item.format == "Image" && (
+                                        <ImagePost post={item} index={index} dispatch={dispatchForYouFeed} colors={colors} colorsIndexNum={indexNum}/>
+                                    )}
+                                </View>
+                            )
                         }}
-                        keyExtractor={item => item._id || 'No More Posts'}
+                        ListFooterComponent={() => {
+                            return (
+                                <View>
+                                    {forYouFeed.noMorePosts ?
+                                        <View style={{borderColor: colors.tertiary, borderTopWidth: 3, borderBottomWidth: 3, borderLeftWidth: 1, borderRightWidth: 1, paddingVertical: 15, justifyContent: 'center', alignItems: 'center'}}>
+                                            <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>No More Posts</Text>
+                                        </View>
+                                    : forYouFeed.loadingFeed ?
+                                        <ActivityIndicator size="large" color={colors.brand} />
+                                    :
+                                        <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => loadMorePosts()}>
+                                            <SubTitle style={{textAlign: 'center', alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>Load More</SubTitle>
+                                        </TouchableOpacity>
+                                    }
+                                </View>
+                            )
+                        }}
+                        keyExtractor={item => item._id}
                         showsVerticalScrollIndicator={false}
                     />
 
