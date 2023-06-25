@@ -110,6 +110,51 @@ import PollPost from '../components/Posts/PollPost.js';
 import ThreadPost from '../components/Posts/ThreadPost.js';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet.js';
 
+const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
+    const {colors} = useTheme();
+
+    if (feedData.loadingFeed) {
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator color={colors.brand} size="large"/>
+            </View>
+        )
+    }
+
+    if (feedData.error) {
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Error: {feedData.error}</Text>
+                <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary}}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>Retry</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    if (feedData.posts.length === 0) {
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>This user has no {postFormat}s.</Text>
+            </View>
+        )
+    }
+
+    if (feedData.noMorePosts) {
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No more {postFormat}s to show.</Text>
+            </View>
+        )
+    }
+
+    return (
+        <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary}}>
+            <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Load More</Text>
+        </TouchableOpacity>
+    )
+}
+
 const Welcome = ({navigation, route}) => {
     const [images, dispatchImages] = usePostReducer();
     const [polls, dispatchPolls] = usePostReducer();
@@ -455,154 +500,153 @@ const Welcome = ({navigation, route}) => {
         setChangeSectionsTwo([])
     }
 
-    const changeToThree = () => {
-        setSelectedPostFormat("Three")
-        setFormatThreeText("This user has no Poll posts.")
-        if (!polls.loadingFeed) {
+    const layoutPollPosts = (data) => {
+        const {posts: pollData, noMorePosts} = data;
+
+        console.log('Poll Data:', pollData)
+        console.log('Number of polls received:', pollData.length)
+        var tempSections = []
+        var itemsProcessed = 0
+        pollData.forEach(function (item, index) {
+            var optionOnesBarLength = 16.6666666667
+            var optionTwosBarLength = 16.6666666667
+            var optionThreesBarLength = 16.6666666667
+            var optionFoursBarLength = 16.6666666667
+            var optionFivesBarLength = 16.6666666667
+            var optionSixesBarLength = 16.6666666667
+            var totalVotes = pollData[index].optionOnesVotes+pollData[index].optionTwosVotes+pollData[index].optionThreesVotes+pollData[index].optionFoursVotes+pollData[index].optionFivesVotes+pollData[index].optionSixesVotes
+            //console.log(item, index);
+            if (totalVotes !== 0) {
+                optionOnesBarLength = (pollData[index].optionOnesVotes/totalVotes)*100
+                console.log("O1 BL")
+                console.log(optionOnesBarLength)
+                optionTwosBarLength = (pollData[index].optionTwosVotes/totalVotes)*100
+                console.log("O2 BL")
+                console.log(optionTwosBarLength)
+                optionThreesBarLength = (pollData[index].optionThreesVotes/totalVotes)*100
+                console.log("O3 BL")
+                console.log(optionThreesBarLength)
+                optionFoursBarLength = (pollData[index].optionFoursVotes/totalVotes)*100
+                console.log("O4 BL")
+                console.log(optionFoursBarLength)
+                optionFivesBarLength = (pollData[index].optionFivesVotes/totalVotes)*100
+                console.log("O5 BL")
+                console.log(optionFivesBarLength)
+                optionSixesBarLength = (pollData[index].optionSixesVotes/totalVotes)*100
+                console.log("O6 BL")
+                console.log(optionSixesBarLength)
+                if (Number.isNaN(optionOnesBarLength)) {
+                    optionOnesBarLength = 0
+                }
+                if (Number.isNaN(optionTwosBarLength)) {
+                    optionTwosBarLength = 0
+                }
+                if (Number.isNaN(optionThreesBarLength)) {
+                    optionThreesBarLength = 0
+                }
+                if (Number.isNaN(optionFoursBarLength)) {
+                    optionFoursBarLength = 0
+                }
+                if (Number.isNaN(optionFivesBarLength)) {
+                    optionFivesBarLength = 0
+                }
+                if (Number.isNaN(optionSixesBarLength)) {
+                    optionSixesBarLength = 0
+                }
+            } else {
+                if (totalVotes == 0) {
+                    console.log("No Votes")
+                    if (pollData[index].totalNumberOfOptions == "Two") {
+                        optionOnesBarLength = 100/2
+                        optionTwosBarLength = 100/2
+                        optionThreesBarLength = 0
+                        optionFoursBarLength = 0
+                        optionFivesBarLength = 0
+                        optionSixesBarLength = 0
+                    } else if (pollData[index].totalNumberOfOptions == "Three") {
+                        optionOnesBarLength = 100/3
+                        optionTwosBarLength = 100/3
+                        optionThreesBarLength = 100/3
+                        optionFoursBarLength = 0
+                        optionFivesBarLength = 0
+                        optionSixesBarLength = 0
+                    } else if (pollData[index].totalNumberOfOptions == "Four") {
+                        optionOnesBarLength = 100/4
+                        optionTwosBarLength = 100/4
+                        optionThreesBarLength = 100/4
+                        optionFoursBarLength = 100/4
+                        optionFivesBarLength = 0
+                        optionSixesBarLength = 0
+                    } else if (pollData[index].totalNumberOfOptions == "Five") {
+                        optionOnesBarLength = 100/5
+                        optionTwosBarLength = 100/5
+                        optionThreesBarLength = 100/5
+                        optionFoursBarLength = 100/5
+                        optionFivesBarLength = 100/5
+                        optionSixesBarLength = 0
+                    } else if (pollData[index].totalNumberOfOptions == "Six") {
+                        optionOnesBarLength = 100/6
+                        optionTwosBarLength = 100/6
+                        optionThreesBarLength = 100/6
+                        optionFoursBarLength = 100/6
+                        optionFivesBarLength = 100/6
+                        optionSixesBarLength = 100/6
+                    }
+                }
+            }
+            console.log("poll data")
+            console.log(pollData[index])
+            async function getPfpImageForPollWithAsync() {
+                
+                var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profilePictureUri, isOwner: pollData[index].isOwner}
+                tempSections.push(tempSectionsTemp)
+                itemsProcessed++;
+                if(itemsProcessed === pollData.length) {
+                    dispatchPolls({type: 'addPosts', posts: tempSections})
+                }
+            }
+            getPfpImageForPollWithAsync()
+        });
+        if (noMorePosts) {
+            dispatchPolls({type: 'noMorePosts'})
+        }
+    }
+
+    const loadPolls = (reload) => {
+        if (!polls.loadingFeed && !polls.noMorePosts) {
             cancelTokenPostFormatOne.cancel()
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatFour.cancel()
             cancelTokenPostFormatFive.cancel()
-            handleMessage(null, null, null);
-            const layoutPollPosts = (data) => {
-                setFormatThreeText("Users Poll Posts:")
-                var pollData = data.data
-                console.log("The poll data")
-                console.log(pollData)
-                console.log(pollData.length)
-                var tempSections = []
-                var itemsProcessed = 0
-                pollData.forEach(function (item, index) {
-                    var optionOnesBarLength = 16.6666666667
-                    var optionTwosBarLength = 16.6666666667
-                    var optionThreesBarLength = 16.6666666667
-                    var optionFoursBarLength = 16.6666666667
-                    var optionFivesBarLength = 16.6666666667
-                    var optionSixesBarLength = 16.6666666667
-                    var totalVotes = pollData[index].optionOnesVotes+pollData[index].optionTwosVotes+pollData[index].optionThreesVotes+pollData[index].optionFoursVotes+pollData[index].optionFivesVotes+pollData[index].optionSixesVotes
-                    //console.log(item, index);
-                    if (totalVotes !== 0) {
-                        optionOnesBarLength = (pollData[index].optionOnesVotes/totalVotes)*100
-                        console.log("O1 BL")
-                        console.log(optionOnesBarLength)
-                        optionTwosBarLength = (pollData[index].optionTwosVotes/totalVotes)*100
-                        console.log("O2 BL")
-                        console.log(optionTwosBarLength)
-                        optionThreesBarLength = (pollData[index].optionThreesVotes/totalVotes)*100
-                        console.log("O3 BL")
-                        console.log(optionThreesBarLength)
-                        optionFoursBarLength = (pollData[index].optionFoursVotes/totalVotes)*100
-                        console.log("O4 BL")
-                        console.log(optionFoursBarLength)
-                        optionFivesBarLength = (pollData[index].optionFivesVotes/totalVotes)*100
-                        console.log("O5 BL")
-                        console.log(optionFivesBarLength)
-                        optionSixesBarLength = (pollData[index].optionSixesVotes/totalVotes)*100
-                        console.log("O6 BL")
-                        console.log(optionSixesBarLength)
-                        if (Number.isNaN(optionOnesBarLength)) {
-                            optionOnesBarLength = 0
-                        }
-                        if (Number.isNaN(optionTwosBarLength)) {
-                            optionTwosBarLength = 0
-                        }
-                        if (Number.isNaN(optionThreesBarLength)) {
-                            optionThreesBarLength = 0
-                        }
-                        if (Number.isNaN(optionFoursBarLength)) {
-                            optionFoursBarLength = 0
-                        }
-                        if (Number.isNaN(optionFivesBarLength)) {
-                            optionFivesBarLength = 0
-                        }
-                        if (Number.isNaN(optionSixesBarLength)) {
-                            optionSixesBarLength = 0
-                        }
-                    } else {
-                        if (totalVotes == 0) {
-                            console.log("No Votes")
-                            if (pollData[index].totalNumberOfOptions == "Two") {
-                                optionOnesBarLength = 100/2
-                                optionTwosBarLength = 100/2
-                                optionThreesBarLength = 0
-                                optionFoursBarLength = 0
-                                optionFivesBarLength = 0
-                                optionSixesBarLength = 0
-                            } else if (pollData[index].totalNumberOfOptions == "Three") {
-                                optionOnesBarLength = 100/3
-                                optionTwosBarLength = 100/3
-                                optionThreesBarLength = 100/3
-                                optionFoursBarLength = 0
-                                optionFivesBarLength = 0
-                                optionSixesBarLength = 0
-                            } else if (pollData[index].totalNumberOfOptions == "Four") {
-                                optionOnesBarLength = 100/4
-                                optionTwosBarLength = 100/4
-                                optionThreesBarLength = 100/4
-                                optionFoursBarLength = 100/4
-                                optionFivesBarLength = 0
-                                optionSixesBarLength = 0
-                            } else if (pollData[index].totalNumberOfOptions == "Five") {
-                                optionOnesBarLength = 100/5
-                                optionTwosBarLength = 100/5
-                                optionThreesBarLength = 100/5
-                                optionFoursBarLength = 100/5
-                                optionFivesBarLength = 100/5
-                                optionSixesBarLength = 0
-                            } else if (pollData[index].totalNumberOfOptions == "Six") {
-                                optionOnesBarLength = 100/6
-                                optionTwosBarLength = 100/6
-                                optionThreesBarLength = 100/6
-                                optionFoursBarLength = 100/6
-                                optionFivesBarLength = 100/6
-                                optionSixesBarLength = 100/6
-                            }
-                        }
-                    }
-                    console.log("poll data")
-                    console.log(pollData[index])
-                    async function getPfpImageForPollWithAsync() {
-                        
-                        var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profilePictureUri, isOwner: pollData[index].isOwner}
-                        tempSections.push(tempSectionsTemp)
-                        itemsProcessed++;
-                        if(itemsProcessed === pollData.length) {
-                            dispatchPolls({type: 'addPosts', posts: tempSections})
-                        }
-                    }
-                    getPfpImageForPollWithAsync()
-                });
-            }
 
             const url = serverUrl + '/tempRoute/searchforpollposts';
 
-            dispatchPolls({type: 'startReload'})
-            axios.post(url, toSendProfileName).then((response) => {
+            const type = reload ? 'startReload' : 'startLoad'
+
+            dispatchPolls({type})
+
+            const toSend = {pubId: secondId};
+
+            if (!reload) {
+                toSend.previousPostId = polls.posts[polls.posts.length - 1]._id
+            }
+
+            axios.post(url, toSend).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const {data} = result;
 
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                    dispatchPolls({type: 'stopLoad'})
-                    console.log(status)
-                    console.log(message)
-                } else {
-                    layoutPollPosts({data});
-                    console.log(status)
-                    console.log(message)
-                }
-                //setSubmitting(false);
-
+                layoutPollPosts(data);
             }).catch(error => {
-                console.log(error);
-                //setSubmitting(false);
-                dispatchPolls({type: 'stopLoad'})
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                console.error(error);
+                dispatchPolls({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading polls. Please check your internet connection and retry.'})
             })
-        } else {
-            setSelectedPostFormat("Three")
-            setFormatThreeText("Users Poll Posts:") 
         }
+    }
+
+    const changeToThree = () => {
+        dispatchPolls({type: 'startReload'})
+        setSelectedPostFormat("Three")
+        loadPolls(true);
     }
 
     const changeToFour = () => {
@@ -1323,10 +1367,9 @@ const Welcome = ({navigation, route}) => {
                             />)}
                             {selectedPostFormat == "Three" && (<FlatList
                                 data={polls.posts}
-                                keyExtractor={(item) => item._id}
+                                keyExtractor={(item) => item === 'No More Posts' ? 'No More Posts' : item._id}
                                 renderItem={({ item, index }) => <PollPost post={item} index={index} dispatch={dispatchPolls} colors={colors} colorsIndexNum={indexNum}/>}
-                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={images.reloadingFeed} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={polls.reloadingFeed} loadingPostsThread={threads.reloadingFeed} loadingPostsCategory={loadingPostsCategory} colors={colors}/>}
-                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                ListFooterComponent={<ListFooters feedData={polls} loadMoreFunction={loadPolls} postFormat="poll"/>}
                                 ItemSeparatorComponent={() => <View style={{height: 10}}/>}
                             />)}
                             {selectedPostFormat == "Four" && (<FlatList
