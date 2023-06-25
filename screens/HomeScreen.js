@@ -1264,6 +1264,8 @@ const HomeScreen = ({navigation, route}) => {
                                             <View style={{borderColor: colors.tertiary, borderTopWidth: 3, borderBottomWidth: 3, borderLeftWidth: 1, borderRightWidth: 1, paddingVertical: 15, justifyContent: 'center', alignItems: 'center'}}>
                                                 <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>No More Posts</Text>
                                             </View>
+                                        : followingFeed.reloadingFeed ?
+                                            null
                                         : followingFeed.loadingFeed ?
                                             <ActivityIndicator size="large" color={colors.brand} />
                                         :
@@ -1378,6 +1380,8 @@ const HomeScreen = ({navigation, route}) => {
                                         <View style={{borderColor: colors.tertiary, borderTopWidth: 3, borderBottomWidth: 3, borderLeftWidth: 1, borderRightWidth: 1, paddingVertical: 15, justifyContent: 'center', alignItems: 'center'}}>
                                             <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>No More Posts</Text>
                                         </View>
+                                    : forYouFeed.reloadingFeed ?
+                                        null
                                     : forYouFeed.loadingFeed ?
                                         <ActivityIndicator size="large" color={colors.brand} />
                                     :
