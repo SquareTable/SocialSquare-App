@@ -1041,6 +1041,18 @@ const Welcome = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false)
 
     const onRefresh = useCallback(() => {
+        if (selectedPostFormat === "One") {
+            changeToOne();
+        } else if (selectedPostFormat === "Two") {
+            changeToTwo();
+        } else if (selectedPostFormat === "Three") {
+            changeToThree();
+        } else if (selectedPostFormat === "Four") {
+            changeToFour();
+        } else if (selectedPostFormat === "Five") {
+            changeToFive();
+        }
+        
         setRefreshing(true)
         // Get data here
         console.log("HI")
