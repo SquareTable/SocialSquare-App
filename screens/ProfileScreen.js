@@ -115,7 +115,7 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.loadingFeed) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
                 <ActivityIndicator color={colors.brand} size="large"/>
             </View>
         )
@@ -123,7 +123,7 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.error) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
                 <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Error: {feedData.error}</Text>
                 <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary}}>
                     <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>Retry</Text>
@@ -134,7 +134,7 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.posts.length === 0) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
                 <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>This user has no {postFormat}s.</Text>
             </View>
         )
@@ -142,14 +142,14 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.noMorePosts) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No more {postFormat}s to show.</Text>
             </View>
         )
     }
 
     return (
-        <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary}}>
+        <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginBottom: 10}}>
             <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Load More</Text>
         </TouchableOpacity>
     )
@@ -1371,6 +1371,16 @@ const Welcome = ({navigation, route}) => {
                                 renderItem={({ item, index }) => <PollPost post={item} index={index} dispatch={dispatchPolls} colors={colors} colorsIndexNum={indexNum}/>}
                                 ListFooterComponent={<ListFooters feedData={polls} loadMoreFunction={loadPolls} postFormat="poll"/>}
                                 ItemSeparatorComponent={() => <View style={{height: 10}}/>}
+                                onEndReachedThreshold={3}
+                                onEndReached = {({distanceFromEnd})=>{
+                                    alert(distanceFromEnd)
+                                    if (distanceFromEnd > 0) {
+                                        console.log('End of the poll feed was reached with ' + distanceFromEnd + ' pixels from the end.')
+                                        if (polls.loadingFeed === false) {
+                                            loadPolls()
+                                        }
+                                    }
+                                }}
                             />)}
                             {selectedPostFormat == "Four" && (<FlatList
                                 data={threads.posts}
