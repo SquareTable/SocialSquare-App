@@ -107,14 +107,16 @@ const reducer = (state, action) => {
                 ...state,
                 posts: state.posts.concat(newPosts),
                 loadingFeed: false,
-                reloadingFeed: false
+                reloadingFeed: false,
+                error: null
             }
         } else {
             console.error('No posts were given to reducer')
             return {
                 ...state,
                 loadingFeed: false,
-                reloadingFeed: false
+                reloadingFeed: false,
+                error: null
             };
         }
     }
@@ -122,14 +124,17 @@ const reducer = (state, action) => {
     if (action.type === 'noMorePosts') {
         return {
             ...state,
-            posts: [...state.posts, 'No More Posts']
+            noMorePosts: true,
+            reloadingFeed: false,
+            loadingFeed: false
         }
     }
 
     if (action.type === 'startLoad') {
         return {
             ...state,
-            loadingFeed: true
+            loadingFeed: true,
+            error: null
         }
     }
 
@@ -138,7 +143,8 @@ const reducer = (state, action) => {
             ...state,
             loadingFeed: true,
             reloadingFeed: true,
-            posts: []
+            posts: [],
+            error: null
         };
     }
 
@@ -153,7 +159,8 @@ const reducer = (state, action) => {
     if (action.type === 'resetPosts') {
         return {
             ...state,
-            posts: []
+            posts: [],
+            error: null
         }
     }
 
@@ -220,6 +227,17 @@ const reducer = (state, action) => {
         }
     }
 
+    if (action.type === 'error') {
+        if (action.error == undefined) throw new Error('error was dispatched to usePostReducer but no error was provided.')
+
+        return {
+            ...state,
+            loadingFeed: false,
+            reloadingFeed: false,
+            error: action.error
+        }
+    }
+
     throw new Error('Wrong action type was passed to usePostReducer')
 }
 
@@ -227,7 +245,9 @@ const initialState = {
     loadingFeed: false,
     reloadingFeed: false,
     posts: [],
-    threeDotsMenu: null
+    threeDotsMenu: null,
+    error: null,
+    noMorePosts: false
 }
 
 const usePostReducer = () => {

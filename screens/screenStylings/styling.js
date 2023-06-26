@@ -610,7 +610,6 @@ export const ProfileBadgeIcons = styled.Image`
 `;
 
 export const ProfileHorizontalView = styled.View`
-    flex: 1;
     flexDirection: row;
 `;
 
@@ -694,7 +693,6 @@ export const ProfilePostsSelectionView = styled.View`
     border-color: ${darkest};
     align-items: center;
     border-bottom-width: 3px;
-    flex: 1;
     flexDirection: row;
 `;
 
@@ -712,6 +710,7 @@ export const ProfileGridPosts = styled.View`
     align-items: center;
     border-color: ${darkest};
     border-bottom-width: 3px;
+    flex: 1;
 `;
 
 export const ProfileFeaturedPosts = styled.View`
@@ -1488,8 +1487,8 @@ export const ProfileSelectMediaTypeHorizontalView = styled.View`
     margin-top: 5px;
     width: 80%;
     align-items: center;
-    flex: 1;
-    flexDirection: row;
+    flex-direction: row;
+    align-self: center;
 `;
 
 export const ProfileSelectMediaTypeItem = styled.TouchableOpacity`
