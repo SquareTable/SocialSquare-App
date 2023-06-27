@@ -786,7 +786,7 @@ const Welcome = ({navigation, route}) => {
                             })
                         } else if (data.threadType === "Images") {
                             const imageInThreadB64 = await getImageWithKeyFour(data.threadImageKey)
-                            return {
+                            resolve({
                                 postNum: index,
                                 _id: threadData[index]._id,
                                 threadComments: threadData[index].threadComments,
@@ -809,7 +809,7 @@ const Welcome = ({navigation, route}) => {
                                 imageInThreadB64: imageInThreadB64,
                                 creatorImageB64: profilePictureUri,
                                 isOwner: threadData[index].isOwner
-                            }
+                            })
                         }
                     } catch (error) {
                         reject(error)
