@@ -20,7 +20,7 @@ import { getTimeFromUTCMS } from '../../libraries/Time.js';
 class ImagePost extends Component {
     constructor(props) {
         super(props);
-        console.log('Comments:', this.props.post.comments)
+        console.log('Comments - Logged from ImagePost component:', this.props.post.comments)
     }
 
     shouldComponentUpdate(nextProps, nextState) {
