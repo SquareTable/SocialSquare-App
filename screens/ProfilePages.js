@@ -122,7 +122,7 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.loadingFeed) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
                 <ActivityIndicator color={colors.brand} size="large"/>
             </View>
         )
@@ -130,10 +130,10 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.error) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
                 <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Error: {feedData.error}</Text>
-                <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary}}>
-                    <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>Retry</Text>
+                <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginTop: 10}}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Retry</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -141,7 +141,7 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.posts.length === 0) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
                 <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>This user has no {postFormat}s.</Text>
             </View>
         )
@@ -149,14 +149,14 @@ const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
 
     if (feedData.noMorePosts) {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No more {postFormat}s to show.</Text>
             </View>
         )
     }
 
     return (
-        <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginBottom: 10}}>
+        <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginVertical: 10}}>
             <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Load More</Text>
         </TouchableOpacity>
     )
@@ -604,77 +604,88 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
 
-    const changeToOne = () => {
-        if (images.loadingFeed == false) {
+    const layoutImagePosts = (data) => {
+        var imageData = data.data.posts
+        console.log("The Image data")
+        console.log(imageData)
+        console.log(imageData.length)
+
+        Promise.all(
+            imageData.map(async (data, index) => {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        const imageB64 = await getImageWithKeyOne(data.imageKey)
+                        resolve({
+                            imageKey: data.imageKey,
+                            imageB64,
+                            imageTitle: data.imageTitle,
+                            imageDescription: data.imageDescription,
+                            votes: data.votes,
+                            comments: data.comments,
+                            creatorName: data.creatorName,
+                            creatorDisplayName: data.creatorDisplayName,
+                            datePosted: data.datePosted,
+                            postNum: index,
+                            creatorPfpB64: profileKey,
+                            upvoted: data.upvoted,
+                            downvoted: data.downvoted,
+                            isOwner: data.isOwner,
+                            _id: data._id
+                        })
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            })
+        ).then(posts => {
+            dispatchImages({
+                type: 'addPosts',
+                posts: posts
+            })
+
+            if (data.data.noMorePosts) {
+                dispatchImages({type: 'noMorePosts'})
+            }
+        }).catch(error => {
+            console.error(error)
+            dispatchImages({type: 'error', error: String(error)})
+        })
+    }
+
+    const loadImages = (reload) => {
+        if (!images.loadingFeed && !images.noMorePosts) {
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatThree.cancel()
             cancelTokenPostFormatFour.cancel()
             cancelTokenPostFormatFive.cancel()
-            handleMessage(null, null, null);
-            setSelectedPostFormat("One")
-            setFormatOneText("This user has no Image posts.")
-            const layoutImagePosts = (data) => {
-                setFormatOneText("Users Image Posts:")
-                var imageData = data.data
-                console.log("The Image data")
-                console.log(imageData)
-                console.log(imageData.length)
-                var tempSections = []
-                var itemsProcessed = 0;
-                imageData.forEach(function (item, index) {
-                    //image in post
-                    async function findImages() {
-                        //
-                        async function asyncFunctionForImages() {
-                            const imageB64 = await getImageWithKeyOne(imageData[index].imageKey)
-                            console.log("Image In Post Recieved")
-                            //Add
-                            const addAndPush = async () => {
-                                console.log("TestHere")
-                                var tempSectionsTemp = { imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, votes: imageData[index].votes, comments: imageData[index].comments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, creatorPfpB64: profileKey, datePosted: imageData[index].datePosted, postNum: index, upvoted: imageData[index].upvoted, downvoted: imageData[index].downvoted, isOwner: imageData[index].isOwner, _id: imageData[index]._id }
-                                tempSections.push(tempSectionsTemp)
-                            }
-                            await addAndPush()
-                            itemsProcessed++;
-                            if (itemsProcessed === imageData.length) {
-                                dispatchImages({type: 'addPosts', posts: tempSections})
-                            }
-                        }
-                        asyncFunctionForImages()
-                    }
-                    findImages()
-                });
+
+            const url = serverUrl + '/tempRoute/getImagesFromProfile';
+
+            const type = reload ? 'startReload' : 'startLoad'
+
+            dispatchImages({type})
+
+            const toSend = {pubId: secondId};
+
+            if (!reload) {
+                toSend.previousPostId = images.posts[images.posts.length - 1]._id
             }
 
-            const url = serverUrl + "/tempRoute/getImagesFromProfile";
-
-            dispatchImages({type: 'startReload'})
-            axios.post(url, toSendProfileName).then((response) => {
+            axios.post(url, toSend).then((response) => {
                 const result = response.data;
-                const { message, status, data } = result;
+                const {data} = result;
 
-                if (status !== 'SUCCESS') {
-                    dispatchImages({type: 'stopLoad'})
-                    handleMessage(message, status);
-                    console.log(status)
-                    console.log(message)
-                } else {
-                    layoutImagePosts({ data });
-                    console.log(status)
-                    console.log(message)
-                }
-                //setSubmitting(false);
-
+                layoutImagePosts({data});
             }).catch(error => {
-                console.log(error);
-                //setSubmitting(false);
-                dispatchImages({type: 'stopLoad'})
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                console.error(error);
+                dispatchImages({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading images. Please check your internet connection and retry.'})
             })
-        } else {
-            setSelectedPostFormat("One")
-            setFormatOneText("Users Image Posts:")
         }
+    }
+
+    const changeToOne = () => {
+        setSelectedPostFormat("One")
+        loadImages(true);
     }
 
     const changeToTwo = () => {
@@ -1412,12 +1423,21 @@ const ProfilePages = ({ route, navigation }) => {
                                 data={images.posts}
                                 keyExtractor={(item) => item.imageKey}
                                 renderItem={({ item, index }) => <ImagePost post={item} index={index} dispatch={dispatchImages} colors={colors} colorsIndexNum={indexNum}/> }
-                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={images.reloadingFeed} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={polls.reloadingFeed} loadingPostsThread={threads.reloadingFeed} loadingPostsCategory={loadingPostsCategory}/>}
+                                ListFooterComponent={<ListFooters feedData={images} loadMoreFunction={loadImages} postFormat="image"/>}
                                 ItemSeparatorComponent={() => <View style={{height: 10}}/>}
                                 ListHeaderComponent={<ListHeaders/>}
                                 onScroll={handleScroll}
                                 scrollEventThrottle={1}
                                 style={{width: '100%'}}
+                                onEndReachedThreshold={3}
+                                onEndReached = {({distanceFromEnd})=>{
+                                    if (distanceFromEnd > 0) {
+                                        console.log('End of the image post feed was reached with ' + distanceFromEnd + ' pixels from the end.')
+                                        if (images.loadingFeed === false) {
+                                            loadImages()
+                                        }
+                                    }
+                                }}
                             />)}
                             {selectedPostFormat == "Two" && (<SectionList
                                 sections={changeSectionsTwo}
