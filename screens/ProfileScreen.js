@@ -109,56 +109,14 @@ import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js'
 import PollPost from '../components/Posts/PollPost.js';
 import ThreadPost from '../components/Posts/ThreadPost.js';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet.js';
-
-const ListFooters = ({feedData, loadMoreFunction, postFormat}) => {
-    const {colors} = useTheme();
-
-    if (feedData.loadingFeed) {
-        return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
-                <ActivityIndicator color={colors.brand} size="large"/>
-            </View>
-        )
-    }
-
-    if (feedData.error) {
-        return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
-                <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Error: {feedData.error}</Text>
-                <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginTop: 10}}>
-                    <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Retry</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
-
-    if (feedData.posts.length === 0) {
-        return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>This user has no {postFormat}s.</Text>
-            </View>
-        )
-    }
-
-    if (feedData.noMorePosts) {
-        return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No more {postFormat}s to show.</Text>
-            </View>
-        )
-    }
-
-    return (
-        <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginVertical: 10}}>
-            <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Load More</Text>
-        </TouchableOpacity>
-    )
-}
+import useCategoryReducer from '../hooks/useCategoryReducer.js';
 
 const Welcome = ({navigation, route}) => {
     const [images, dispatchImages] = usePostReducer();
+    const [videos, dispatchVideos] = usePostReducer();
     const [polls, dispatchPolls] = usePostReducer();
     const [threads, dispatchThreads] = usePostReducer();
+    const [categories, dispatchCategories] = useCategoryReducer();
     const StatusBarHeight = useContext(StatusBarHeightContext);
     if (route.params) {
         var {backButtonHidden, imageFromRoute, goToStylingMenu} = route.params;
@@ -354,6 +312,55 @@ const Welcome = ({navigation, route}) => {
                     </ProfileSelectMediaTypeItem>
                 </ProfileSelectMediaTypeHorizontalView>
             </>
+        )
+    }
+
+    const ListFooters = ({feedData, loadMoreFunction, postFormat, categoryList}) => {
+        const {colors} = useTheme();
+    
+        if (feedData.loadingFeed) {
+            return (
+                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
+                    <ActivityIndicator color={colors.brand} size="large"/>
+                </View>
+            )
+        }
+    
+        if (feedData.error) {
+            return (
+                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
+                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Error: {feedData.error}</Text>
+                    <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginTop: 10}}>
+                        <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Retry</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+    
+        if (categoryList ? feedData.categories.length === 0 : feedData.posts.length === 0) {
+            return (
+                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
+                    {categoryList ?
+                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{displayName || name} isn't a part of any categories.</Text>
+                    :
+                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{displayName || name} has no {postFormat}s.</Text>
+                    }
+                </View>
+            )
+        }
+    
+        if (categoryList ? feedData.noMoreCategories : feedData.noMorePosts) {
+            return (
+                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No more {categoryList ? 'categorie' : postFormat}s to show.</Text>
+                </View>
+            )
+        }
+    
+        return (
+            <TouchableOpacity onPress={() => loadMoreFunction(false)} style={{padding: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.tertiary, marginVertical: 10}}>
+                <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Load More</Text>
+            </TouchableOpacity>
         )
     }
 
@@ -570,7 +577,7 @@ const Welcome = ({navigation, route}) => {
 
             const toSend = {pubId: secondId};
 
-            if (!reload) {
+            if (!reload && images.posts.length > 0) {
                 toSend.previousPostId = images.posts[images.posts.length - 1]._id
             }
 
@@ -728,7 +735,7 @@ const Welcome = ({navigation, route}) => {
 
             const toSend = {pubId: secondId};
 
-            if (!reload) {
+            if (!reload && polls.posts.length > 0) {
                 toSend.previousPostId = polls.posts[polls.posts.length - 1]._id
             }
 
@@ -842,7 +849,7 @@ const Welcome = ({navigation, route}) => {
 
             const toSend = {pubId: secondId};
 
-            if (!reload) {
+            if (!reload && threads.posts.length > 0) {
                 toSend.previousPostId = threads.posts[threads.posts.length - 1]._id
             }
 
@@ -862,82 +869,93 @@ const Welcome = ({navigation, route}) => {
         setSelectedPostFormat("Four")
         loadThreads(true)
     }
-    
-    const changeToFive = () => {
-        if (loadingPostsCategory == false) {
+
+    const layoutCategoriesFound = (data) => {
+        console.log('DATA:', data)
+        var allData = data.categories
+
+        Promise.all(
+            allData.map(category => {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        if (category.imageKey !== "") {
+                            //category with an image
+                            const imageB64 = await getImageWithKeyFive(category.imageKey)
+                            
+                            resolve({
+                                categoryTitle: category.categoryTitle,
+                                categoryDescription: category.categoryDescription,
+                                members: category.members,
+                                categoryTags: category.categoryTags,
+                                image: imageB64,
+                                NSFW: category.NSFW,
+                                NSFL: category.NSFL,
+                                datePosted: category.datePosted,
+                                categoryId: category.categoryId
+                            })
+                        } else {
+                            //category without an image
+                            resolve({
+                                categoryTitle: category.categoryTitle,
+                                categoryDescription: category.categoryDescription,
+                                members: category.members,
+                                categoryTags: category.categoryTags,
+                                image: null,
+                                NSFW: category.NSFW,
+                                NSFL: category.NSFL,
+                                datePosted: category.datePosted,
+                                categoryId: category.categoryId
+                            })
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            })
+        ).then(categories => {
+            dispatchCategories({type: 'addCategories', categories})
+            if (data.noMoreCategories) {
+                dispatchCategories({type: 'noMoreCategories'})
+            }
+        }).catch(error => {
+            dispatchCategories({type: 'error', error: String(error)})
+        })
+    }
+
+    const loadCategories = (reload) => {
+        if (!categories.loadingFeed && (reload || !categories.noMorePosts)) {
             cancelTokenPostFormatOne.cancel()
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatThree.cancel()
             cancelTokenPostFormatFour.cancel()
-            setChangeSectionsFive([])
-            setSelectedPostFormat("Five")
-            setFormatFiveText("This user associates with no categories.")
-            const layoutCategoriesFound = (data) => {
-                var allData = data
-                console.log(allData)
-                console.log(allData.length)
-                setFormatFiveText("Categories:")
-                var tempSections = []
-                var itemsProcessed = 0;
-                allData.forEach(function (item, index) {
-                    if (allData[index].imageKey !== "") {
-                        if (index+1 <= userLoadMax) {      
-                            async function asyncFunctionForImages() {
-                                const imageB64 = await getImageWithKeyFive(allData[index].imageKey)
-                                var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, categoryId: allData[index].categoryId}]}
-                                tempSections.push(tempSectionsTemp)
-                                itemsProcessed++;
-                                if(itemsProcessed === allData.length) {
-                                    setChangeSectionsFive(tempSections)
-                                    setLoadingPostsCategory(false)
-                                }
-                            }
-                            asyncFunctionForImages()
-                        }
-                    } else {
-                        if (index+1 <= userLoadMax) {
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, categoryId: allData[index].categoryId}]}
-                            tempSections.push(tempSectionsTemp)
-                            itemsProcessed++;
-                            if(itemsProcessed === allData.length) {
-                                setChangeSectionsFive(tempSections)
-                                setLoadingPostsCategory(false)
-                            }
-                        }
-                    }
-                });
-            }
 
-            handleMessage(null);
             const url = serverUrl + '/tempRoute/findcategoryfromprofile';
-            const toSend = {
-                pubId: secondId
+
+            const type = reload ? 'startReload' : 'startLoad'
+
+            dispatchCategories({type})
+
+            const toSend = {pubId: secondId};
+
+            if (!reload && categories.categories.length > 0) {
+                toSend.previousCategoryId = categories.categories[categories.categories.length - 1].categoryId
             }
 
-            setLoadingPostsCategory(true)
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const {data} = result;
 
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                    setLoadingPostsCategory(false)
-                } else {
-                    console.log(data)
-                    layoutCategoriesFound(data)
-                    handleMessage("Search Complete", "SUCCESS");
-                    //persistLogin({...data[0]}, message, status);
-                }
-
+                layoutCategoriesFound(data)
             }).catch(error => {
-                console.log(error);
-                setLoadingPostsCategory(false)
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                console.error(error);
+                dispatchCategories({type: 'error', error: error?.response?.data?.message || "An error occured. Try checking your network connection and retry."})
             })
-        } else {
-            setSelectedPostFormat("Five")
-            setFormatFiveText("Categories:")
         }
+    }
+
+    const changeToFive = () => {
+        setSelectedPostFormat("Five")
+        loadCategories(true)
     }
 
     if (getImagesOnLoad == false) {
@@ -1074,17 +1092,19 @@ const Welcome = ({navigation, route}) => {
 
     const [refreshing, setRefreshing] = useState(false)
 
-    const onRefresh = useCallback(() => {
-        if (selectedPostFormat === "One") {
-            changeToOne();
-        } else if (selectedPostFormat === "Two") {
-            changeToTwo();
-        } else if (selectedPostFormat === "Three") {
-            changeToThree();
-        } else if (selectedPostFormat === "Four") {
-            changeToFour();
-        } else if (selectedPostFormat === "Five") {
-            changeToFive();
+    const onRefresh = useCallback((reloadFeeds) => {
+        if (reloadFeeds) {
+            if (selectedPostFormat === "One") {
+                changeToOne();
+            } else if (selectedPostFormat === "Two") {
+                changeToTwo();
+            } else if (selectedPostFormat === "Three") {
+                changeToThree();
+            } else if (selectedPostFormat === "Four") {
+                changeToFour();
+            } else if (selectedPostFormat === "Five") {
+                changeToFive();
+            }
         }
         
         setRefreshing(true)
@@ -1402,7 +1422,7 @@ const Welcome = ({navigation, route}) => {
                             ListFooterComponent={<ListFooters feedData={images} loadMoreFunction={loadImages} postFormat="image"/>}
                             ItemSeparatorComponent={() => <View style={{height: 10}}/>}
                             ListHeaderComponent={ListHeaders}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(true)} />}
                             onScroll={handleScroll}
                             scrollEventThrottle={1}
                             style={{width: '100%'}}
@@ -1416,13 +1436,13 @@ const Welcome = ({navigation, route}) => {
                                 }
                             }}
                         />)}
-                        {selectedPostFormat == "Two" && (<SectionList
-                            sections={changeSectionsTwo}
-                            keyExtractor={(item, index) => item + index}
+                        {selectedPostFormat == "Two" && (<FlatList
+                            data={videos.posts}
+                            keyExtractor={(item) => item._id}
                             renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postsWithDeleteMenuOpen={postsWithDeleteMenuOpen} profilePictureUri={profilePictureUri}/>}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={images.reloadingFeed} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={polls.reloadingFeed} loadingPostsThread={threads.reloadingFeed} loadingPostsCategory={loadingPostsCategory} colors={colors}/>}
+                            ListFooterComponent={<ListFooters feedData={videos} loadMoreFunction={() => {alert('Coming later')}} postFormat="video"/>}
                             ListHeaderComponent={ListHeaders}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(true)} />}
                             onScroll={handleScroll}
                             scrollEventThrottle={1}
                             style={{width: '100%'}}
@@ -1443,7 +1463,7 @@ const Welcome = ({navigation, route}) => {
                                 }
                             }}
                             ListHeaderComponent={ListHeaders}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(true)} />}
                             onScroll={handleScroll}
                             scrollEventThrottle={1}
                             style={{width: '100%'}}
@@ -1455,7 +1475,7 @@ const Welcome = ({navigation, route}) => {
                             ListFooterComponent={<ListFooters feedData={threads} loadMoreFunction={loadThreads} postFormat="thread"/>}
                             ItemSeparatorComponent={() => <View style={{height: 10}}/>}
                             ListHeaderComponent={ListHeaders}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(true)} />}
                             onScroll={handleScroll}
                             scrollEventThrottle={1}
                             style={{width: '100%'}}
@@ -1469,16 +1489,25 @@ const Welcome = ({navigation, route}) => {
                                 }
                             }}
                         />)}
-                        {selectedPostFormat == "Five" && (<SectionList
-                            sections={changeSectionsFive}
-                            keyExtractor={(item, index) => item + index}
+                        {selectedPostFormat == "Five" && (<FlatList
+                            data={categories.categories}
+                            keyExtractor={(item) => item.categoryId}
                             renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} categoryId={item.categoryId}/>}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={images.reloadingFeed} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={polls.reloadingFeed} loadingPostsThread={threads.reloadingFeed} loadingPostsCategory={loadingPostsCategory} colors={colors}/>}
+                            ListFooterComponent={<ListFooters feedData={categories} loadMoreFunction={loadCategories} categoryList/>}
                             ListHeaderComponent={ListHeaders}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(true)} />}
                             onScroll={handleScroll}
                             scrollEventThrottle={1}
                             style={{width: '100%'}}
+                            onEndReachedThreshold={3}
+                            onEndReached = {({distanceFromEnd})=>{
+                                if (distanceFromEnd > 0) {
+                                    console.log('End of the categories feed was reached with ' + distanceFromEnd + ' pixels from the end.')
+                                    if (categories.loadingFeed === false) {
+                                        loadCategories()
+                                    }
+                                }
+                            }}
                         />)}
                     </ProfileGridPosts>
                     <ProfileFeaturedPosts display={featuredViewState}>
@@ -1503,45 +1532,3 @@ const Welcome = ({navigation, route}) => {
 }
 
 export default Welcome;
-
-const PostLoadingSpinners = ({selectedPostFormat, loadingPostsImage, loadingPostsVideo, loadingPostsPoll, loadingPostsThread, loadingPostsCategory, colors}) => {
-    return(
-        <>
-            {selectedPostFormat == "One" && (
-                <View>
-                    {loadingPostsImage == true && (
-                        <ActivityIndicator size="large" color={colors.brand} style={{marginBottom: 20}} />  
-                    )}
-                </View>
-            )}
-            {selectedPostFormat == "Two" && (
-                <View>
-                    {loadingPostsVideo == true && (
-                        <ActivityIndicator size="large" color={colors.brand} style={{marginBottom: 20}} />  
-                    )}
-                </View>
-            )}
-            {selectedPostFormat == "Three" && (
-                <View>
-                    {loadingPostsPoll == true && (
-                        <ActivityIndicator size="large" color={colors.brand} style={{marginBottom: 20}} />  
-                    )}
-                </View>
-            )}
-            {selectedPostFormat == "Four" && (
-                <View>
-                    {loadingPostsThread == true && (
-                        <ActivityIndicator size="large" color={colors.brand} style={{marginBottom: 20}} />  
-                    )}
-                </View>
-            )}
-            {selectedPostFormat == "Five" && (
-                <View>
-                    {loadingPostsCategory == true && (
-                        <ActivityIndicator size="large" color={colors.brand} style={{marginBottom: 20}} />  
-                    )}
-                </View>
-            )}
-        </>
-    )
-}
