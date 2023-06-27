@@ -512,8 +512,6 @@ const Welcome = ({navigation, route}) => {
         console.log("The Image data")
         console.log(imageData)
         console.log(imageData.length)
-        var tempSections = []
-        var itemsProcessed = 0;
 
         Promise.all(
             imageData.map(async (data, index) => {
@@ -558,7 +556,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const loadImages = (reload) => {
-        if (!images.loadingFeed && !images.noMorePosts) {
+        if (!images.loadingFeed && (reload || !images.noMorePosts)) {
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatThree.cancel()
             cancelTokenPostFormatFour.cancel()
@@ -716,7 +714,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const loadPolls = (reload) => {
-        if (!polls.loadingFeed && !polls.noMorePosts) {
+        if (!polls.loadingFeed && (reload || !polls.noMorePosts)) {
             cancelTokenPostFormatOne.cancel()
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatFour.cancel()
@@ -751,89 +749,118 @@ const Welcome = ({navigation, route}) => {
         loadPolls(true);
     }
 
-    const changeToFour = () => {
-        if (!threads.loadingFeed) {
+    const layoutThreadPosts = (data) => {
+        var threadData = data.data.posts
+        console.log("The Thread data")
+        console.log(threadData)
+        console.log(threadData.length)
+
+        Promise.all(
+            threadData.map((data, index) => {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        if (data.threadType === "Text") {
+                            resolve({
+                                postNum: index,
+                                _id: threadData[index]._id,
+                                threadComments: threadData[index].threadComments,
+                                threadType: threadData[index].threadType,
+                                votes: threadData[index].votes,
+                                threadTitle: threadData[index].threadTitle,
+                                threadSubtitle: threadData[index].threadSubtitle,
+                                threadTags: threadData[index].threadTags,
+                                threadCategory: threadData[index].threadCategory,
+                                threadBody: threadData[index].threadBody,
+                                threadImageKey: threadData[index].threadImageKey,
+                                threadImageDescription: threadData[index].threadImageDescription,
+                                threadNSFW: threadData[index].threadNSFW,
+                                threadNSFL: threadData[index].threadNSFL,
+                                datePosted: threadData[index].datePosted,
+                                upvoted: threadData[index].upvoted,
+                                downvoted: threadData[index].downvoted,
+                                creatorDisplayName: threadData[index].creatorDisplayName,
+                                creatorName: threadData[index].creatorName,
+                                imageInThreadB64: null,
+                                creatorImageB64: profilePictureUri,
+                                isOwner: threadData[index].isOwner
+                            })
+                        } else if (data.threadType === "Images") {
+                            const imageInThreadB64 = await getImageWithKeyFour(data.threadImageKey)
+                            resolve({
+                                postNum: index,
+                                _id: threadData[index]._id,
+                                threadComments: threadData[index].threadComments,
+                                threadType: threadData[index].threadType,
+                                votes: threadData[index].votes,
+                                threadTitle: threadData[index].threadTitle,
+                                threadSubtitle: threadData[index].threadSubtitle,
+                                threadTags: threadData[index].threadTags,
+                                threadCategory: threadData[index].threadCategory,
+                                threadBody: threadData[index].threadBody,
+                                threadImageKey: threadData[index].threadImageKey,
+                                threadImageDescription: threadData[index].threadImageDescription,
+                                threadNSFW: threadData[index].threadNSFW,
+                                threadNSFL: threadData[index].threadNSFL,
+                                datePosted: threadData[index].datePosted,
+                                upvoted: threadData[index].upvoted,
+                                downvoted: threadData[index].downvoted,
+                                creatorDisplayName: threadData[index].creatorDisplayName,
+                                creatorName: threadData[index].creatorName,
+                                imageInThreadB64: imageInThreadB64,
+                                creatorImageB64: profilePictureUri,
+                                isOwner: threadData[index].isOwner
+                            })
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            })
+        ).then(posts => {
+            dispatchThreads({type: 'addPosts', posts})
+            if (data.data.noMorePosts) {
+                dispatchThreads({type: 'noMorePosts'})
+            }
+        }).catch(error => {
+            console.error('An error occurred while loading threads from ProfileScreen.js:', error)
+            dispatchThreads({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading threads. Please check your internet connection and try again.'})
+        })
+    }
+
+    const loadThreads = (reload) => {
+        if (!threads.loadingFeed && (reload || !threads.noMorePosts)) {
             cancelTokenPostFormatOne.cancel()
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatThree.cancel()
             cancelTokenPostFormatFive.cancel()
-            handleMessage(null, null, null);
-            setSelectedPostFormat("Four")
-            setFormatFourText("This user has no Thread posts.")
-            const layoutThreadPosts = (data) => {
-                setFormatFourText("Recent Thread Posts:")
-                var threadData = data.data
-                console.log("The Thread data")
-                console.log(threadData)
-                console.log(threadData.length)
-                var tempSections = []
-                var itemsProcessed = 0;
-                threadData.forEach(function (item, index) {
-                    //image in post
-                    async function findImages() {
-                        //
-                        async function asyncFunctionForImages() {
-                            if (threadData[index].threadType == "Text") {
-                                const addAndPush = async () => {
-                                    var tempSectionsTemp = {postNum: index, _id: threadData[index]._id, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, votes: threadData[index].votes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, upvoted: threadData[index].upvoted, downvoted: threadData[index].downvoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, imageInThreadB64: null, creatorImageB64: profilePictureUri, isOwner: threadData[index].isOwner}
-                                    tempSections.push(tempSectionsTemp)
-                                    itemsProcessed++;
-                                    if(itemsProcessed === threadData.length) {
-                                        dispatchThreads({type: 'addPosts', posts: tempSections})
-                                    }
-                                }
-                                await addAndPush()
-                            } else if (threadData[index].threadType == "Images") {
-                                const imageInThreadB64 = await getImageWithKeyFour(threadData[index].threadImageKey)
-                                const addAndPush = async () => {
-                                    var tempSectionsTemp = {postNum: index, _id: threadData[index]._id, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, votes: threadData[index].votes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, upvoted: threadData[index].upvoted, downvoted: threadData[index].downvoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, imageInThreadB64: imageInThreadB64, creatorImageB64: profilePictureUri, isOwner: threadData[index].isOwner}
-                                    tempSections.push(tempSectionsTemp)
-                                    itemsProcessed++;
-                                    if(itemsProcessed === threadData.length) {
-                                        dispatchThreads({type: 'addPosts', posts: tempSections})
-                                    }
-                                }
-                                await addAndPush()
-                            }
-                        }
-                        asyncFunctionForImages()
-                    }
-                    findImages()
-                });
-            }
 
             const url = serverUrl + '/tempRoute/getthreadsfromprofile';
-            const toSend = {
-                pubId: secondId
+
+            const type = reload ? 'startReload' : 'startLoad'
+
+            dispatchThreads({type})
+
+            const toSend = {pubId: secondId};
+
+            if (!reload) {
+                toSend.previousPostId = threads.posts[threads.posts.length - 1]._id
             }
 
-            dispatchThreads({type: 'startReload'})
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const {data} = result;
 
-                if (status !== 'SUCCESS') {
-                    dispatchThreads({type: 'stopLoad'})
-                    handleMessage(message, status);
-                    console.log(status)
-                    console.log(message)
-                } else {
-                    layoutThreadPosts({data});
-                    console.log(status)
-                    console.log(message)
-                }
-                //setSubmitting(false);
-
+                layoutThreadPosts({data});
             }).catch(error => {
-                console.log(error);
-                //setSubmitting(false);
-                dispatchThreads({type: 'stopLoad'})
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                console.error(error);
+                dispatchThreads({type: 'error', error: error?.response?.data?.message || "An error occured. Try checking your network connection and retry."})
             })
-        } else {
-            setSelectedPostFormat("Four")
-            setFormatFourText("Users Thread Posts:") 
         }
+    }
+
+    const changeToFour = () => {
+        setSelectedPostFormat("Four")
+        loadThreads(true)
     }
     
     const changeToFive = () => {
@@ -1425,13 +1452,22 @@ const Welcome = ({navigation, route}) => {
                             data={threads.posts}
                             keyExtractor={(item) => item._id}
                             renderItem={({ item, index }) => <ThreadPost post={item} index={index} dispatch={dispatchThreads} colors={colors} colorsIndexNum={indexNum}/>}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={images.reloadingFeed} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={polls.reloadingFeed} loadingPostsThread={threads.reloadingFeed} loadingPostsCategory={loadingPostsCategory} colors={colors}/>}
+                            ListFooterComponent={<ListFooters feedData={threads} loadMoreFunction={loadThreads} postFormat="thread"/>}
                             ItemSeparatorComponent={() => <View style={{height: 10}}/>}
                             ListHeaderComponent={ListHeaders}
                             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                             onScroll={handleScroll}
                             scrollEventThrottle={1}
                             style={{width: '100%'}}
+                            onEndReachedThreshold={3}
+                            onEndReached = {({distanceFromEnd})=>{
+                                if (distanceFromEnd > 0) {
+                                    console.log('End of the thread feed was reached with ' + distanceFromEnd + ' pixels from the end.')
+                                    if (threads.loadingFeed === false) {
+                                        loadThreads()
+                                    }
+                                }
+                            }}
                         />)}
                         {selectedPostFormat == "Five" && (<SectionList
                             sections={changeSectionsFive}
