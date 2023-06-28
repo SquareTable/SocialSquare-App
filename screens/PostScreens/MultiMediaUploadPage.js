@@ -85,7 +85,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
           quality: 1
         });
         
-        if (!result.cancelled) {
+        if (!result.canceled) {
             if (result.type == 'video') {
                 console.log(result)
                 alert('Sorry we do not allow uploading videos yet. That will be coming soon though :)')

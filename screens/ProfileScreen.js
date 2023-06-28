@@ -1072,7 +1072,7 @@ const Welcome = ({navigation, route}) => {
           quality: 1,
         });
         
-        if (!result.cancelled) {
+        if (!result.canceled) {
             console.log(result)
             uploadPFP(result)
         }
