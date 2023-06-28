@@ -336,7 +336,7 @@ const Signup = ({navigation, route}) => {
                                     <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                                 </TextLink>
                                 <Text style={{textAlign: 'center', color: colors.tertiary}}>and</Text>
-                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
+                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/SocialSquare-App/PrivacyPolicy')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                                 </TextLink>
                             </StyledFormArea>)}
