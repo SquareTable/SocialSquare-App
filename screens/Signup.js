@@ -332,11 +332,11 @@ const Signup = ({navigation, route}) => {
                                     </TouchableOpacity>
                                 }
                                 <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
-                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
+                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/SocialSquare-App/TermsAndConditions')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                                 </TextLink>
                                 <Text style={{textAlign: 'center', color: colors.tertiary}}>and</Text>
-                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
+                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/SocialSquare-App/PrivacyPolicy')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                                 </TextLink>
                             </StyledFormArea>)}

@@ -1,5 +1,5 @@
 {
-  "homepage": "https://github.com/SquareTable/social-media-platform",
+  "homepage": "https://github.com/SquareTable/SocialSquare-App",
   "scripts": {
     "web": "expo start --web",
     "eject": "expo eject",

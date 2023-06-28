@@ -292,7 +292,7 @@ const Algorithm_HomeScreenSettings = ({navigation, route}) => {
                                 </View>
                                 <View style={{height: 50}}/>
                                 <Text style={{color: colors.tertiary, fontSize: 14, textAlign: 'center'}}>Want to see how we use your data and make sure that it is being handled securely? Check out the SocialSquare GitHub repo to look at the code we use to run SocialSquare.</Text>
-                                <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2, marginVertical: 15}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
+                                <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2, marginVertical: 15}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/SocialSquare-App')}}>
                                     <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>Press here to visit the SocialSquare GitHub repo</Text>
                             </TouchableOpacity>
                             </View>
