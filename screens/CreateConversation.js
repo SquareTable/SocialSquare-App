@@ -59,9 +59,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 
-//Image picker
-import * as ImagePicker from 'expo-image-picker';
-
 import { useIsFocused } from '@react-navigation/native';
 
 import { useTheme } from '@react-navigation/native';

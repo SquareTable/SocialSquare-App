@@ -208,7 +208,7 @@ const ThreadUploadPage = ({route, navigation}) => {
           quality: 1,
         });
         
-        if (!result.cancelled) {
+        if (!result.canceled) {
             console.log(result)
             navigation.setParams({imageFromRoute: result})
         }

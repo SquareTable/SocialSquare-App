@@ -61,8 +61,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../../components/CredentialsContext';
 import { ImageBackground, ScrollView, Image, View, Text } from 'react-native';
 
-//Image picker
-import * as ImagePicker from 'expo-image-picker';
 import { cos } from 'react-native-reanimated';
 
 import { useTheme } from '@react-navigation/native';
