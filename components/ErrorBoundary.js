@@ -54,7 +54,7 @@ class ErrorBoundary extends Component {
                                 <Text style={{color: 'white', fontSize: 18, textAlign: 'center'}}>Copy Component Stack</Text>
                             </TouchableOpacity>
                         }
-                        <TouchableOpacity style={{backgroundColor: 'black', borderColor: 'white', borderWidth: 2, borderRadius: 20, padding: 10}} onPress={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}>
+                        <TouchableOpacity style={{backgroundColor: 'black', borderColor: 'white', borderWidth: 2, borderRadius: 20, padding: 10}} onPress={() => {Linking.openURL('https://github.com/SquareTable/SocialSquare-App/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}>
                             <Text style={{color: 'white', fontSize: 18, textAlign: 'center'}}>Create GitHub issue</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={{backgroundColor: 'black', borderColor: 'white', borderWidth: 2, borderRadius: 20, marginVertical: 40, width: '50%'}} onPress={this.restartSocialSquare}>

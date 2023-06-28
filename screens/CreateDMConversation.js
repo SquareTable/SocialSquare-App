@@ -177,7 +177,7 @@ const CreateDMConversation = ({route, navigation}) => {
                     <StyledButton style={{marginBottom: 20}} onPress={() => {navigation.goBack()}}>
                         <ButtonText>Go Back</ButtonText>
                     </StyledButton>
-                    <StyledButton onPress={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}>
+                    <StyledButton onPress={() => {Linking.openURL('https://github.com/SquareTable/SocialSquare-App/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}>
                         <ButtonText>Report Bug</ButtonText>
                     </StyledButton>
                 </View>
