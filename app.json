@@ -48,7 +48,7 @@
       "favicon": "./assets/favicon.png"
     },
     "description": "SquareTable Social Media Platform",
-    "githubUrl": "https://github.com/SquareTable/social-media-platform"
+    "githubUrl": "https://github.com/SquareTable/SocialSquare-App"
   },
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-6980968247752885~2757645493",

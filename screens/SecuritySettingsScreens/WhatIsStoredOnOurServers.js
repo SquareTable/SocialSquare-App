@@ -53,7 +53,7 @@ const WhatIsStoredOnOurServers = ({navigation}) => {
                 </View>
                 <Text style={{color: 'red', fontSize: 18, textAlign: 'center', marginVertical: 10, fontWeight: 'bold'}}>Encryption for more data is coming soon</Text>
                 <Text style={{fontSize: 14, color: colors.tertiary, fontWeight: 'bold', textAlign: 'center', marginHorizontal: '5%', marginVertical: 20}}>Don't trust us? Press the button below and get taken to the SocialSquare open source GitHub repository so you can take a look at the code used to create the app and see that we are not lying.</Text>
-                <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2, marginBottom: 30}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
+                <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2, marginBottom: 30}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/SocialSquare-App')}}>
                     <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>Press here to visit the SocialSquare GitHub repo</Text>
                 </TouchableOpacity>
             </ScrollView>
