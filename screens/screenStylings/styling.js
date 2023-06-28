@@ -1073,8 +1073,8 @@ export const PostHorizontalView = styled.View`
 `;
 
 export const PostTypeSelector = styled.TouchableOpacity`
-    padding-horizontal: 10px;
-    padding-vertical: 10px;
+    padding-horizontal: 15px;
+    padding-vertical: 15px;
     border-width: 3px;
     border-color: ${brand};
     border-radius: 100px;
