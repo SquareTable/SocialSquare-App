@@ -171,7 +171,7 @@ const SettingsPage = ({navigation}) => {
                                 <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>See app introduction screen again</Text>
                             </View>
                         </TouchableOpacity>
-                        <TextLink disabled={!logoutViewState} style={{marginTop: 10}} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
+                        <TextLink disabled={!logoutViewState} style={{marginTop: 10}} onPress={() => {goToLink('https://squaretable.github.io/SocialSquare-App/TermsAndConditions')}}>
                             <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                         </TextLink>
                         <TextLink disabled={!logoutViewState} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>

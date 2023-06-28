@@ -112,7 +112,7 @@ const IntroScreen = ({navigation}) => {
                     <TextLinkContent style={{color: colors.brand, fontSize: 18}}>Privacy Policy</TextLinkContent>
                 </TextLink> : 
                 item.key == "four" ? 
-                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
+                <TextLink onPress={() => {goToLink('https://squaretable.github.io/SocialSquare-App/TermsAndConditions')}}>
                     <TextLinkContent style={{color: colors.brand, fontSize: 18}}>Terms of Service</TextLinkContent>
                 </TextLink> :
                 null}
