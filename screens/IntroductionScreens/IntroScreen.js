@@ -108,7 +108,7 @@ const IntroScreen = ({navigation}) => {
                 <Image source={item.image} style={{height: 200, width: 200, alignSelf: 'center'}}/>}
                 <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginHorizontal: 20}}>{item.text}</Text>
                 {item.key == "three" ? 
-                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
+                <TextLink onPress={() => {goToLink('https://squaretable.github.io/SocialSquare-App/PrivacyPolicy')}}>
                     <TextLinkContent style={{color: colors.brand, fontSize: 18}}>Privacy Policy</TextLinkContent>
                 </TextLink> : 
                 item.key == "four" ? 
