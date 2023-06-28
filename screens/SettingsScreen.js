@@ -174,7 +174,7 @@ const SettingsPage = ({navigation}) => {
                         <TextLink disabled={!logoutViewState} style={{marginTop: 10}} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
                             <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                         </TextLink>
-                        <TextLink disabled={!logoutViewState} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
+                        <TextLink disabled={!logoutViewState} onPress={() => {goToLink('https://squaretable.github.io/SocialSquare-App/PrivacyPolicy')}}>
                             <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                         </TextLink>
                     </WelcomeContainer>
