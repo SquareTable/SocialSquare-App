@@ -35,6 +35,7 @@ import {Image, View, Text, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons.js';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 
 
@@ -43,32 +44,28 @@ const BlockedAccountsScreen = ({navigation}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [blockedAccounts, setBlockedAccounts] = useState(null);
     const [listItems, setListItems] = useState([])
-    const [errorOccured, setErrorOccured] = useState(false);
+    const [errorOccurred, setErrorOccurred] = useState(null);
     const [noMoreItems, setNoMoreItems] = useState(false);
     const [loadedForTheFirstTime, setLoadedForTheFirstTime] = useState(false);
     const userLoadMax = 10;
     const [updateFlatList, setUpdateFlatList] = useState(false);
     const StatusBarHeight = useContext(StatusBarHeightContext);
 
-    useEffect(() => {
-        //Fetch blocked accounts
+    const fetchBlockedAccounts = () => {
+        setErrorOccurred(null)
         const url = serverUrl + '/tempRoute/getuserblockedaccounts';
         axios.get(url).then(response => {
             const result = response.data;
-            const {message, status, data} = result;
+            const {data} = result;
 
-            if (status !== 'SUCCESS') {
-                setErrorOccured(true);
-                console.error(message);
-            } else {
-                setBlockedAccounts(data);
-                console.log(data)
-            }
+            setBlockedAccounts(data);
         }).catch(error => {
             console.error(error);
-            setErrorOccured(true)
+            setErrorOccurred(error?.response?.data?.message || String(error))
         })
-    }, [])
+    }
+
+    useEffect(fetchBlockedAccounts, [])
 
     async function loadItems() {
         if (noMoreItems == false) {
@@ -148,35 +145,37 @@ const BlockedAccountsScreen = ({navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Blocked Accounts</TestText>
             </ChatScreen_Title>
-            {blockedAccounts == null ?
+            {errorOccurred ?
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: colors.tertiary, fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>An error occured.</Text>
+                    <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center'}}>{errorOccurred}</Text>
+                    <TouchableOpacity onPress={fetchBlockedAccounts}>
+                        <Ionicons name="reload" size={50} color={colors.errorColor} />
+                    </TouchableOpacity>
+                </View>
+            : blockedAccounts == null ?
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <ActivityIndicator size="large" color={colors.brand} />
                 </View>
+            : blockedAccounts.length == 0 ?
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold'}}>You have not blocked anyone.</Text>
+                </View>
             :
-                errorOccured ?
-                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold'}}>An error occured.</Text>
-                    </View>
-                :
-                    blockedAccounts.length == 0 ?
-                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold'}}>You have not blocked anyone.</Text>
-                        </View>
-                    :
-                        <FlatList
-                            data={listItems}
-                            keyExtractor={(item, index) => 'key'+index}
-                            renderItem={({ item, index }) => <MemoizedItem item={item} index={index} setUpdateFlatList={setUpdateFlatList} setListItems={setListItems}/>}
-                            getItemLayout={(data, index) => (
-                                {length: 70, offset: 70 * index, index}
-                            )}
-                            onEndReached={() => {noMoreItems == false ? loadItems() : null}}
-                            onEndReachedThreshold={0.2}
-                            ListFooterComponent={
-                                noMoreItems == true ? <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 15, marginBottom: 30}}>No more users to show</Text> : <ActivityIndicator size="large" color={colors.brand} style={{marginTop: 10, marginBottom: 20}}/>
-                            }
-                            extraData={updateFlatList}
-                    />
+                <FlatList
+                    data={listItems}
+                    keyExtractor={(item, index) => 'key'+index}
+                    renderItem={({ item, index }) => <MemoizedItem item={item} index={index} setUpdateFlatList={setUpdateFlatList} setListItems={setListItems}/>}
+                    getItemLayout={(data, index) => (
+                        {length: 70, offset: 70 * index, index}
+                    )}
+                    onEndReached={() => {noMoreItems == false ? loadItems() : null}}
+                    onEndReachedThreshold={0.2}
+                    ListFooterComponent={
+                        noMoreItems == true ? <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 15, marginBottom: 30}}>No more users to show</Text> : <ActivityIndicator size="large" color={colors.brand} style={{marginTop: 10, marginBottom: 20}}/>
+                    }
+                    extraData={updateFlatList}
+                />
             }
         </>
     );
