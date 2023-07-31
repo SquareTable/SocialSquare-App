@@ -45,7 +45,7 @@ import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator, Text
 import {Formik} from 'formik';
 
 //axios
-import axios from 'axios';
+import axios, { CanceledError } from 'axios';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { useTheme } from '@react-navigation/native';
@@ -162,7 +162,6 @@ const FindScreen = ({navigation}) => {
     const [filterFormatSearch, setFilterFormatSearch] = useState("Users")
     var submitting = false;
     const [foundAmount, setFoundAmount] = useState();
-    const [debounce, setDebounce] = useState(false);
     const [changeSectionsOne, setChangeSectionsOne] = useState([])
     const [changeSectionsTwo, setChangeSectionsTwo] = useState([])
     const [loadingOne, setLoadingOne] = useState(false)
@@ -175,7 +174,9 @@ const FindScreen = ({navigation}) => {
     const {serverUrl, setServerurl} = useContext(ServerUrlContext);
     const StatusBarHeight = useContext(StatusBarHeightContext);
     const {height, width} = useWindowDimensions();
-    const userListHeight = useRef(null)
+    const userListHeight = useRef(null);
+    const debounceTimeout = useRef(null);
+    const abortControllerRef = useRef(new AbortController())
 
     useEffect(() => {
         if (typeof userListHeight.current === 'number' && height > userListHeight.current && !noResults && filterFormatSearch === "Users" && searchValue.current !== "" && searchValue.currrent !== null) {
@@ -183,14 +184,19 @@ const FindScreen = ({navigation}) => {
         }
     }, [height, changeSectionsOne, filterFormatSearch])
 
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current instanceof AbortController) {
+                abortControllerRef.current.abort();
+                console.warn('Aborted as Find Screen was unmounted')
+            }
+        }
+    }, [])
+
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
-        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { signal: abortControllerRef.current.signal})
+        .then(res => 'data:image/jpeg;base64,' + res.data)
     }
 
     const handleUserSearch = (val, clear) => {
@@ -208,7 +214,17 @@ const FindScreen = ({navigation}) => {
                         if (allData[index].profileKey !== "") {
                             async function asyncFunctionForImages() {
                                 const displayName = allData[index].displayName === "" ? allData[index].name : allData[index].displayName
-                                const imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
+                                let imageInPfpB64
+                                try {
+                                    imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
+                                } catch (error) {
+                                    alert(error instanceof CanceledError)
+                                    if (error instanceof CanceledError) {
+                                        console.warn('Cancelled intentionally')
+                                    } else {
+                                        console.error(error)
+                                    }
+                                }
                                 var tempSectionsTemp = {name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
@@ -239,7 +255,7 @@ const FindScreen = ({navigation}) => {
                     skip: clear ? 0 : changeSectionsOne.length
                 }
                 submitting = true;
-                axios.post(url, toSend).then((response) => {
+                axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                     const result = response.data;
                     const {message, status, data} = result;
 
@@ -258,12 +274,16 @@ const FindScreen = ({navigation}) => {
                     submitting = false;
 
                 }).catch(error => {
-                    console.error(error);
-                    console.log(error?.response?.data?.message)
-                    submitting = false;
-                    setLoadingOne(false)
-                    setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
-                    setNoResults(false)
+                    if (error instanceof CanceledError) {
+                        console.warn('Cancelled intentionally')
+                    } else {
+                        console.error(error);
+                        console.log(error?.response?.data?.message)
+                        submitting = false;
+                        setLoadingOne(false)
+                        setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                        setNoResults(false)
+                    }
                 })
             } else {
                 console.log('Empty search')
@@ -274,7 +294,7 @@ const FindScreen = ({navigation}) => {
     }
 
     async function getImageInCategory(imageKey) {
-        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { signal: abortControllerRef.current.signal})
         .then(res => 'data:image/jpeg;base64,' + res.data);
     }
 
@@ -321,7 +341,7 @@ const FindScreen = ({navigation}) => {
                 val
             }
             submitting = true;
-            axios.post(url, toSend).then((response) => {
+            axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
 
@@ -344,11 +364,17 @@ const FindScreen = ({navigation}) => {
                 submitting = false;
 
             }).catch(error => {
-                console.log(error);
-                submitting = false;
-                setLoadingTwo(false)
-                setNoResults(false)
-                setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                if (error instanceof CanceledError) {
+                    alert('Intentionally cancelled request')
+                    console.warn('Intentionally failed request')
+                } else {
+                    console.log(error);
+                    submitting = false;
+                    setLoadingTwo(false)
+                    setNoResults(false)
+                    setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    console.error(error)
+                }
             })
         } else {
             console.log('Empty category search')
@@ -358,16 +384,29 @@ const FindScreen = ({navigation}) => {
     }
 
     const handleChange = (val) => {
-        searchValue.current = val;
-        if (submitting == false) {
-            if (filterFormatSearch == "Users") {
-                console.log(val)
-                handleUserSearch(val, true)
-            } else if (filterFormatSearch == "Categories") {
-                console.log(val)
-                handleCategorySearch(val)
-            } 
+        if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current)
         }
+
+        debounceTimeout.current = setTimeout(() => {
+            abortControllerRef.current.abort();
+
+            setLoadingOne(false)
+            setLoadingTwo(false)
+            
+            abortControllerRef.current = new AbortController();
+
+            searchValue.current = val;
+            if (submitting == false) {
+                if (filterFormatSearch == "Users") {
+                    console.log(val)
+                    handleUserSearch(val, true)
+                } else if (filterFormatSearch == "Categories") {
+                    console.log(val)
+                    handleCategorySearch(val)
+                } 
+            }
+        }, 200)
     }
 
     useEffect(() => {
@@ -477,7 +516,7 @@ const FindScreen = ({navigation}) => {
                             onEndReached = {({distanceFromEnd})=>{
                                 if (distanceFromEnd > 0) {
                                     console.log('End of the feed was reached with ' + distanceFromEnd + ' pixels from the end.')
-                                    if (!noResults && searchValue.current !== "" && searchValue.currrent !== null && errorOccured === null) {
+                                    if (!noResults && searchValue.current !== "" && searchValue.current !== null && errorOccured === null) {
                                         handleUserSearch(searchValue.current)
                                     }
                                 }
