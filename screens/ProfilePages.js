@@ -96,7 +96,7 @@ import axios from 'axios';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Animated, Text, useWindowDimensions, FlatList } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Animated, Text, useWindowDimensions, FlatList, RefreshControl } from 'react-native';
 
 import {useTheme} from "@react-navigation/native"
 
@@ -187,47 +187,53 @@ const ProfilePages = ({ route, navigation }) => {
 
     const [blockingUser, setBlockingUser] = useState(false)
 
+    const [refreshing, setRefreshing] = useState(false)
+
     const getFollowersEtc = () => {
-        const url = `${serverUrl}/tempRoute/reloadUsersDetails`;
-        const toSend = {
-            usersPubId: pubId
-        }
-
-        changeToOne()
-        
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const { message, status, data } = result;
-
-            if (status !== 'SUCCESS') {
-                if (message == "User not found.") {
-                    setUserNotFound(true);
-                }
-                handleMessage(message, status);
-                console.log(status)
-                console.error(message)
-                setLoadingFollowers('Error')
-                navigation.setParams({following: 'Error'});
-            } else {
-                console.log(status)
-                console.log(message)
-                /*setProfilesName(data.name)
-                setProfilesDisplayName(data.displayName)
-                setFollowers(data.followers)
-                setFollowing(data.following)*/
-                setInitiallyFollowed(data.userIsFollowing)
-                setUserIsFollowed(data.userIsFollowing)
-                //setTotalLikes(data.totalLikes)
-                setLoadingFollowers(false)
+        //The resolve is used to know when getFollowersEtc has finished. getFollowersEtc handles errors internally, so we do not need a reject
+        return new Promise(resolve => {
+            const url = `${serverUrl}/tempRoute/reloadUsersDetails`;
+            const toSend = {
+                usersPubId: pubId
             }
-            //setSubmitting(false);
 
-        }).catch(error => {
-            console.error(error);
-            //setSubmitting(false);
-            console.error(error?.response?.data?.message || 'An unknown error occurred.')
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
-            setLoadingFollowers('Error')
+            changeToOne()
+            
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const { message, status, data } = result;
+
+                if (status !== 'SUCCESS') {
+                    if (message == "User not found.") {
+                        setUserNotFound(true);
+                    }
+                    handleMessage(message, status);
+                    console.log(status)
+                    console.error(message)
+                    setLoadingFollowers('Error')
+                    navigation.setParams({following: 'Error'});
+                } else {
+                    console.log(status)
+                    console.log(message)
+                    /*setProfilesName(data.name)
+                    setProfilesDisplayName(data.displayName)
+                    setFollowers(data.followers)
+                    setFollowing(data.following)*/
+                    setInitiallyFollowed(data.userIsFollowing)
+                    setUserIsFollowed(data.userIsFollowing)
+                    //setTotalLikes(data.totalLikes)
+                    setLoadingFollowers(false)
+                }
+                //setSubmitting(false);
+                resolve()
+            }).catch(error => {
+                console.error(error);
+                //setSubmitting(false);
+                console.error(error?.response?.data?.message || 'An unknown error occurred.')
+                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                setLoadingFollowers('Error')
+                resolve()
+            })
         })
     }
 
@@ -243,6 +249,28 @@ const ProfilePages = ({ route, navigation }) => {
         } else {
             setPostNumForMsg(null)
         }
+    }
+
+    const onRefresh = () => {
+        setRefreshing(true)
+
+        if (selectedPostFormat === "One") {
+            loadImages()
+        } else if (selectedPostFormat === "Two") {
+            console.warn('SocialSquare does not support video yet')
+        } else if (selectedPostFormat === "Three") {
+            loadPolls()
+        } else if (selectedPostFormat === "Four") {
+            loadThreads()
+        } else if (selectedPostFormat === "Five") {
+            loadCategories()
+        } else {
+            console.error('Unknown selectedPostFormat:', selectedPostFormat)
+        }
+
+        getFollowersEtc().then(() => {
+            setRefreshing(false)
+        })
     }
 
     const ListHeaders = () => {
@@ -1486,6 +1514,7 @@ const ProfilePages = ({ route, navigation }) => {
                                         }
                                     }
                                 }}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
                             />)}
                             {selectedPostFormat == "Two" && (<FlatList
                                 data={videos.posts}
@@ -1496,6 +1525,7 @@ const ProfilePages = ({ route, navigation }) => {
                                 onScroll={handleScroll}
                                 scrollEventThrottle={1}
                                 style={{width: '100%'}}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
                             />)}
                             {selectedPostFormat == "Three" && (<FlatList
                                 data={polls.posts}
@@ -1516,6 +1546,7 @@ const ProfilePages = ({ route, navigation }) => {
                                         }
                                     }
                                 }}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
                             />)}
                             {selectedPostFormat == "Four" && (<FlatList
                                 data={threads.posts}
@@ -1536,6 +1567,7 @@ const ProfilePages = ({ route, navigation }) => {
                                         }
                                     }
                                 }}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
                             />)}
                             {selectedPostFormat == "Five" && (<FlatList
                                 data={categories.categories}
@@ -1555,6 +1587,7 @@ const ProfilePages = ({ route, navigation }) => {
                                         }
                                     }
                                 }}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
                             />)}
                         </ProfileGridPosts>
                         <ProfileFeaturedPosts display={featuredViewState}>
