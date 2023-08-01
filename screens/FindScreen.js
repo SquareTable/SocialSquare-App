@@ -200,43 +200,37 @@ const FindScreen = ({navigation}) => {
     }
 
     const handleUserSearch = (val, clear) => {
-        if (loadingOne !== true) {
-            setNoResults(false)
-            if (val !== "") {
-                const layoutUsersFound = (data) => {
-                    setFoundAmount("Poll Comments:")
-                    var allData = data
-                    console.log(allData)
-                    console.log(allData.length)
-                    const tempSections = clear ? [] : [...changeSectionsOne];
-                    var itemsProcessed = 0;
-                    allData.forEach(function (item, index) {
-                        if (allData[index].profileKey !== "") {
-                            async function asyncFunctionForImages() {
-                                const displayName = allData[index].displayName === "" ? allData[index].name : allData[index].displayName
-                                let imageInPfpB64
-                                try {
-                                    imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
-                                } catch (error) {
-                                    alert(error instanceof CanceledError)
-                                    if (error instanceof CanceledError) {
-                                        console.warn('Cancelled intentionally')
-                                    } else {
-                                        console.error(error)
-                                    }
-                                }
-                                var tempSectionsTemp = {name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}
-                                tempSections.push(tempSectionsTemp)
-                                itemsProcessed++;
-                                if(itemsProcessed === allData.length) {
-                                    setLoadingOne(false)
-                                    setChangeSectionsOne(tempSections)
+        if (loadingOne && clear) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = new AbortController();
+        }
+
+        setNoResults(false)
+
+        if (val !== "") {
+            const layoutUsersFound = (data) => {
+                setFoundAmount("Poll Comments:")
+                var allData = data
+                console.log(allData)
+                console.log(allData.length)
+                const tempSections = clear ? [] : [...changeSectionsOne];
+                var itemsProcessed = 0;
+                allData.forEach(function (item, index) {
+                    if (allData[index].profileKey !== "") {
+                        async function asyncFunctionForImages() {
+                            const displayName = allData[index].displayName === "" ? allData[index].name : allData[index].displayName
+                            let imageInPfpB64
+                            try {
+                                imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
+                            } catch (error) {
+                                alert(error instanceof CanceledError)
+                                if (error instanceof CanceledError) {
+                                    console.warn('Cancelled intentionally')
+                                } else {
+                                    console.error(error)
                                 }
                             }
-                            asyncFunctionForImages()
-                        } else {
-                            const displayName = allData[index].displayName === "" ? allData[index].name : allData[index].displayName
-                            var tempSectionsTemp = {name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}
+                            var tempSectionsTemp = {name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
@@ -244,52 +238,62 @@ const FindScreen = ({navigation}) => {
                                 setChangeSectionsOne(tempSections)
                             }
                         }
-                    });
-                }
-
-                setLoadingOne(true)
-                setErrorOccured(null);
-                const url = serverUrl + '/tempRoute/searchpageusersearch';
-                const toSend = {
-                    val,
-                    skip: clear ? 0 : changeSectionsOne.length
-                }
-                submitting = true;
-                axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-
-                    if (status !== 'SUCCESS') {
-                        setErrorOccured(message)
-                        setLoadingOne(false)
-                        setNoResults(false)
-                        console.error(message)
+                        asyncFunctionForImages()
                     } else {
-                        console.log(data)
-                        layoutUsersFound(data)
-                        console.log('Search complete.')
-                        setNoResults(false)
-                        //persistLogin({...data[0]}, message, status);
+                        const displayName = allData[index].displayName === "" ? allData[index].name : allData[index].displayName
+                        var tempSectionsTemp = {name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}
+                        tempSections.push(tempSectionsTemp)
+                        itemsProcessed++;
+                        if(itemsProcessed === allData.length) {
+                            setLoadingOne(false)
+                            setChangeSectionsOne(tempSections)
+                        }
                     }
-                    submitting = false;
-
-                }).catch(error => {
-                    if (error instanceof CanceledError) {
-                        console.warn('Cancelled intentionally')
-                    } else {
-                        console.error(error);
-                        console.log(error?.response?.data?.message)
-                        submitting = false;
-                        setLoadingOne(false)
-                        setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
-                        setNoResults(false)
-                    }
-                })
-            } else {
-                console.log('Empty search')
-                setNoResults(false)
-                setChangeSectionsOne([])
+                });
             }
+
+            setLoadingOne(true)
+            setErrorOccured(null);
+            const url = serverUrl + '/tempRoute/searchpageusersearch';
+            const toSend = {
+                val,
+                skip: clear ? 0 : changeSectionsOne.length
+            }
+            submitting = true;
+            axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+
+                if (status !== 'SUCCESS') {
+                    setErrorOccured(message)
+                    setLoadingOne(false)
+                    setNoResults(false)
+                    console.error(message)
+                } else {
+                    console.log(data)
+                    layoutUsersFound(data)
+                    console.log('Search complete.')
+                    setNoResults(false)
+                    //persistLogin({...data[0]}, message, status);
+                }
+                submitting = false;
+
+            }).catch(error => {
+                if (error instanceof CanceledError) {
+                    console.warn('Cancelled intentionally')
+                } else {
+                    console.error(error);
+                    console.log(error?.response?.data?.message)
+                    submitting = false;
+                    setLoadingOne(false)
+                    setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    setNoResults(false)
+                }
+            })
+        } else {
+            console.log('Empty search')
+            setNoResults(false)
+            setChangeSectionsOne([])
         }
     }
 
@@ -386,16 +390,11 @@ const FindScreen = ({navigation}) => {
     const handleChange = (val) => {
         if (debounceTimeout.current) {
             clearTimeout(debounceTimeout.current)
+            abortControllerRef.current.abort();
+            abortControllerRef.current = new AbortController();
         }
 
         debounceTimeout.current = setTimeout(() => {
-            abortControllerRef.current.abort();
-
-            setLoadingOne(false)
-            setLoadingTwo(false)
-            
-            abortControllerRef.current = new AbortController();
-
             searchValue.current = val;
             if (submitting == false) {
                 if (filterFormatSearch == "Users") {
