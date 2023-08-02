@@ -160,7 +160,6 @@ const FindScreen = ({navigation}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {experimentalFeaturesEnabled, setExperimentalFeaturesEnabled} = useContext(ExperimentalFeaturesEnabledContext)
     const [filterFormatSearch, setFilterFormatSearch] = useState("Users")
-    var submitting = false;
     const [foundAmount, setFoundAmount] = useState();
     const [changeSectionsOne, setChangeSectionsOne] = useState([])
     const [changeSectionsTwo, setChangeSectionsTwo] = useState([])
@@ -259,7 +258,6 @@ const FindScreen = ({navigation}) => {
                 val,
                 skip: clear ? 0 : changeSectionsOne.length
             }
-            submitting = true;
             axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -276,7 +274,6 @@ const FindScreen = ({navigation}) => {
                     setNoResults(false)
                     //persistLogin({...data[0]}, message, status);
                 }
-                submitting = false;
 
             }).catch(error => {
                 if (error instanceof CanceledError) {
@@ -284,7 +281,6 @@ const FindScreen = ({navigation}) => {
                 } else {
                     console.error(error);
                     console.log(error?.response?.data?.message)
-                    submitting = false;
                     setLoadingOne(false)
                     setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
                     setNoResults(false)
@@ -344,7 +340,6 @@ const FindScreen = ({navigation}) => {
             const toSend = {
                 val
             }
-            submitting = true;
             axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -365,7 +360,6 @@ const FindScreen = ({navigation}) => {
                     console.log('Category search was a success')
                     //persistLogin({...data[0]}, message, status);
                 }
-                submitting = false;
 
             }).catch(error => {
                 if (error instanceof CanceledError) {
@@ -373,7 +367,6 @@ const FindScreen = ({navigation}) => {
                     console.warn('Intentionally failed request')
                 } else {
                     console.log(error);
-                    submitting = false;
                     setLoadingTwo(false)
                     setNoResults(false)
                     setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
@@ -396,15 +389,13 @@ const FindScreen = ({navigation}) => {
 
         debounceTimeout.current = setTimeout(() => {
             searchValue.current = val;
-            if (submitting == false) {
-                if (filterFormatSearch == "Users") {
-                    console.log(val)
-                    handleUserSearch(val, true)
-                } else if (filterFormatSearch == "Categories") {
-                    console.log(val)
-                    handleCategorySearch(val)
-                } 
-            }
+            if (filterFormatSearch == "Users") {
+                console.log(val)
+                handleUserSearch(val, true)
+            } else if (filterFormatSearch == "Categories") {
+                console.log(val)
+                handleCategorySearch(val)
+            } 
         }, 200)
     }
 
