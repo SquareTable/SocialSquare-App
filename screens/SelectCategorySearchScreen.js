@@ -69,7 +69,6 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const [loadingResults, setLoadingResults] = useState(false);
     const [errorMessage, setErrorMessage] = useState();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
-    var userLoadMax = 10;
 
     const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots}) => (
         <SearchFrame onPress={() => navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true)})}>
@@ -135,28 +134,24 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                 var itemsProcessed = 0;
                 allData.forEach(function (item, index) {
                     if (allData[index].imageKey !== "") {
-                        if (index+1 <= userLoadMax) {      
-                            async function asyncFunctionForImages() {
-                                const imageB64 = await getImageInCategory(allData[index].imageKey)
-                                var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
-                                tempSections.push(tempSectionsTemp)
-                                itemsProcessed++;
-                                if(itemsProcessed === allData.length) {
-                                    setLoadingResults(false)
-                                    setChangeSections(tempSections)
-                                }
-                            }
-                            asyncFunctionForImages()
-                        }
-                    } else {
-                        if (index+1 <= userLoadMax) {      
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
+                        async function asyncFunctionForImages() {
+                            const imageB64 = await getImageInCategory(allData[index].imageKey)
+                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
                                 setLoadingResults(false)
                                 setChangeSections(tempSections)
                             }
+                        }
+                        asyncFunctionForImages()
+                    } else {
+                        var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
+                        tempSections.push(tempSectionsTemp)
+                        itemsProcessed++;
+                        if(itemsProcessed === allData.length) {
+                            setLoadingResults(false)
+                            setChangeSections(tempSections)
                         }
                     }
                 });
