@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Text, ScrollView, TouchableOpacity, SafeAreaView, View, Clipboard} from 'react-native';
+import {Text, ScrollView, TouchableOpacity, SafeAreaView, View} from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import * as Linking from 'expo-linking';
 
 class ErrorBoundary extends Component {
