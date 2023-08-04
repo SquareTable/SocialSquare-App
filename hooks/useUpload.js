@@ -20,7 +20,8 @@ const useUpload = (serverUrl, storedCredentials) => {
                 const uploadObj = {
                     postType,
                     post,
-                    uploadId
+                    uploadId,
+                    accountId: _id
                 }
 
                 setPostsUploading(array => [...array, uploadId])
