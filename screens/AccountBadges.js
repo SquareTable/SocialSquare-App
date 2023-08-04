@@ -87,7 +87,7 @@ const AccountBadges = ({navigation, route}) => {
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                         <TouchableOpacity style={badgesObject.findIndex(x => x.badgeName =='onSignUpBadge') !== -1 ? {opacity: 1} : {opacity: 0.3}} onPress={() => {console.log(storedCredentials)
-                            navigation.navigate('BadgeInfo', {badgeName: 'Joined SocialSquare', badgeUnlocked: badgesObject[badgesObject.findIndex(x => x.badgeName == "onSignUpBadge")].dateRecieved, usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
+                            navigation.navigate('BadgeInfo', {badgeName: 'Joined SocialSquare', badgeUnlocked: badgesObject[badgesObject.findIndex(x => x.badgeName == "onSignUpBadge")].dateRecieved, usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false, dateBadgeUnlocked: badgesObject[badgesObject.findIndex(x => x.badgeName == "onSignUpBadge")]?.dateRecieved})}}>
                             <EvilIcons name="trophy" size={75} color={colors.tertiary} style={{marginLeft: -10}}/>
                         </TouchableOpacity>
                     </View>
