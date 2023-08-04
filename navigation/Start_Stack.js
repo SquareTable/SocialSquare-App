@@ -127,6 +127,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="DeleteAccountConfirmation" component={DeleteAccountConfirmation}/>
                             <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
                             <Stack.Screen name="LoginActivitySettings" component={LoginActivitySettings}/>
+                            <Stack.Screen name="UploadsScreen" component={UploadsScreen}/>
                         </>
                     ) : (
                         <>

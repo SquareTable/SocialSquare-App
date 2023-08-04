@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, Image, FlatList, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Image, Text, ActivityIndicator, TouchableOpacity, SectionList } from 'react-native';
 import {
     ChatScreen_Title,
     Navigator_BackButton,
@@ -8,17 +8,37 @@ import {
 import { UseUploadContext } from '../components/UseUploadContext.js';
 import { useTheme } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import {CredentialsContext} from '../components/CredentialsContext.js'
 
 const UploadsScreen = ({navigation}) => {
-    const { retryUpload, cancelRetry, postsToUpload, postsUploading, uploadErrors } = useContext(UseUploadContext)
+    const { retryUpload: retryUploadFunc, cancelRetry, postsToUpload, postsUploading, uploadErrors } = useContext(UseUploadContext)
     const { colors } = useTheme()
     const postsToDisplay = Object.values(postsToUpload)
     const StatusBarHeight = useContext(StatusBarHeightContext);
+    const {storedCredentials} = useContext(CredentialsContext)
 
-    const renderUploadItem = ({item}) => {
+    const retryUpload = (uploadId, uploadsDisabled) => {
+        if (uploadsDisabled) return alert('Login to the account that started this upload to be able to retry the upload')
+
+        retryUploadFunc(uploadId)
+    }
+
+    const SectionsData = [
+        {
+            sectionNumber: 1,
+            data: postsToDisplay.filter(obj => storedCredentials?._id && obj.accountId === storedCredentials?._id)
+        },
+        {
+            sectionNumber: 2,
+            data: postsToDisplay.filter(obj => !(storedCredentials?._id && obj.accountId === storedCredentials?._id))
+        }
+    ]
+
+    const renderUploadItem = ({item, section: {sectionNumber}}) => {
         const uploading = postsUploading.includes(item.uploadId)
+        const uploadsDisabled = sectionNumber === 2
         return (
-            <View style={{borderColor: colors.tertiary, borderTopWidth: 1, borderBottomWidth: 1, paddingVertical: 10, paddingHorizontal: 5}}>
+            <View style={{borderColor: colors.tertiary, borderTopWidth: 1, borderBottomWidth: 1, paddingVertical: 10, paddingHorizontal: 5, opacity: uploadsDisabled ? 0.5 : 1}}>
                 {item.postType === 'image' ?
                     <>
                         <View style={{flexDirection: 'row'}}>
@@ -31,7 +51,7 @@ const UploadsScreen = ({navigation}) => {
                                     <ActivityIndicator color={colors.brand} size="large"/>
                                 :
                                     <>
-                                        <TouchableOpacity onPress={() => {retryUpload(item.uploadId)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
+                                        <TouchableOpacity onPress={() => {retryUpload(item.uploadId, uploadsDisabled)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
                                             <Text style={{fontSize: 16, color: colors.green}}>Retry</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => cancelRetry(item.uploadId)} style={{borderRadius: 10, borderColor: colors.errorColor, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15}}>
@@ -55,7 +75,7 @@ const UploadsScreen = ({navigation}) => {
                                 <ActivityIndicator color={colors.brand} size="large"/>
                             :
                                 <>
-                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
+                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId, uploadsDisabled)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
                                         <Text style={{fontSize: 16, color: colors.green}}>Retry</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => cancelRetry(item.uploadId)} style={{borderRadius: 10, borderColor: colors.errorColor, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15}}>
@@ -79,7 +99,7 @@ const UploadsScreen = ({navigation}) => {
                                 <ActivityIndicator color={colors.brand} size="large"/>
                             :
                                 <>
-                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
+                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId, uploadsDisabled)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
                                         <Text style={{fontSize: 16, color: colors.green}}>Retry</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => cancelRetry(item.uploadId)} style={{borderRadius: 10, borderColor: colors.errorColor, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15}}>
@@ -104,7 +124,7 @@ const UploadsScreen = ({navigation}) => {
                                 <ActivityIndicator color={colors.brand} size="large"/>
                             :
                                 <>
-                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
+                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId, uploadsDisabled)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
                                         <Text style={{fontSize: 16, color: colors.green}}>Retry</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => cancelRetry(item.uploadId)} style={{borderRadius: 10, borderColor: colors.errorColor, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15}}>
@@ -126,7 +146,7 @@ const UploadsScreen = ({navigation}) => {
                                 <ActivityIndicator color={colors.brand} size="large"/>
                             :
                                 <>
-                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
+                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId, uploadsDisabled)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
                                         <Text style={{fontSize: 16, color: colors.green}}>Retry</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => cancelRetry(item.uploadId)} style={{borderRadius: 10, borderColor: colors.errorColor, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15}}>
@@ -162,10 +182,24 @@ const UploadsScreen = ({navigation}) => {
                         <Text style={{fontSize: 20, color: colors.tertiary, fontWeight: 'bold'}}>All posts have been successfully uploaded</Text>
                     </View>
                 :
-                    <FlatList
-                        data={postsToDisplay}
+                    <SectionList
+                        sections={SectionsData}
                         renderItem={renderUploadItem}
                         keyExtractor={item => item.uploadId}
+                        renderSectionHeader={({section: {sectionNumber, data}}) => {
+                            if (sectionNumber === 2 && data.length > 0) {
+                                return (
+                                    <View style={{backgroundColor: colors.primary}}>
+                                        <View style={{opacity: 0.5}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 16}}>Cannot Restart Upload At This Time</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: 10}}>Switch to the account that started these uploads to be able to restart these uploads</Text>
+                                        </View>
+                                    </View>
+                                )
+                            }
+                            
+                            return null
+                        }}
                     />
             }
         </>
