@@ -171,7 +171,6 @@ const FindScreen = ({navigation}) => {
                             try {
                                 imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
                             } catch (error) {
-                                alert(error instanceof CanceledError)
                                 if (error instanceof CanceledError) {
                                     console.warn('Cancelled intentionally')
                                 } else {
@@ -312,7 +311,6 @@ const FindScreen = ({navigation}) => {
 
             }).catch(error => {
                 if (error instanceof CanceledError) {
-                    alert('Intentionally cancelled request')
                     console.warn('Intentionally failed request')
                 } else {
                     console.log(error);
