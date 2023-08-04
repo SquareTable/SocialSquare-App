@@ -20,27 +20,29 @@ const UploadsScreen = ({navigation}) => {
         return (
             <View style={{borderColor: colors.tertiary, borderTopWidth: 1, borderBottomWidth: 1, paddingVertical: 10, paddingHorizontal: 5}}>
                 {item.postType === 'image' ?
-                    <View style={{flexDirection: 'row'}}>
-                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row'}}>
-                            <Image source={item.post.image} style={{height: 50, width: 50, borderRadius: 5}}/>
-                            <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
-                            {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
+                    <>
+                        <View style={{flexDirection: 'row'}}>
+                            <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row'}}>
+                                <Image source={item.post.image} style={{height: 50, width: 50, borderRadius: 5}}/>
+                                <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
+                            </View>
+                            <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row'}}>
+                                {uploading ?
+                                    <ActivityIndicator color={colors.brand} size="large"/>
+                                :
+                                    <>
+                                        <TouchableOpacity onPress={() => {retryUpload(item.uploadId)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
+                                            <Text style={{fontSize: 16, color: colors.green}}>Retry</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => cancelRetry(item.uploadId)} style={{borderRadius: 10, borderColor: colors.errorColor, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15}}>
+                                            <Text style={{fontSize: 16, color: colors.errorColor}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                    </>
+                                }
+                            </View>
                         </View>
-                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row'}}>
-                            {uploading ?
-                                <ActivityIndicator color={colors.brand} size="large"/>
-                            :
-                                <>
-                                    <TouchableOpacity onPress={() => {retryUpload(item.uploadId)}} style={{borderRadius: 10, borderColor: colors.green, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15, marginRight: 15}}>
-                                        <Text style={{fontSize: 16, color: colors.green}}>Retry</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => cancelRetry(item.uploadId)} style={{borderRadius: 10, borderColor: colors.errorColor, borderWidth: 1, paddingVertical: 10, paddingHorizontal: 15}}>
-                                        <Text style={{fontSize: 16, color: colors.errorColor}}>Cancel</Text>
-                                    </TouchableOpacity>
-                                </>
-                            }
-                        </View>
-                    </View>
+                        {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
+                    </>
                 : item.postType === 'poll' ?
                     <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>Poll</Text>

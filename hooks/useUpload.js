@@ -50,12 +50,10 @@ const useUpload = (serverUrl, storedCredentials) => {
         upload(toUpload)
     }
 
-    const cancelRetry = (uploadObj) => {
-        const uploadId = uploadObj.uploadId
-
+    const cancelRetry = (uploadId) => {
         setPosts(object => {
             const newPosts = {...object}
-            delete newPosts[objectId]
+            delete newPosts[uploadId]
             return newPosts
         })
 

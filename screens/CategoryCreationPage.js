@@ -178,6 +178,9 @@ const CategoryCreationPage = ({navigation, route}) => {
                                     if (values.categoryTitle == "" || values.categoryDescription == "") {
                                         handleMessage('Please fill all the fields.');
                                         setSubmitting(false);
+                                    } else if (!/^[a-z]+$/.test(values.categoryTitle)) {
+                                        handleMessage('Category title must only have lowercase a - z letters and no spaces.')
+                                        setSubmitting(false)
                                     } else {
                                         const url = serverUrl + '/tempRoute/checkIfCategoryExists';
                                         try {
