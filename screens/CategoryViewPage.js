@@ -1039,7 +1039,7 @@ const CategoryViewPage = ({route, navigation}) => {
                                 <ProfileHorizontalViewItem profCenterIcon={true}>
                                     <SubTitle style={{color: colors.tertiary}} welcome={true}> Date Created </SubTitle>
                                         <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
-                                    <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {getTimeFromUTCMS(datePosted)} </SubTitle>
+                                    <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted ? getTimeFromUTCMS(datePosted) : 'Loading...'} </SubTitle>
                                 </ProfileHorizontalViewItem>
                             </ProfileHorizontalView>
                             <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack', allowScreenShots: allowScreenShots}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
