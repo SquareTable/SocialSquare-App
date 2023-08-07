@@ -140,8 +140,6 @@ const Welcome = ({navigation, route}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
     if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following, badges, secondId, bio, privateAccount} = storedCredentials}
-    const [gridViewState, setGridViewState] = useState("flex")
-    const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
     const [selectedPostFormatName, setSelectedPostFormatName] = useState("This user has no Image posts.")
     const [formatOneText, setFormatOneText] = useState("This user has no Image posts.")
@@ -179,9 +177,6 @@ const Welcome = ({navigation, route}) => {
     let cancelTokenPostFormatFive = axios.CancelToken.source();
     //delete post stuff
     const [postsWithDeleteMenuOpen, setPostsWithDeleteMenuOpen] = useState()
-    // Grid or Tagged grids showing
-    const GridOrTagLineTranslateX = useRef(new Animated.Value(0)).current;
-    const deviceDimensions = useWindowDimensions();
     // Account switcher
     const {showAccountSwitcher, setShowAccountSwitcher} = useContext(ShowAccountSwitcherContext)
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
@@ -275,16 +270,6 @@ const Welcome = ({navigation, route}) => {
                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Coming soon </SubTitle>
                     </ProfileHorizontalViewItem>
                 </ProfileHorizontalView>
-                <ProfilePostsSelectionView style={{position: 'relative', borderBottomWidth: 0}}>
-                    <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                        <Icon name="grid" color={colors.tertiary} size={45}/>
-                    </ProfilePostsSelectionBtns>
-                    <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                        <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
-                    </ProfilePostsSelectionBtns>
-                    <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
-                    <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                </ProfilePostsSelectionView>
                 <ProfileSelectMediaTypeHorizontalView>
                     <ProfileSelectMediaTypeItem onPress={changeToOne}>
                         <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'One' ? colors.brand : colors.borderColor}}>
@@ -367,31 +352,6 @@ const Welcome = ({navigation, route}) => {
 
     //main
     const toSendProfileName = {pubId: secondId};
-
-    const changeToGrid = () => {
-        if (gridViewState=="none") {
-            setFeaturedViewState("none")
-            setGridViewState("flex")
-            Animated.timing(GridOrTagLineTranslateX, {
-                toValue: 0,
-                duration: 150,
-                useNativeDriver: 'true',
-            }).start()
-        }
-    }
-
-    const changeToFeatured = () => {
-        if (featuredViewState=="none") {
-            console.log("SussyBaka")
-            setGridViewState("none")
-            setFeaturedViewState("flex")
-            Animated.timing(GridOrTagLineTranslateX, {
-                toValue: deviceDimensions.width / 2,
-                duration: 150,
-                useNativeDriver: 'true',
-            }).start()
-        }
-    }
 
     //get image of post
     async function getImageInPost(imageData, index) {
@@ -1358,18 +1318,8 @@ const Welcome = ({navigation, route}) => {
                             </View>
                             */}
                         </>
-                        <ProfilePostsSelectionView style={{height: 50, borderBottomWidth: 0}}>
-                            <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                                <Icon name="grid" color={colors.tertiary} size={30}/>
-                            </ProfilePostsSelectionBtns>
-                            <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                                <FontAwesomeFive name="user-tag" color={colors.tertiary} size={30}/>
-                            </ProfilePostsSelectionBtns>
-                            <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 1002}}/>
-                            <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                        </ProfilePostsSelectionView>
                     </Animated.View>
-                    <ProfileGridPosts display={gridViewState}>
+                    <ProfileGridPosts>
                         {selectedPostFormat == "One" && (<FlatList
                             data={images.posts}
                             keyExtractor={(item) => item._id}
@@ -1465,11 +1415,6 @@ const Welcome = ({navigation, route}) => {
                             }}
                         />)}
                     </ProfileGridPosts>
-                    <ProfileFeaturedPosts display={featuredViewState}>
-                        <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                            Features don't work yet...
-                        </SubTitle>
-                    </ProfileFeaturedPosts>
                 </>
             :
                 <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
