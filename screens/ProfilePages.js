@@ -133,8 +133,6 @@ const ProfilePages = ({ route, navigation }) => {
     const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey, badges, pubId, bio, privateAccount } = route.params;
     const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
     if (storedCredentials) {var { _id, secondId, badges: storedBadges } = storedCredentials} else {var {_id, secondId, badges: storedBadges} = {_id: "SSGUEST", secondId: "SSGUEST", badges: []}}
-    const [gridViewState, setGridViewState] = useState("flex")
-    const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
     const [selectedPostFormatName, setSelectedPostFormatName] = useState("This user has no Image posts.")
     const [formatOneText, setFormatOneText] = useState("This user has no Image posts.")
@@ -167,9 +165,6 @@ const ProfilePages = ({ route, navigation }) => {
     //3 dots menus
     const ProfileOptionsViewOpacity = useRef(new Animated.Value(0)).current;
     const ProfileOptionsViewOpen = useRef(false);
-    // Grid or Tagged grids showing
-    const GridOrTagLineTranslateX = useRef(new Animated.Value(0)).current;
-    const deviceDimensions = useWindowDimensions();
     // Followers setup
     const [loadingFollowers, setLoadingFollowers] = useState(true);
     const [initiallyFollowed, setInitiallyFollowed] = useState()
@@ -401,16 +396,6 @@ const ProfilePages = ({ route, navigation }) => {
                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Coming soon{/*totalLikes*/} </SubTitle>
                     </ProfileHorizontalViewItem>
                 </ProfileHorizontalView>
-                <ProfilePostsSelectionView style={{borderBottomWidth: 0}}>
-                    <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                        <Icon name="grid" color={colors.tertiary} size={45}/>
-                    </ProfilePostsSelectionBtns>
-                    <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                        <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
-                    </ProfilePostsSelectionBtns>
-                    <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
-                    <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                </ProfilePostsSelectionView>
                 <ProfileSelectMediaTypeHorizontalView>
                     <ProfileSelectMediaTypeItem onPress={changeToOne}>
                         <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'One' ? colors.brand : colors.borderColor}}>
@@ -493,31 +478,6 @@ const ProfilePages = ({ route, navigation }) => {
 
     //main
     const toSendProfileName = { pubId: pubId };
-
-    const changeToGrid = () => {
-        if (gridViewState == "none") {
-            setFeaturedViewState("none")
-            setGridViewState("flex")
-            Animated.timing(GridOrTagLineTranslateX, {
-                toValue: 0,
-                duration: 150,
-                useNativeDriver: 'true',
-            }).start()
-        }
-    }
-
-    const changeToFeatured = () => {
-        if (featuredViewState == "none") {
-            console.log("SussyBaka")
-            setGridViewState("none")
-            setFeaturedViewState("flex")
-            Animated.timing(GridOrTagLineTranslateX, {
-                toValue: deviceDimensions.width / 2,
-                duration: 150,
-                useNativeDriver: 'true',
-            }).start()
-        }
-    }
 
     //get image of post
     async function getImageInPost(imageData, index) {
@@ -1428,16 +1388,6 @@ const ProfilePages = ({ route, navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </>
-                <ProfilePostsSelectionView style={{height: 50, borderBottomWidth: 0}}>
-                    <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                        <Icon name="grid" color={colors.tertiary} size={30}/>
-                    </ProfilePostsSelectionBtns>
-                    <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                        <FontAwesomeFive name="user-tag" color={colors.tertiary} size={30}/>
-                    </ProfilePostsSelectionBtns>
-                    <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 1002}}/>
-                    <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                </ProfilePostsSelectionView>
             </Animated.View>
             {
                 userNotFound == true ?
@@ -1449,7 +1399,7 @@ const ProfilePages = ({ route, navigation }) => {
                     </ScrollView>
                 : privateAccount == false || (userIsFollowed === true && privateAccount == true) || (privateAccount == true && pubId === secondId) ?
                     <>
-                        <ProfileGridPosts display={gridViewState}>
+                        <ProfileGridPosts>
                             {selectedPostFormat == "One" && (<FlatList
                                 data={images.posts}
                                 keyExtractor={(item) => item.imageKey}
@@ -1545,11 +1495,6 @@ const ProfilePages = ({ route, navigation }) => {
                                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
                             />)}
                         </ProfileGridPosts>
-                        <ProfileFeaturedPosts display={featuredViewState}>
-                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                                Features don't work yet...
-                            </SubTitle>
-                        </ProfileFeaturedPosts>
                     </>
                 :
                 <ScrollView>
