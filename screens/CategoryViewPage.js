@@ -920,10 +920,11 @@ const CategoryViewPage = ({route, navigation}) => {
             });
         }
 
-        const url = `${serverUrl}/tempRoute/getthreadsfromcategory/${categoryTitle}`;
+        const url = `${serverUrl}/tempRoute/getthreadsfromcategory`;
+        const toSend = {categoryId}
 
         setLoadingPosts(true)
-        axios.get(url).then((response) => {
+        axios.post(url, toSend).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
 
