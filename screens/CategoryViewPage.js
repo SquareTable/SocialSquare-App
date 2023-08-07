@@ -1024,17 +1024,13 @@ const CategoryViewPage = ({route, navigation}) => {
                                             )}
                                         </View>
                                     )}
-                                    <StyledButton style={{height: 10, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor}} onPress={() => {JoinCategory()}}>
-                                        {inCategory == false ? (
-                                            <ButtonText style={{color: colors.tertiary}}>Join</ButtonText>
-                                        ) : inCategory == true ? (
-                                            <ButtonText style={{color: colors.tertiary}}>Leave</ButtonText>
-                                        ) : inCategory == "Finding" ? (
-                                            <ActivityIndicator size="small" color={colors.brand} />
-                                        ) : inCategory == "Changing" ? (
-                                            <ActivityIndicator size="small" color={colors.brand} />
-                                        ) : null}
-                                    </StyledButton>
+                                    <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinCategory}>
+                                        {typeof inCategory === "boolean" ?
+                                            <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
+                                        : inCategory === "Changing" || inCategory === "Finding" ?
+                                            <ActivityIndicator size="small" color={colors.brand}/>
+                                        : null}
+                                    </TouchableOpacity>
                                 </ProfileHorizontalViewItem>
                                 <ProfileHorizontalViewItem profCenterIcon={true}>
                                     <SubTitle style={{color: colors.tertiary}} welcome={true}> Date Created </SubTitle>
