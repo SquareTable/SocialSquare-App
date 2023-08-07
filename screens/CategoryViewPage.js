@@ -263,7 +263,7 @@ const CategoryViewPage = ({route, navigation}) => {
             if (inCategory !== "Finding") {
                 const url = serverUrl + "/tempRoute/joincategory";
 
-                var toSend = {categoryTitle: categoryTitle}
+                var toSend = {categoryId}
                 const beforeChange = inCategory
                 setInCategory("Changing")
                 console.log(toSend)
