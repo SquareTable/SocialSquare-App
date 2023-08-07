@@ -288,7 +288,7 @@ const CategoryViewPage = ({route, navigation}) => {
                 }).catch(error => {
                     console.log(error);
                     setInCategory(beforeChange)
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED');
                 })
             }
         } else {
@@ -940,7 +940,7 @@ const CategoryViewPage = ({route, navigation}) => {
             //setSubmitting(false);
 
         }).catch(error => {
-            console.log(error);
+            console.error(error);
             //setSubmitting(false);
             setLoadingPosts(false)
             handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
@@ -986,6 +986,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     </View>
                     <ScrollView style={{backgroundColor: colors.primary}}>
                         <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -60}}>
+                            {postNumForMsg == null && (<MsgBox type={messageType}>{message}</MsgBox>)}
                             <ProfInfoAreaImage style={{flexDirection: 'row', width: '100%'}}>
                                 {AvatarImg !== null && (
                                     <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: AvatarImg}} />
