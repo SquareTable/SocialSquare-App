@@ -137,7 +137,7 @@ const useUpload = (serverUrl, storedCredentials) => {
         if (selectFormat == "Text") {
             console.log("Text Format")
             const url = serverUrl + '/tempRoute/posttextthread';
-            var toSend = {threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: credentials.selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL, sentAllowScreenShots: credentials.sentAllowScreenShots}
+            var toSend = {threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: credentials.selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL, sentAllowScreenShots: credentials.sentAllowScreenShots, threadCategoryId: credentials.threadCategoryId}
             console.log(toSend)
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
@@ -169,6 +169,7 @@ const useUpload = (serverUrl, storedCredentials) => {
             formData.append("threadNSFW", credentials.threadNSFW)
             formData.append("threadNSFL", credentials.threadNSFL)
             formData.append("sentAllowScreenShots", credentials.sentAllowScreenShots)
+            formData.append("threadCategoryId", credentials.threadCategoryId)
             console.log("FormData:")
             console.log(formData);
             
