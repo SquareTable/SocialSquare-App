@@ -70,8 +70,8 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const [errorMessage, setErrorMessage] = useState();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
-    const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots}) => (
-        <SearchFrame onPress={() => navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true)})}>
+    const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots, categoryId}) => (
+        <SearchFrame onPress={() => navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true), categoryId})}>
             {image !== null ? (
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
             ) : (
@@ -136,7 +136,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                     if (allData[index].imageKey !== "") {
                         async function asyncFunctionForImages() {
                             const imageB64 = await getImageInCategory(allData[index].imageKey)
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
+                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
@@ -146,7 +146,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                         }
                         asyncFunctionForImages()
                     } else {
-                        var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
+                        var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
                         tempSections.push(tempSectionsTemp)
                         itemsProcessed++;
                         if(itemsProcessed === allData.length) {
@@ -240,7 +240,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             <SectionList
                 sections={changeSections}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots}/>}
+                renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots} categoryId={item.categoryId}/>}
                 ListFooterComponent={
                     loadingResults ? 
                         <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 10}}/> 
