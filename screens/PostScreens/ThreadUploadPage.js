@@ -56,7 +56,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     const [postIsNSFW, setPostIsNSFW] = useState(false);
     const [postIsNSFL, setPostIsNSFL] = useState(false);
     const [selectFormat, setSelectFormat] = useState("Text");
-    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL, allowScreenShots} = route.params;
+    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL, allowScreenShots, fromCategoryViewPage} = route.params;
     const [selectedTitle, setSelectedTitle] = useState("")
     const [selectedSubTitle, setSelectedSubTitle] = useState("")
     const [selectedTags, setSelectedTags] = useState("")
@@ -259,10 +259,14 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         tempValues.threadNSFL = postIsNSFL;
                                         tempValues.threadNSFW = postIsNSFW;
                                         uploadPost(tempValues, 'thread_text')
-                                        navigation.reset({
-                                            index: 0,
-                                            routes: [{name: 'PostScreen'}]
-                                        })
+                                        if (fromCategoryViewPage) {
+                                            navigation.goBack()
+                                        } else {
+                                            navigation.reset({
+                                                index: 0,
+                                                routes: [{name: 'PostScreen'}]
+                                            })
+                                        }
                                     }
                                 } else if (values.threadFormat == "Images") {
                                     if (values.threadTitle == "" || selectedCategory == null || image == null) {
@@ -276,10 +280,14 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         tempValues.threadNSFL = postIsNSFL;
                                         tempValues.threadNSFW = postIsNSFW;
                                         uploadPost(tempValues, 'thread_image')
-                                        navigation.reset({
-                                            index: 0,
-                                            routes: [{name: 'PostScreen'}]
-                                        })
+                                        if (fromCategoryViewPage) {
+                                            navigation.goBack()
+                                        } else {
+                                            navigation.reset({
+                                                index: 0,
+                                                routes: [{name: 'PostScreen'}]
+                                            })
+                                        }
                                     }
                                 }
                             }}
