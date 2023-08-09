@@ -433,7 +433,7 @@ const CategoryViewPage = ({route, navigation}) => {
         setChangeSections([])
     }
 
-    const ListHeaders = ({feedData, loadMoreFunction}) => {
+    const ListFooters = ({feedData, loadMoreFunction}) => {
         if (feedData.loadingFeed) {
             return <ActivityIndicator size="large" color={colors.brand}/>
         }
@@ -450,6 +450,89 @@ const CategoryViewPage = ({route, navigation}) => {
         }
 
         return null
+    }
+
+    const ListHeaders = () => {
+        return (
+            <>
+                {postNumForMsg == null && (<MsgBox type={messageType}>{message}</MsgBox>)}
+                <ProfInfoAreaImage style={{flexDirection: 'row', width: '100%'}}>
+                    {AvatarImg !== null && (
+                        <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: AvatarImg}} />
+                    )}
+                    {AvatarImg == null && (
+                        <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: SocialSquareLogo_B64_png}} />
+                    )}
+                    <ProfInfoAreaImage style={{width: '40%',  marginLeft: '5%', marginRight: '5%'}}>
+                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>{categoryDescription}</Text>
+                    </ProfInfoAreaImage>
+                </ProfInfoAreaImage>
+                {categoryTags ? (
+                    <SubTitle style={{color: colors.brand, marginBottom: 0, textAlign: 'center'}} > {categoryTags} </SubTitle>
+                ) : null}
+                <ProfileHorizontalView>
+                    <ProfileHorizontalViewItem profLeftIcon={true}>
+                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
+                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                        {initialInCategory == true && (
+                            <View>
+                                {inCategory == true && (
+                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
+                                )}
+                                {inCategory == false && (
+                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members-1} </SubTitle>
+                                )}
+                            </View>
+                        )}
+                        {initialInCategory == false && (
+                            <View>
+                                {inCategory == true && (
+                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members+1} </SubTitle>
+                                )}
+                                {inCategory == false && (
+                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
+                                )}
+                            </View>
+                        )}
+                        <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinCategory}>
+                            {typeof inCategory === "boolean" ?
+                                <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
+                            : inCategory === "Changing" || inCategory === "Finding" ?
+                                <ActivityIndicator size="small" color={colors.brand}/>
+                            : null}
+                        </TouchableOpacity>
+                    </ProfileHorizontalViewItem>
+                    <ProfileHorizontalViewItem profCenterIcon={true}>
+                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Date Created </SubTitle>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
+                        <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted ? getTimeFromUTCMS(datePosted) : 'Loading...'} </SubTitle>
+                    </ProfileHorizontalViewItem>
+                </ProfileHorizontalView>
+                <TouchableOpacity style={{backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: colors.tertiary, width: '50%', alignSelf: 'center', marginVertical: 10, borderRadius: 10}} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack', allowScreenShots: allowScreenShots, fromCategoryViewPage: true, categoryId}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                    <ButtonText style={{color: colors.tertiary}}>Post Thread</ButtonText>
+                </TouchableOpacity>
+                <ProfileSelectMediaTypeHorizontalView>
+                    <ProfileSelectMediaTypeItem onPress={changeToOne}>
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>
+                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/079-clock.png')}/>
+                        </ProfileSelectMediaTypeIconsBorder>
+                    </ProfileSelectMediaTypeItem>
+                    <ProfileSelectMediaTypeItem onPress={changeToTwo}>
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>
+                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/170-fire.png')}/>
+                        </ProfileSelectMediaTypeIconsBorder>                        
+                    </ProfileSelectMediaTypeItem>
+                    <ProfileSelectMediaTypeItem onPress={changeToThree}>
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>     
+                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
+                        </ProfileSelectMediaTypeIconsBorder>     
+                    </ProfileSelectMediaTypeItem>
+                </ProfileSelectMediaTypeHorizontalView>
+                <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
+                    {selectedPostFormatName}
+                </SubTitle>
+            </>
+        )
     }
 
     return(
@@ -474,107 +557,23 @@ const CategoryViewPage = ({route, navigation}) => {
                         )}
                         <PageTitle style={{fontSize: 26}} welcome={true}>{categoryTitle || "Couldn't get name"}</PageTitle>
                     </View>
-                    <ScrollView style={{backgroundColor: colors.primary}}>
-                        <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -60}}>
-                            {postNumForMsg == null && (<MsgBox type={messageType}>{message}</MsgBox>)}
-                            <ProfInfoAreaImage style={{flexDirection: 'row', width: '100%'}}>
-                                {AvatarImg !== null && (
-                                    <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: AvatarImg}} />
-                                )}
-                                {AvatarImg == null && (
-                                    <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: SocialSquareLogo_B64_png}} />
-                                )}
-                                <ProfInfoAreaImage style={{width: '40%',  marginLeft: '5%', marginRight: '5%'}}>
-                                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>{categoryDescription}</Text>
-                                </ProfInfoAreaImage>
-                            </ProfInfoAreaImage>
-                            {categoryTags ? (
-                                <SubTitle style={{color: colors.brand, marginBottom: 0}} > {categoryTags} </SubTitle>
-                            ) : null}
-                            <ProfileHorizontalView>
-                                <ProfileHorizontalViewItem profLeftIcon={true}>
-                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
-                                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                                    {initialInCategory == true && (
-                                        <View>
-                                            {inCategory == true && (
-                                                <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
-                                            )}
-                                            {inCategory == false && (
-                                                <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members-1} </SubTitle>
-                                            )}
-                                        </View>
-                                    )}
-                                    {initialInCategory == false && (
-                                        <View>
-                                            {inCategory == true && (
-                                                <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members+1} </SubTitle>
-                                            )}
-                                            {inCategory == false && (
-                                                <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
-                                            )}
-                                        </View>
-                                    )}
-                                    <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinCategory}>
-                                        {typeof inCategory === "boolean" ?
-                                            <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
-                                        : inCategory === "Changing" || inCategory === "Finding" ?
-                                            <ActivityIndicator size="small" color={colors.brand}/>
-                                        : null}
-                                    </TouchableOpacity>
-                                </ProfileHorizontalViewItem>
-                                <ProfileHorizontalViewItem profCenterIcon={true}>
-                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> Date Created </SubTitle>
-                                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
-                                    <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted ? getTimeFromUTCMS(datePosted) : 'Loading...'} </SubTitle>
-                                </ProfileHorizontalViewItem>
-                            </ProfileHorizontalView>
-                            <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack', allowScreenShots: allowScreenShots, fromCategoryViewPage: true, categoryId}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
-                                <ButtonText style={{color: colors.tertiary}} postCategory={true}>Post Thread</ButtonText>
-                            </StyledButton>
-                            <ProfileSelectMediaTypeHorizontalView>
-                                <ProfileSelectMediaTypeItem onPress={changeToOne}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>
-                                        <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/079-clock.png')}/>
-                                    </ProfileSelectMediaTypeIconsBorder>
-                                </ProfileSelectMediaTypeItem>
-                                <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>
-                                        <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/170-fire.png')}/>
-                                    </ProfileSelectMediaTypeIconsBorder>                        
-                                </ProfileSelectMediaTypeItem>
-                                <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>     
-                                        <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
-                                    </ProfileSelectMediaTypeIconsBorder>     
-                                </ProfileSelectMediaTypeItem>
-                            </ProfileSelectMediaTypeHorizontalView>
-                            <ProfileGridPosts display={gridViewState}>
-                                <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                                    {selectedPostFormatName}
-                                </SubTitle>
-                                {selectedPostFormat == "One" && (<FlatList
-                                    data={threads.posts}
-                                    keyExtractor={(item) => item._id}
-                                    renderItem={({ item, index }) => <ThreadPost post={item} colors={colors} colorsIndexNum={indexNum} dispatch={dispatchThreads} index={index}/>}
-                                    ListHeaderComponent={() => <ListHeaders feedData={threads} loadMoreFunction={changeToOne}/>}
-                                />)}
-                                {selectedPostFormat == "Two" && (<FlatList
-                                    data={changeSections}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
-                                />)}
-                                {selectedPostFormat == "Three" && (<FlatList
-                                    data={changeSections}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
-                                />)}
-                                {loadingPosts == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
-                                )}
-                            </ProfileGridPosts>
-                        </WelcomeContainer>
-                    </ScrollView>
+                    {selectedPostFormat == "One" && (<FlatList
+                        data={threads.posts}
+                        keyExtractor={(item) => item._id}
+                        renderItem={({ item, index }) => <ThreadPost post={item} colors={colors} colorsIndexNum={indexNum} dispatch={dispatchThreads} index={index}/>}
+                        ListFooterComponent={() => <ListFooters feedData={threads} loadMoreFunction={changeToOne}/>}
+                        ListHeaderComponent={ListHeaders}
+                    />)}
+                    {selectedPostFormat == "Two" && (<FlatList
+                        data={changeSections}
+                        keyExtractor={(item, index) => item + index}
+                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
+                    />)}
+                    {selectedPostFormat == "Three" && (<FlatList
+                        data={changeSections}
+                        keyExtractor={(item, index) => item + index}
+                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
+                    />)}
                 </>
             :
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
