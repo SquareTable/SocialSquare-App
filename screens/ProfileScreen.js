@@ -685,7 +685,7 @@ const Welcome = ({navigation, route}) => {
                             resolve({
                                 postNum: index,
                                 _id: threadData[index]._id,
-                                threadComments: threadData[index].threadComments,
+                                threadComments: threadData[index].comments,
                                 threadType: threadData[index].threadType,
                                 votes: threadData[index].votes,
                                 threadTitle: threadData[index].threadTitle,
@@ -711,7 +711,7 @@ const Welcome = ({navigation, route}) => {
                             resolve({
                                 postNum: index,
                                 _id: threadData[index]._id,
-                                threadComments: threadData[index].threadComments,
+                                threadComments: threadData[index].comments,
                                 threadType: threadData[index].threadType,
                                 votes: threadData[index].votes,
                                 threadTitle: threadData[index].threadTitle,
