@@ -32,6 +32,10 @@ import { getTimeFromUTCMS } from '../../libraries/Time';
 class Poll extends Component {
     constructor(props) {
         super(props);
+
+        if (props.useRawImages && typeof this.props.post.creatorPfpKey !== 'string') {
+            console.warn('this.props.post.creatorPfpKey is not a string for Poll component but useRawImages is set to true - Falling back on base64 encoded image')
+        }
     }
 
     handleStartVoteChange = () => {
@@ -199,7 +203,7 @@ class Poll extends Component {
                 <PollPostFrame style={{marginLeft: 0, marginRight: 0, width: '100%'}} onPress={this.navigateToFullScreen}>
                     <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: this.props.colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                         <PostsVerticalView>
-                            <PostCreatorIcon source={this.props.post.pfpB64 ? { uri: this.props.post.pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
+                            <PostCreatorIcon source={this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? {uri: `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}`} : this.props.post.pfpB64 ? { uri: this.props.post.pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
                         </PostsVerticalView>
                         <PostsVerticalView style={{ marginTop: 9 }}>
                             {this.props.post.creatorDisplayName !== "" ? (
@@ -350,7 +354,8 @@ export default function(props) {
         colorsIndexNum: props.colorsIndexNum,
         dispatch: props.dispatch,
         serverUrl,
-        index: props.index
+        index: props.index,
+        useRawImages: props.useRawImages
     }
 
     return <Poll {...postProps}/>

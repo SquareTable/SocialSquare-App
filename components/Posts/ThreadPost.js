@@ -19,6 +19,14 @@ import { getTimeFromUTCMS } from '../../libraries/Time';
 class Thread extends Component {
     constructor(props) {
         super(props)
+
+        if (props.useRawImages && typeof this.props.post.creatorPfpKey !== 'string') {
+            console.warn('this.props.post.creatorPfpKey is not a string for Thread component but useRawImages is set to true - Falling back on base64 encoded image')
+        }
+
+        if (props.useRawImages && typeof this.props.post.threadImageKey !== 'string') {
+            console.warn('this.props.post.threadImageKey is not a string for Thread component but useRawImages is set to true - Falling back on base64 encoded image')
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -160,7 +168,7 @@ class Thread extends Component {
                         <TouchableOpacity style={{ width: '100%', height: 60 }}>
                             <PostsHorizontalView>
                                 <PostsVerticalView>
-                                    <PostCreatorIcon source={{uri: this.props.post.creatorImageB64 || SocialSquareLogo_B64_png}} />
+                                    <PostCreatorIcon source={{uri: this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}` : (this.props.post.creatorImageB64 || SocialSquareLogo_B64_png)}} />
                                 </PostsVerticalView>
                                 <PostsVerticalView style={{ marginTop: 9 }}>
                                     <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorDisplayName || this.props.post.creatorName}</SubTitle>
@@ -190,7 +198,7 @@ class Thread extends Component {
                                 {this.props.post.threadType == "Images" && (
                                     <View>
                                         <View style={{ height: 200, width: 200 }}>
-                                            <Image style={{ height: '100%', width: 'auto', resizeMode: 'contain' }} source={{ uri: this.props.post.imageInThreadB64 }} />
+                                            <Image style={{ height: '100%', width: 'auto', resizeMode: 'contain' }} source={{ uri: this.props.useRawImages && typeof this.props.post.threadImageKey === 'string' ? `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.threadImageKey}` : this.props.post.imageInThreadB64 }} />
                                         </View>
                                         <SubTitle style={{ fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.threadImageDescription}</SubTitle>
                                     </View>
@@ -262,7 +270,8 @@ export default function(props) {
         colorsIndexNum: props.colorsIndexNum,
         dispatch: props.dispatch,
         index: props.index,
-        serverUrl
+        serverUrl,
+        useRawImages: props.useRawImages
     }
 
     return <Thread {...postProps}/>
