@@ -97,41 +97,12 @@ const CategoryViewPage = ({route, navigation}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const {categoryTitle, NSFW, NSFL, allowScreenShots, categoryId} = route.params;
     const [AvatarImg, setAvatarImage] = useState(null)
-    const [gridViewState, setGridViewState] = useState("flex")
-    const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
     const [selectedPostFormatName, setSelectedPostFormatName] = useState("No thread posts yet, Be the first!")
     const [useStatePollData, setUseStatePollData] = useState()
     const [changeSections, setChangeSections] = useState([])
     const [loadingPosts, setLoadingPosts] = useState(false)
     const [getCategoryItems, setGetCategoryItems] = useState(false)
-    const [getImagesOnLoad, setGetImagesOnLoad] = useState(false)
-    var allThreads = []
-    var initialAllThreads = []
-    //Up and Down Vote Image Stuff
-    var upVotedThreads = []
-    var initialUpVotedThreads = []
-    const [initialUpVotes, setInitialUpVotes] = useState([])
-    const [upVotes, setUpVotes] = useState([])
-    //
-    var downVotedThreads = []
-    var initialDownVotedThreads = []
-    const [initialDownVotes, setInitialDownVotes] = useState([])
-    const [downVotes, setDownVotes] = useState([])
-    //
-    var neitherVotedThreads = []
-    var initialNeitherVotedThreads = []
-    const [initialNeitherVotes, setInitialNeitherVotes] = useState([])
-    const [neitherVotes, setNeitherVotes] = useState([])
-    //
-    var changingVotedThreadsArray = []
-    const [changingVotedThreads, setChangingVotedThreads] = useState([])
-    //
-    var findingVotedThreadsArray = []
-    const [findingVotedThreads, setFindingVotedThreads] = useState([])
-    //
-    const [initialUpOrDownVotes, setInitialUpOrDownVotes] = useState([])
-    const [upOrDownVotes, setUpOrDownVotes] = useState([])
     
     //ServerStuff
     const [message, setMessage] = useState();
@@ -319,28 +290,9 @@ const CategoryViewPage = ({route, navigation}) => {
 
     const changeToOne = () => {
         dispatchThreads({type: 'startReload'})
-        upVotedThreads = []
-        initialUpVotedThreads = []
-        setUpVotes(upVotedThreads)
-        setInitialUpVotes(initialUpVotedThreads)
-        downVotedThreads = []
-        initialDownVotedThreads = []
-        setDownVotes(downVotedThreads)
-        setInitialDownVotes(initialDownVotedThreads)
-        neitherVotedThreads = []
-        initialNeitherVotedThreads = []
-        setNeitherVotes(neitherVotedThreads)
-        setInitialNeitherVotes(initialNeitherVotedThreads)
-        findingVotedThreadsArray = []
-        setFindingVotedThreads(findingVotedThreadsArray)
-        changingVotedThreadsArray = []
-        setChangingVotedThreads(changingVotedThreadsArray)
-        setChangeSections([])
         handleMessage(null, null, null);
         setSelectedPostFormat("One")
-        setSelectedPostFormatName("No thread posts yet, Be the first!")
         const layoutThreadPosts = (data) => {
-            setSelectedPostFormatName("Recent Thread Posts:")
             var threadData = data
             console.log("The Thread data")
             console.log(threadData)
@@ -406,6 +358,9 @@ const CategoryViewPage = ({route, navigation}) => {
             if (status !== 'SUCCESS') {
                 dispatchThreads({type: 'error', error: message})
             } else {
+                if (data.length == 0) {
+                    dispatchThreads({type: 'noMorePosts'})
+                }
                 layoutThreadPosts(data);
                 console.log(status)
                 console.log(message)
@@ -433,9 +388,9 @@ const CategoryViewPage = ({route, navigation}) => {
         setChangeSections([])
     }
 
-    const ListFooters = ({feedData, loadMoreFunction}) => {
+    const ListFooters = ({feedData, loadMoreFunction, dataType}) => {
         if (feedData.loadingFeed) {
-            return <ActivityIndicator size="large" color={colors.brand}/>
+            return <ActivityIndicator size="large" color={colors.brand} style={{marginTop: 10}}/>
         }
 
         if (feedData.error) {
@@ -446,6 +401,12 @@ const CategoryViewPage = ({route, navigation}) => {
                         <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary}}>Retry</Text>
                     </TouchableOpacity>
                 </View>
+            )
+        }
+
+        if (feedData.noMorePosts) {
+            return (
+                <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>{feedData.posts.length > 0 ? `No more ${dataType}` : `This category has no ${dataType}. Be the first to post one!`}</Text>
             )
         }
 
@@ -528,9 +489,6 @@ const CategoryViewPage = ({route, navigation}) => {
                         </ProfileSelectMediaTypeIconsBorder>     
                     </ProfileSelectMediaTypeItem>
                 </ProfileSelectMediaTypeHorizontalView>
-                <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                    {selectedPostFormatName}
-                </SubTitle>
             </>
         )
     }
@@ -561,7 +519,7 @@ const CategoryViewPage = ({route, navigation}) => {
                         data={threads.posts}
                         keyExtractor={(item) => item._id}
                         renderItem={({ item, index }) => <ThreadPost post={item} colors={colors} colorsIndexNum={indexNum} dispatch={dispatchThreads} index={index}/>}
-                        ListFooterComponent={() => <ListFooters feedData={threads} loadMoreFunction={changeToOne}/>}
+                        ListFooterComponent={() => <ListFooters feedData={threads} loadMoreFunction={changeToOne} dataType="threads"/>}
                         ListHeaderComponent={ListHeaders}
                     />)}
                     {selectedPostFormat == "Two" && (<FlatList
