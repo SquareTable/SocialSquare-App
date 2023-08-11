@@ -46,7 +46,7 @@ import { OnlineContext } from './components/conversationOnlineHandler.js';
 import { SocketContext } from './components/socketHandler.js';
 import { ReconnectPromptContext } from './components/reconnectPrompt.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {IOSADID, ANDROIDADID} from '@dotenv';
+import {IOSADID, ANDROIDADID, EXPOPROJECTID} from '@dotenv';
 import * as SplashScreen from 'expo-splash-screen';
 import { ExperimentalFeaturesEnabledContext } from './components/ExperimentalFeaturesEnabledContext.js';
 import {setAuthAsHeaders} from './jwtHandler';
@@ -1653,7 +1653,9 @@ async function registerForPushNotificationsAsync() {
       console.log('Failed to get push token for push notification!');
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
+    token = (await Notifications.getExpoPushTokenAsync({
+      projectId: EXPOPROJECTID
+    })).data;
     console.log(token);
   } else {
     console.log('Must use physical device for Push Notifications');
