@@ -1565,8 +1565,8 @@ const App = () => {
                                                         <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                                     : null
                                                 :
-                                                  <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000}}>
-                                                    <Image style={{width: 200, height: 200, position: 'absolute', top: StatusBarHeight, right: '25%', zIndex: 1001}} source={{uri: SocialSquareLogo_B64_png}}/>
+                                                  <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000, alignItems: 'center', paddingTop: StatusBarHeight}}>
+                                                    <Image style={{width: 200, height: 200, zIndex: 1001}} source={{uri: SocialSquareLogo_B64_png}}/>
                                                     <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
                                                     <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
                                                       <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
