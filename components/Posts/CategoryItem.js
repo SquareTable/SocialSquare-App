@@ -20,7 +20,7 @@ class CategoryItemClass extends PureComponent {
 
     render() {
         return (
-            <SearchFrame onPress={() => this.props.navigation.navigate("CategoryViewPage", {categoryTitle: this.props.categoryTitle, NSFL: this.props.NSFL, NSFW: this.props.NSFW, allowScreenShots: (this.props.allowScreenShots != undefined ? this.props.allowScreenShots : true), categoryId: this.props.categoryId})}>
+            <SearchFrame onPress={() => this.props.onPressFunction ? this.props.onPressFunction(this.props.categoryTitle, this.props.allowScreenShots, this.props.categoryId) : this.props.navigation.navigate("CategoryViewPage", {categoryTitle: this.props.categoryTitle, NSFL: this.props.NSFL, NSFW: this.props.NSFW, allowScreenShots: (this.props.allowScreenShots != undefined ? this.props.allowScreenShots : true), categoryId: this.props.categoryId})}>
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: this.props.image != undefined && this.props.image != null && this.props.image != '' ? this.props.image : SocialSquareLogo_B64_png}} />
                 {this.props.NSFW == false && (
                     <View>
@@ -65,11 +65,11 @@ class CategoryItemClass extends PureComponent {
     }
 }
 
-const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, categoryId}) => {
+const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, categoryId, allowScreenShots, onPressFunction}) => {
     const {colors} = useTheme();
     const navigation = useNavigation();
 
-    return <CategoryItemClass navigation={navigation} colors={colors} categoryTitle={categoryTitle} categoryDescription={categoryDescription} members={members} categoryTags={categoryTags} image={image} NSFW={NSFW} NSFL={NSFL} datePosted={datePosted} categoryId={categoryId}/>
+    return <CategoryItemClass navigation={navigation} colors={colors} categoryTitle={categoryTitle} categoryDescription={categoryDescription} members={members} categoryTags={categoryTags} image={image} NSFW={NSFW} NSFL={NSFL} datePosted={datePosted} categoryId={categoryId} allowScreenShots={allowScreenShots} onPressFunction={onPressFunction}/>
 };
 
 export default CategoryItem;
