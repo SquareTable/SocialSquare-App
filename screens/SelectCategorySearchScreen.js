@@ -51,6 +51,7 @@ import { useTheme } from '@react-navigation/native';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import CategoryItem from '../components/Posts/CategoryItem.js';
 
 const SelectCategorySearchScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme()
@@ -70,53 +71,9 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const [errorMessage, setErrorMessage] = useState();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
-    const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots, categoryId}) => (
-        <SearchFrame onPress={() => navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true), categoryId})}>
-            {image !== null ? (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
-            ) : (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
-            )}
-            {NSFW == false && (
-                <View>
-                    {NSFL == false && (
-                        <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
-                    )}
-                    {NSFL == true && (
-                        <View style={{flexDirection: 'row'}}>
-                            <SubTitle searchResTitle={true} style={{color: red}}>(NSFL) </SubTitle>
-                            <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
-                        </View>
-                    )}
-                </View>
-            )}
-            {NSFW == true && (
-                <View style={{flexDirection: 'row'}}>
-                    <SubTitle searchResTitle={true} style={{color: red}}>(NSFW) </SubTitle>
-                    <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
-                </View>
-            )}
-            <SubTitle style={{color: colors.tertiary}} searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
-            <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>{categoryTags}</SubTitle>
-            <SearchHorizontalView>
-                <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Members </SearchSubTitle>
-                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                    {members == 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> 0 </SearchSubTitle>
-                    )}
-                    {members !== 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> {members} </SearchSubTitle>
-                    )}
-                </SearchHorizontalViewItemCenter>
-                <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Date Created </SearchSubTitle>
-                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
-                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> {datePosted} </SearchSubTitle>
-                </SearchHorizontalViewItemCenter>
-            </SearchHorizontalView>
-        </SearchFrame>
-    );
+    const onPressFunction = (categoryTitle, allowScreenShots, categoryId) => {
+        navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true), categoryId})
+    }
 
     async function getImageInCategory(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
@@ -135,7 +92,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                 allData.forEach(function (item, index) {
                     if (allData[index].imageKey !== "") {
                         async function asyncFunctionForImages() {
-                            const imageB64 = await getImageInCategory(allData[index].imageKey)
+                            const imageB64 = `data:image/jpg;base64,${await getImageInCategory(allData[index].imageKey)}`
                             var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
@@ -240,7 +197,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             <SectionList
                 sections={changeSections}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots} categoryId={item.categoryId}/>}
+                renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots} categoryId={item.categoryId} onPressFunction={onPressFunction}/>}
                 ListFooterComponent={
                     loadingResults ? 
                         <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 10}}/> 
