@@ -928,7 +928,7 @@ const ThreadViewPage = ({navigation, route}) => {
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
-            <ChatScreen_Title style={{backgroundColor: colors.darkest, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
+            <ChatScreen_Title style={{backgroundColor: dark ? colors.darkest : colors.greyish, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
                 <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
                     <Image
                         source={require('../assets/app_icons/back_arrow.png')}
