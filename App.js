@@ -571,11 +571,8 @@ const App = () => {
   }, []);*/
 
   const _handleAppStateChange = (nextAppState) => {
-      if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === "active"
-      ) {
-      console.log("App has come to the foreground!");
+      if (nextAppState === "active") {
+        console.log("App has come to the foreground!");
       } else {
         console.log('App is not in the foreground')
         setOpenApp(false)
@@ -1140,7 +1137,9 @@ const App = () => {
 
   //If app goes into the background and then comes back into the foreground, if SocialSquare automatic locking is enabled, this will start biometric authentication
   useEffect(() => {
-    if ((previousAppStateVisible == 'background' || previousAppStateVisible == 'inactive' || previousAppStateVisible == 'justStarted') && openApp == false && lockSocialSquare == true && LocalAuthentication.SecurityLevel != 0 && AppOwnershipValue !== 'expo' && appStateVisible == 'active' && showSocialSquareLockedWarning == false) {
+    if (previousAppStateVisible === 'inactive' && appStateVisible === 'active') {
+      setOpenApp(true)
+    } else if ((previousAppStateVisible == 'background' || previousAppStateVisible == 'justStarted') && openApp == false && lockSocialSquare == true && LocalAuthentication.SecurityLevel != 0 && AppOwnershipValue !== 'expo' && appStateVisible == 'active' && showSocialSquareLockedWarning == false) {
       handleAppAuth()
     } else {
       console.log('Biometrics are not available')
