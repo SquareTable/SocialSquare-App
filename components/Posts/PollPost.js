@@ -32,6 +32,10 @@ import { getTimeFromUTCMS } from '../../libraries/Time';
 class Poll extends Component {
     constructor(props) {
         super(props);
+
+        if (props.useRawImages && typeof this.props.post.creatorPfpKey !== 'string') {
+            console.warn('this.props.post.creatorPfpKey is not a string for Poll component but useRawImages is set to true - Falling back on base64 encoded image')
+        }
     }
 
     handleStartVoteChange = () => {
