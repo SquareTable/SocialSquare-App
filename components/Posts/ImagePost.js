@@ -152,8 +152,8 @@ class ImagePost extends Component {
                 }
                 <View style={{backgroundColor: this.props.colors.borderColor, borderRadius: 15}}>
                     <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: this.props.colors.darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
-                        <PostsVerticalView>
-                            <PostCreatorIcon source={{uri: this.props.post.creatorPfpB64}}/>
+                        <PostsVerticalView style={{marginRight: 5}}>
+                            <PostCreatorIcon style={{borderColor: this.props.colors.tertiary, borderWidth: 3}} source={{uri: this.props.useRawImages ? (this.props.serverUrl + `/getRawImageOnServer/${this.props.post.creatorPfpKey}`) : this.props.post.creatorPfpB64}}/>
                         </PostsVerticalView>
                         <PostsVerticalView style={{marginTop: 9}}>
                             <SubTitle style={{fontSize: 20, color: this.props.colors.brand, marginBottom: 0}}>{this.props.post.creatorDisplayName}</SubTitle>
@@ -162,7 +162,7 @@ class ImagePost extends Component {
                     </PostsHorizontalView>
                     <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
                         <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1, backgroundColor: this.props.colors.primary }}>
-                            <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: this.props.post.imageB64}}/>
+                            <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: this.props.useRawImages ? `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.imageKey}` : this.props.post.imageB64}}/>
                         </MultiMediaPostFrame>
                     </PostsHorizontalView>
                     {(this.props.post.imageTitle == '' && this.props.post.imageDescription == '') ? null :
@@ -227,7 +227,8 @@ export default function(props) {
         index: props.index,
         serverUrl,
         userId: storedCredentials?._id || 'SSGUEST',
-        onDeleteCallback: props.onDeleteCallback || function() {}
+        onDeleteCallback: props.onDeleteCallback || function() {},
+        useRawImages: props.useRawImages
     }
 
     return <ImagePost {...postProps}/>

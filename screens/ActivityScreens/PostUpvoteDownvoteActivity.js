@@ -77,14 +77,14 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                         keyExtractor={item => item._id}
                         renderItem={({item, index}) => {
                             if (postFormat === 'Image') {
-                                return <ImagePost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum}/>
+                                return <ImagePost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum} useRawImages/>
                             }
 
                             if (postFormat === 'Thread') {
-                                return <ThreadPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum = {indexNum}/>
+                                return <ThreadPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum} useRawImages/>
                             }
 
-                            return <PollPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum = {indexNum}/>
+                            return <PollPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum} useRawImages/>
                         }}
                         ListFooterComponent={
                             <>
