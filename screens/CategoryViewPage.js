@@ -379,13 +379,11 @@ const CategoryViewPage = ({route, navigation}) => {
     //}
 
     const changeToTwo = () => {
-        setSelectedPostFormatName("This user has no Video posts.")
-        setChangeSections([])
+        alert('Coming soon')
     }
 
     const changeToThree = () => {
-        setSelectedPostFormatName("This user has no Poll posts.")
-        setChangeSections([])
+        alert('Coming soon')
     }
 
     const ListFooters = ({feedData, loadMoreFunction, dataType}) => {
@@ -474,18 +472,18 @@ const CategoryViewPage = ({route, navigation}) => {
                 </TouchableOpacity>
                 <ProfileSelectMediaTypeHorizontalView>
                     <ProfileSelectMediaTypeItem onPress={changeToOne}>
-                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>
-                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/079-clock.png')}/>
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == "One" ? colors.brand : colors.tertiary}}>
+                            <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == "One" ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/079-clock.png')}/>
                         </ProfileSelectMediaTypeIconsBorder>
                     </ProfileSelectMediaTypeItem>
                     <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>
-                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/170-fire.png')}/>
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == "One" ? colors.brand : colors.tertiary}}>
+                            <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == "Two" ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/170-fire.png')}/>
                         </ProfileSelectMediaTypeIconsBorder>                        
                     </ProfileSelectMediaTypeItem>
                     <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor}}>     
-                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == "One" ? colors.brand : colors.tertiary}}>     
+                            <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == "Three" ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
                         </ProfileSelectMediaTypeIconsBorder>     
                     </ProfileSelectMediaTypeItem>
                 </ProfileSelectMediaTypeHorizontalView>
