@@ -199,7 +199,7 @@ class Poll extends Component {
                 <PollPostFrame style={{marginLeft: 0, marginRight: 0, width: '100%'}} onPress={this.navigateToFullScreen}>
                     <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: this.props.colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                         <PostsVerticalView>
-                            <PostCreatorIcon source={this.props.post.pfpB64 ? { uri: this.props.post.pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
+                            <PostCreatorIcon source={this.props.useRawImages && this.props.post.creatorPfpKey ? {uri: `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}`} : this.props.post.pfpB64 ? { uri: this.props.post.pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
                         </PostsVerticalView>
                         <PostsVerticalView style={{ marginTop: 9 }}>
                             {this.props.post.creatorDisplayName !== "" ? (
@@ -350,7 +350,8 @@ export default function(props) {
         colorsIndexNum: props.colorsIndexNum,
         dispatch: props.dispatch,
         serverUrl,
-        index: props.index
+        index: props.index,
+        useRawImages: props.useRawImages
     }
 
     return <Poll {...postProps}/>
