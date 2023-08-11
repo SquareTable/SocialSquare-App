@@ -486,12 +486,12 @@ const CategoryViewPage = ({route, navigation}) => {
                         </ProfileSelectMediaTypeIconsBorder>
                     </ProfileSelectMediaTypeItem>
                     <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == "One" ? colors.brand : colors.tertiary}}>
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == "Two" ? colors.brand : colors.tertiary}}>
                             <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == "Two" ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/170-fire.png')}/>
                         </ProfileSelectMediaTypeIconsBorder>                        
                     </ProfileSelectMediaTypeItem>
                     <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == "One" ? colors.brand : colors.tertiary}}>     
+                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == "Three" ? colors.brand : colors.tertiary}}>     
                             <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == "Three" ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
                         </ProfileSelectMediaTypeIconsBorder>     
                     </ProfileSelectMediaTypeItem>
