@@ -277,8 +277,8 @@ const CategoryViewPage = ({route, navigation}) => {
         .then(res => 'data:image/jpg;base64,' + res.data);
     }
     //profile image of creator
-    async function getImageInPfp(threadData, index) {
-        return axios.get(`${serverUrl}/getImageOnServer/${threadData[index].creatorPfpKey}`)
+    async function getImageInPfp(imageKey) {
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
         .then(res => 'data:image/jpg;base64,' + res.data);
     }
 
@@ -304,44 +304,53 @@ const CategoryViewPage = ({route, navigation}) => {
                 //image in post
                 async function findImages() {
                     //
-                    if (threadData[index].creatorPfpKey) {
-                        if (threadData[index].threadType == "Text") {
-                            const pfpB64 = await getImageInPfp(threadData, index)
-                            const tempSectionsTemp = {postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].comments, threadType: threadData[index].threadType, votes: threadData[index].votes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null, _id: threadData[index]._id}
-                            tempSections.push(tempSectionsTemp)
-                            itemsProcessed++;
-                            if(itemsProcessed === threadData.length) {
-                                dispatchThreads({type: 'addPosts', posts: tempSections})
-                            }
-                        } else if (threadData[index].threadType == "Images") {
-                            const pfpB64 = await getImageInPfp(threadData, index)
-                            const imageInThreadB64 = await getImageWithKey(threadData[index].threadImageKey)
-                            const tempSectionsTemp = {postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].comments, threadType: threadData[index].threadType, votes: threadData[index].votes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64, _id: threadData[index]._id}
-                            tempSections.push(tempSectionsTemp)
-                            itemsProcessed++;
-                            if(itemsProcessed === threadData.length) {
-                                dispatchThreads({type: 'addPosts', posts: tempSections})
-                            }
-                        }
-                    } else {
-                        if (threadData[index].threadType == "Text") {
-                            const pfpB64 = await getImageInPfp(threadData, index)
-                            const tempSectionsTemp = {postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].comments, threadType: threadData[index].threadType, votes: threadData[index].votes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null, _id: threadData[index]._id}
-                            tempSections.push(tempSectionsTemp)
-                            itemsProcessed++;
-                            if(itemsProcessed === threadData.length) {
-                                dispatchThreads({type: 'addPosts', posts: tempSections})
-                            }
-                        } else if (threadData[index].threadType == "Images") {
-                            const pfpB64 = await getImageInPfp(threadData, index)
-                            const imageInThreadB64 = await getImageWithKey(threadData[index].threadImageKey)
-                            const tempSectionsTemp = {postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].comments, threadType: threadData[index].threadType, votes: threadData[index].votes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64, _id: threadData[index]._id}
-                            tempSections.push(tempSectionsTemp)
-                            itemsProcessed++;
-                            if(itemsProcessed === threadData.length) {
-                                dispatchThreads({type: 'addPosts', posts: tempSections})
-                            }
-                        }
+                    let pfpB64 = null;
+                    let imageInThreadB64 = null;
+
+                    try {
+                        pfpB64 = threadData[index].creatorPfpKey ? await getImageInPfp(threadData[index].creatorPfpKey) : SocialSquareLogo_B64_png
+                    } catch (error) {
+                        console.error(error)
+                        pfpB64 = null;
+                    }
+
+                    try {
+                        imageInThreadB64 = threadData[index].threadImageKey ? await getImageWithKey(threadData[index].threadImageKey) : null
+                    } catch (error) {
+                        console.error(error)
+                        imageInThreadB64 = null;
+                    }
+
+                    const data = {
+                        postNum: index,
+                        threadId: threadData[index].threadId,
+                        threadComments: threadData[index].comments,
+                        threadType: threadData[index].threadType,
+                        votes: threadData[index].votes,
+                        threadTitle: threadData[index].threadTitle,
+                        threadSubtitle: threadData[index].threadSubtitle,
+                        threadTags: threadData[index].threadTags,
+                        threadCategory: threadData[index].threadCategory,
+                        threadBody: threadData[index].threadBody,
+                        threadImageKey: threadData[index].threadImageKey,
+                        threadImageDescription: threadData[index].threadImageDescription,
+                        threadNSFW: threadData[index].threadNSFW,
+                        threadNSFL: threadData[index].threadNSFL,
+                        datePosted: threadData[index].datePosted,
+                        threadUpVoted: threadData[index].threadUpVoted,
+                        threadDownVoted: threadData[index].threadDownVoted,
+                        creatorDisplayName: threadData[index].creatorDisplayName,
+                        creatorName: threadData[index].creatorName,
+                        creatorImageB64: pfpB64,
+                        imageInThreadB64: imageInThreadB64,
+                        _id: threadData[index]._id
+                    }
+
+                    tempSections.push(data)
+                    itemsProcessed++
+
+                    if (itemsProcessed === threadData.length) {
+                        dispatchThreads({type: 'addPosts', posts: tempSections})
                     }
                 }
                 findImages()
