@@ -159,6 +159,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                                 }
                             }
                         }}
+                        ItemSeparatorComponent={<View style={{height: 10}}/>}
                     />
                 : errorFetching ?
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginHorizontal: 10}}>
