@@ -21,6 +21,7 @@ import ImagePost from '../../components/Posts/ImagePost';
 import ThreadPost from '../../components/Posts/ThreadPost';
 import PollPost from '../../components/Posts/PollPost';
 import ThreeDotMenuActionSheet from '../../components/Posts/ThreeDotMenuActionSheet';
+import SocialSquareLogo_B64_png from '../../assets/SocialSquareLogo_Base64_png';
 
 const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -30,6 +31,15 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [feed, dispatch] = usePostReducer();
     const [errorFetching, setErrorFetching] = useState(null)
+
+    //any image honestly
+    async function getImage(imageKey) {
+        return await axios.get((serverUrl + '/getImageOnServer/' + imageKey))
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
+            console.error(error);
+            return SocialSquareLogo_B64_png;
+        })
+    }
 
     const loadPosts = () => {
         dispatch({type: 'startLoad'})
@@ -46,7 +56,40 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
             const response = result.data;
             const {data} = response;
 
-            dispatch({type: 'addPosts', posts: data})
+            if (data.length === 0) {
+                dispatch({type: 'addPosts', posts: data})
+                return 
+            }
+
+            const posts = []
+
+            data.forEach((item, index, dataArray) => {
+                async function loadImages() {
+                    const post = dataArray[index];
+
+                    const creatorPfpB64 = post.creatorPfpKey ? await getImage(post.creatorPfpKey) : SocialSquareLogo_B64_png;
+
+                    if (postFormat === "Image") {
+                        const imageB64 = await getImage(post.imageKey)
+
+                        posts.push({...post, imageB64, creatorPfpB64})
+                    } else if (postFormat === "Poll") {
+                        posts.push({...post, pfpB64: creatorPfpB64})
+                    } else if (postFormat === "Thread") {
+                        const imageInThreadB64 = post.threadImageKey ? await getImage(post.threadImageKey) : null;
+
+                        posts.push({...post, imageInThreadB64, creatorImageB64: creatorPfpB64})
+                    } else {
+                        console.error('Invalid post format')
+                    }
+
+                    
+                    if (posts.length === data.length) {
+                        dispatch({type: 'addPosts', posts})
+                    }
+                }
+                loadImages()
+            })
         }).catch(error => {
             console.error(error)
             setErrorFetching(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection and try again.')
@@ -79,14 +122,14 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                         keyExtractor={item => item._id}
                         renderItem={({item, index}) => {
                             if (postFormat === 'Image') {
-                                return <ImagePost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum} useRawImages/>
+                                return <ImagePost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum}/>
                             }
 
                             if (postFormat === 'Thread') {
-                                return <ThreadPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum} useRawImages/>
+                                return <ThreadPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum}/>
                             }
 
-                            return <PollPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum} useRawImages/>
+                            return <PollPost post={item} index={index} dispatch={dispatch} colors={colors} colorsIndexNum={indexNum}/>
                         }}
                         ListFooterComponent={
                             <>
