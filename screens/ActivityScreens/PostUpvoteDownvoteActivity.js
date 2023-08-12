@@ -20,6 +20,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePost from '../../components/Posts/ImagePost';
 import ThreadPost from '../../components/Posts/ThreadPost';
 import PollPost from '../../components/Posts/PollPost';
+import ThreeDotMenuActionSheet from '../../components/Posts/ThreeDotMenuActionSheet';
 
 const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -59,6 +60,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
 
     return (
         <>
+            <ThreeDotMenuActionSheet dispatch={dispatch} threeDotsMenu={feed.threeDotsMenu}/>
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
                 <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
                     <Image
