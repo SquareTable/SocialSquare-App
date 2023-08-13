@@ -15,7 +15,7 @@ import {
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext';
 import { ServerUrlContext } from '../../components/ServerUrlContext';
 import usePostReducer from '../../hooks/usePostReducer';
-import axios from 'axios';
+import axios, { CanceledError } from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePost from '../../components/Posts/ImagePost';
 import ThreadPost from '../../components/Posts/ThreadPost';
@@ -32,13 +32,17 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const [feed, dispatch] = usePostReducer();
     const [errorFetching, setErrorFetching] = useState(null)
     const lastVoteIdRef = useRef(null)
+    const abortController = useRef(new AbortController())
 
     //any image honestly
     async function getImage(imageKey) {
-        return await axios.get((serverUrl + '/getImageOnServer/' + imageKey))
+        return await axios.get((serverUrl + '/getImageOnServer/' + imageKey), {signal: abortController.current.signal})
         .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
-            console.error(error);
-            return SocialSquareLogo_B64_png;
+            if (!(error instanceof CanceledError)) {
+                //The request has not been intentionally canceled
+                console.error(error);
+                return SocialSquareLogo_B64_png;
+            }
         })
     }
 
@@ -54,7 +58,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                 postFormat
             }
 
-            axios.post(url, toSend).then(result => {
+            axios.post(url, toSend, {signal: abortController.current.signal}).then(result => {
                 const response = result.data;
                 const {data, message} = response;
                 const {posts, lastVoteId, noMoreVotes} = data;
@@ -98,15 +102,22 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                     loadImages()
                 })
             }).catch(error => {
-                console.error(error)
-                setErrorFetching(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection and try again.')
-                dispatch({type: 'stopLoad'})
+                if (!(error instanceof CanceledError)) {
+                    console.error(error)
+                    setErrorFetching(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection and try again.')
+                    dispatch({type: 'stopLoad'})
+                }
             })
         }
     }
 
     useEffect(() => {
         loadPosts();
+
+        return () => {
+            console.warn('Aborting PostUpvoteDownvoteActivity.js network requests')
+            abortController.current.abort();
+        }
     }, [])
 
     return (
