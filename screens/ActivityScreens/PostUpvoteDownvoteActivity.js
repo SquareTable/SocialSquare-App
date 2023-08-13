@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { View, Text, Image, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { useTheme } from '@react-navigation/native';
 import { CredentialsContext } from '../../components/CredentialsContext';
@@ -31,6 +31,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [feed, dispatch] = usePostReducer();
     const [errorFetching, setErrorFetching] = useState(null)
+    const lastVoteIdRef = useRef(null)
 
     //any image honestly
     async function getImage(imageKey) {
@@ -42,59 +43,66 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     }
 
     const loadPosts = () => {
-        dispatch({type: 'startLoad'})
-        setErrorFetching(null)
-        
-        const url = serverUrl + '/tempRoute/getUserActivity';
-        const toSend = {
-            skip: feed.posts.length,
-            voteType: voteType === 'Upvote' ? 'up' : 'down',
-            postFormat
-        }
-
-        axios.post(url, toSend).then(result => {
-            const response = result.data;
-            const {data} = response;
-
-            if (data.length === 0) {
-                dispatch({type: 'addPosts', posts: data})
-                return 
+        if (!feed.noMorePosts) {
+            dispatch({type: 'startLoad'})
+            setErrorFetching(null)
+            
+            const url = serverUrl + '/tempRoute/getUserActivity';
+            const toSend = {
+                skip: lastVoteIdRef.current || undefined,
+                voteType: voteType === 'Upvote' ? 'up' : 'down',
+                postFormat
             }
 
-            const posts = []
+            axios.post(url, toSend).then(result => {
+                const response = result.data;
+                const {data, message} = response;
+                const {posts, lastVoteId, noMoreVotes} = data;
 
-            data.forEach((item, index, dataArray) => {
-                async function loadImages() {
-                    const post = dataArray[index];
-
-                    const creatorPfpB64 = post.creatorPfpKey ? await getImage(post.creatorPfpKey) : SocialSquareLogo_B64_png;
-
-                    if (postFormat === "Image") {
-                        const imageB64 = await getImage(post.imageKey)
-
-                        posts.push({...post, imageB64, creatorPfpB64})
-                    } else if (postFormat === "Poll") {
-                        posts.push({...post, pfpB64: creatorPfpB64})
-                    } else if (postFormat === "Thread") {
-                        const imageInThreadB64 = post.threadImageKey ? await getImage(post.threadImageKey) : null;
-
-                        posts.push({...post, imageInThreadB64, creatorImageB64: creatorPfpB64})
-                    } else {
-                        console.error('Invalid post format')
-                    }
-
-                    
-                    if (posts.length === data.length) {
-                        dispatch({type: 'addPosts', posts})
-                    }
+                if (posts.length === 0) {
+                    dispatch({type: 'noMorePosts'})
                 }
-                loadImages()
+
+                lastVoteIdRef.current = lastVoteId
+
+                const processedPosts = []
+
+                posts.forEach((item, index, dataArray) => {
+                    async function loadImages() {
+                        const post = dataArray[index];
+
+                        const creatorPfpB64 = post.creatorPfpKey ? await getImage(post.creatorPfpKey) : SocialSquareLogo_B64_png;
+
+                        if (postFormat === "Image") {
+                            const imageB64 = await getImage(post.imageKey)
+
+                            processedPosts.push({...post, imageB64, creatorPfpB64})
+                        } else if (postFormat === "Poll") {
+                            processedPosts.push({...post, pfpB64: creatorPfpB64})
+                        } else if (postFormat === "Thread") {
+                            const imageInThreadB64 = post.threadImageKey ? await getImage(post.threadImageKey) : null;
+
+                            processedPosts.push({...post, imageInThreadB64, creatorImageB64: creatorPfpB64})
+                        } else {
+                            console.error('Invalid post format')
+                        }
+
+                        
+                        if (processedPosts.length === posts.length) {
+                            dispatch({type: 'addPosts', posts: processedPosts})
+                            if (noMoreVotes) {
+                                dispatch({type: 'noMorePosts'})
+                            }
+                        }
+                    }
+                    loadImages()
+                })
+            }).catch(error => {
+                console.error(error)
+                setErrorFetching(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection and try again.')
+                dispatch({type: 'stopLoad'})
             })
-        }).catch(error => {
-            console.error(error)
-            setErrorFetching(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection and try again.')
-            dispatch({type: 'stopLoad'})
-        })
+        }
     }
 
     useEffect(() => {
@@ -145,6 +153,10 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                                     : feed.loadingFeed ?
                                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                                             <ActivityIndicator size="large" color={colors.brand} />
+                                        </View>
+                                    : feed.noMorePosts ?
+                                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginHorizontal: 10}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>No more posts to show</Text>
                                         </View>
                                     : null
                                 }
