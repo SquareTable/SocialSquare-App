@@ -132,7 +132,7 @@ const EditProfile = ({navigation, route}) => {
             }
 
         }).catch(error => {
-            console.log(error);
+            console.error(error);
             setChangingPfp(false);
             handleMessage(ParseErrorMessage(error));
         })
@@ -183,7 +183,7 @@ const EditProfile = ({navigation, route}) => {
             //setSubmitting(false);
 
         }).catch(error => {
-            console.log(error);
+            console.error(error);
             alert('Profile picture has been uploaded but an error occured while setting your profile picture. Log out and log back in and your profile picture will show up.')
             setChangingPfp(false)
         })
@@ -234,7 +234,7 @@ const EditProfile = ({navigation, route}) => {
                             setSavingChangesStatus(2);
                         }
                     }).catch(error => {
-                        console.log(error);
+                        console.error(error);
                         handleMessage(ParseErrorMessage(error), "FAILED");
                         setSavingChanges(false);
                         setSavingChangesStatus(false);
@@ -272,7 +272,7 @@ const EditProfile = ({navigation, route}) => {
                         setSavingChangesStatus(3);
                     }
                 }).catch(error => {
-                    console.log(error);
+                    console.error(error);
                     handleMessage(ParseErrorMessage(error), "FAILED");
                     setSavingChanges(false);
                     setSavingChangesStatus(false);
@@ -304,7 +304,7 @@ const EditProfile = ({navigation, route}) => {
                         setSavingChangesStatus('SUCCESS');
                     }
                 }).catch(error => {
-                    console.log(error);
+                    console.error(error);
                     handleMessage(ParseErrorMessage(error), "FAILED");
                     setSavingChanges(false);
                     setSavingChangesStatus(false);
