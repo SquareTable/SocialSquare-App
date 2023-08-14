@@ -1,4 +1,4 @@
-import React, {useContext, useRef} from 'react';
+import React, {useContext, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -19,7 +19,7 @@ import { View, FlatList, SafeAreaView, Image, TouchableOpacity, Text, ActivityIn
 import {Formik} from 'formik';
 
 //axios
-import axios from 'axios';
+import axios, { CanceledError } from 'axios';
 import { useTheme } from '@react-navigation/native';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
@@ -33,17 +33,20 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [categories, dispatch] = useCategoryReducer()
     const searchText = useRef('')
+    const abortControllerRef = useRef(new AbortController())
 
     const onPressFunction = (categoryTitle, allowScreenShots, categoryId) => {
         navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true), categoryId})
     }
 
     async function getImageInCategory(imageKey) {
-        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`, {signal: abortControllerRef.current.signal})
         .then(res => res.data)
         .catch(error => {
-            console.error(error)
-            return SocialSquareLogo_B64_png
+            if (!(error instanceof CanceledError)) {
+                console.error(error)
+                return SocialSquareLogo_B64_png
+            }
         })
     }
 
@@ -94,7 +97,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                 val,
                 lastCategoryId: categories.categories.length ? categories.categories[categories.categories.length - 1].categoryId : undefined
             }
-            axios.post(url, toSend).then((response) => {
+            axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                 const result = response.data;
                 const {data} = result;
 
@@ -107,8 +110,10 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                 console.log('Search complete.')
 
             }).catch(error => {
-                console.error(error);
-                dispatch({type: 'error', error: error?.response?.data?.message ? String(error?.response?.data?.message) : 'An unknown error occurred. Please try checking your network connection and try again.'})
+                if (!(error instanceof CanceledError)) {
+                    console.error(error);
+                    dispatch({type: 'error', error: error?.response?.data?.message ? String(error?.response?.data?.message) : 'An unknown error occurred. Please try checking your network connection and try again.'})
+                }
             })
         }
     }
@@ -117,6 +122,13 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
         searchText.current = val;
         handleCategorySearch(val, true)
     }
+
+    useEffect(() => {
+        return () => {
+            abortControllerRef.current.abort();
+            console.warn('Intentionally cancelled request since SelectCategorySearchScreen was unmounted')
+        }
+    }, [])
 
     return(
         <>    
