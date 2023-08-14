@@ -105,6 +105,7 @@ import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -305,7 +306,7 @@ const ViewPollPostPage = ({route, navigation}) => {
         }).catch(error => {
             console.error(error);
             //setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -436,7 +437,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             console.error(error);
             //setSubmitting(false);
             setLoadingMoreComments(false)
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -465,7 +466,7 @@ const ViewPollPostPage = ({route, navigation}) => {
         }).catch(error => {
             console.error(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -843,7 +844,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             }).catch(error => {
                 console.error(error);
                 setSubmitting(false);
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                handleMessage(ParseErrorMessage(error));
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true})
@@ -888,7 +889,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             }).catch(error => {
                 console.error(error);
                 setPollUpOrDownVoted(beforeChange)
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true})
@@ -928,7 +929,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             }).catch(error => {
                 console.error(error);
                 setPollUpOrDownVoted(beforeChange)
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true})

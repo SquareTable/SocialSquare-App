@@ -27,6 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { useIsFocused } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const EditProfile = ({navigation, route}) => {
     const {colors, dark} = useTheme()
@@ -133,7 +134,7 @@ const EditProfile = ({navigation, route}) => {
         }).catch(error => {
             console.log(error);
             setChangingPfp(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -234,7 +235,7 @@ const EditProfile = ({navigation, route}) => {
                         }
                     }).catch(error => {
                         console.log(error);
-                        handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", "FAILED");
+                        handleMessage(ParseErrorMessage(error), "FAILED");
                         setSavingChanges(false);
                         setSavingChangesStatus(false);
                     })
@@ -272,7 +273,7 @@ const EditProfile = ({navigation, route}) => {
                     }
                 }).catch(error => {
                     console.log(error);
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", "FAILED");
+                    handleMessage(ParseErrorMessage(error), "FAILED");
                     setSavingChanges(false);
                     setSavingChangesStatus(false);
                 })
@@ -304,7 +305,7 @@ const EditProfile = ({navigation, route}) => {
                     }
                 }).catch(error => {
                     console.log(error);
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", "FAILED");
+                    handleMessage(ParseErrorMessage(error), "FAILED");
                     setSavingChanges(false);
                     setSavingChangesStatus(false);
                 })
@@ -346,8 +347,8 @@ const EditProfile = ({navigation, route}) => {
                 setIsPrivateAccount(true)
             }
         }).catch(error => {
-            console.log(error);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", "FAILED");
+            console.error(error);
+            handleMessage(ParseErrorMessage(error), "FAILED");
             setChangingPrivateAccount(false);
             setSavingChanges(false)
         })
@@ -378,8 +379,8 @@ const EditProfile = ({navigation, route}) => {
                 setIsPrivateAccount(false)
             }
         }).catch(error => {
-            console.log(error);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", "FAILED");
+            console.error(error);
+            handleMessage(ParseErrorMessage(error), "FAILED");
             setChangingPrivateAccount(false);
             setSavingChanges(false)
         })

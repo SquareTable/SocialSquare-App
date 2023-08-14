@@ -22,6 +22,7 @@ import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredC
 import useSharedCode from '../hooks/useSharedCode'
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 let arrayOfUserChanges = [];
 let userIDToUnfollow = undefined;
@@ -107,7 +108,7 @@ const ProfileStats = ({navigation, route}) => {
                     })
                 }
             }).catch(error => {
-                setError(error?.response?.data?.message || 'An error occured.')
+                setError(ParseErrorMessage(error))
                 setLoading(false)
                 console.error(error)
             })

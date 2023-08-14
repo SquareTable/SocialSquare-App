@@ -37,6 +37,7 @@ import axios from 'axios';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import ParseErrorMessage from '../../components/ParseErrorMessage.js';
 
 
 const BlockedAccountsScreen = ({navigation}) => {
@@ -61,7 +62,7 @@ const BlockedAccountsScreen = ({navigation}) => {
             setBlockedAccounts(data);
         }).catch(error => {
             console.error(error);
-            setErrorOccurred(error?.response?.data?.message || String(error))
+            setErrorOccurred(ParseErrorMessage(error))
         })
     }
 

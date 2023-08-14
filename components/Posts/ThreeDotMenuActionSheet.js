@@ -3,6 +3,7 @@ import ActionSheet from 'react-native-actionsheet';
 import axios from "axios";
 import { ServerUrlContext } from "../ServerUrlContext";
 import { useNavigation } from "@react-navigation/native";
+import ParseErrorMessage from "../ParseErrorMessage";
 
 const NotOwnerOptions = [
     'Report',
@@ -57,7 +58,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert(error?.response?.data?.message ? ('An error occured while deleting image post: ' + error?.response?.data?.message) : 'An error occured while deleting the image post. Please check your internet connection and then try again.')
+            alert('An error occurred while deleting image post:', ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }
@@ -78,7 +79,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert(error?.response?.data?.message ? ('An error occured while deleting poll post: ' + error?.response?.data?.message) : 'An error occured while deleting the poll post. Please check your internet connection and then try again.')
+            alert('An error occurred while deleting poll post:', ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }
@@ -99,7 +100,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert(error?.response?.data?.message ? ('An error occured while deleting thread post: ' + error?.response?.data?.message) : 'An error occured while deleting the thread post. Please check your internet connection and then try again.')
+            alert('An error occurred while deleting thread post:', ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }

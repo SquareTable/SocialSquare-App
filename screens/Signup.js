@@ -59,6 +59,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import {storeJWT} from './../jwtHandler'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 
 const Signup = ({navigation, route}) => {
@@ -111,7 +112,7 @@ const Signup = ({navigation, route}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -207,7 +208,7 @@ const Signup = ({navigation, route}) => {
             }).catch(error => {
                 console.log(error);
                 setUsernameIsAvailable(false);
-                setUsernameAvailableMessage(error?.response?.data?.message || 'An error occured. Try checking your network connection and retry.')
+                setUsernameAvailableMessage(ParseErrorMessage(error))
                 setUsernameAvailableMessageColor(colors.red)
             })
         }

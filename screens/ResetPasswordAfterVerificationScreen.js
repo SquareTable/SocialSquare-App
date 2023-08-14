@@ -23,6 +23,7 @@ import { Formik } from 'formik';
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const ResetPasswordAfterVerificationScreen = ({navigation, route}) => {
     const {colors, dark} = useTheme();
@@ -56,7 +57,7 @@ const ResetPasswordAfterVerificationScreen = ({navigation, route}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || 'An error occured. Try checking your network connection and then try again.');
+            handleMessage(ParseErrorMessage(error));
         })
     }
 

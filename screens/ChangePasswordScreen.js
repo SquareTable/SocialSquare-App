@@ -24,6 +24,7 @@ import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import {storeJWT} from './../jwtHandler'
 import { CredentialsContext } from '../components/CredentialsContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const ChangePasswordScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -57,7 +58,7 @@ const ChangePasswordScreen = ({navigation}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || 'An error occured. Try checking your network connection and then try again.');
+            handleMessage(ParseErrorMessage(error));
         })
     }
 

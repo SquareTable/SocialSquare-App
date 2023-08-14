@@ -22,6 +22,7 @@ import ThreadPost from '../../components/Posts/ThreadPost';
 import PollPost from '../../components/Posts/PollPost';
 import ThreeDotMenuActionSheet from '../../components/Posts/ThreeDotMenuActionSheet';
 import SocialSquareLogo_B64_png from '../../assets/SocialSquareLogo_Base64_png';
+import ParseErrorMessage from '../../components/ParseErrorMessage';
 
 const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -104,7 +105,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
             }).catch(error => {
                 if (!(error instanceof CanceledError)) {
                     console.error(error)
-                    setErrorFetching(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection and try again.')
+                    setErrorFetching(ParseErrorMessage(error))
                     dispatch({type: 'stopLoad'})
                 }
             })

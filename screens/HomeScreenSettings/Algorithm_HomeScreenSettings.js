@@ -30,6 +30,7 @@ import axios from 'axios';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import ParseErrorMessage from '../../components/ParseErrorMessage.js';
 
 var _ = require('lodash');
 
@@ -77,7 +78,7 @@ const Algorithm_HomeScreenSettings = ({navigation, route}) => {
             }
         }).catch(error => {
             setLoadingSettings(false);
-            setErrorOccuredWhileLoadingSettings(error?.response?.data?.message || ('An error occured: ' + String(error)));
+            setErrorOccuredWhileLoadingSettings(ParseErrorMessage(error));
         })
     }
 
@@ -135,7 +136,7 @@ const Algorithm_HomeScreenSettings = ({navigation, route}) => {
             } else {
                 Alert.alert(
                     'Error',
-                    error?.response?.data?.message || ('An error occured: ' + String(error)),
+                    ParseErrorMessage(error),
                     [
                         { text: 'OK', onPress: () => {}, style: 'cancel' },
                         {

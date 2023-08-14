@@ -21,6 +21,7 @@ import {
 import Octicons from 'react-native-vector-icons/Octicons';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const VerifyEmailScreen = ({navigation, route}) => {
     const [message, setMessage] = useState();
@@ -68,7 +69,7 @@ const VerifyEmailScreen = ({navigation, route}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || 'An error occured. Try checking your network connection and then try again.');
+            handleMessage(ParseErrorMessage(error));
         })
     }
 

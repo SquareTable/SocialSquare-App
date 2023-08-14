@@ -14,6 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import { CredentialsContext } from '../components/CredentialsContext';
 import RadioButton from '../components/RadioButton';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 var _ = require('lodash');
 
@@ -50,7 +51,7 @@ const PrivacySettings = ({navigation}) => {
             }
         }).catch(error => {
             setLoading(false)
-            setError(error?.response?.data?.message || 'An error occured. Check your network connection and try again.')
+            setError(ParseErrorMessage(error))
             console.error(error)
         })
     }
@@ -94,7 +95,7 @@ const PrivacySettings = ({navigation}) => {
         }).catch(error => {
             console.error(error)
             setSavingChanges(false)
-            alert(error?.response?.data?.message || 'An error occured while saving privacy settings. Please try again later.')
+            alert(ParseErrorMessage(error))
         })
     }
 

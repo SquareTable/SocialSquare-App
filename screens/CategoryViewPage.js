@@ -87,6 +87,7 @@ import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import { getTimeFromUTCMS } from '../libraries/Time.js';
 import ThreadPost from '../components/Posts/ThreadPost';
 import usePostReducer from '../hooks/usePostReducer';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const CategoryViewPage = ({route, navigation}) => {
     const {colors, dark, indexNum} = useTheme()
@@ -224,7 +225,7 @@ const CategoryViewPage = ({route, navigation}) => {
         }).catch(error => {
             console.log(error);
             //setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -263,7 +264,7 @@ const CategoryViewPage = ({route, navigation}) => {
                 }).catch(error => {
                     console.log(error);
                     setInCategory(beforeChange)
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED');
+                    handleMessage(ParseErrorMessage(error), 'FAILED');
                 })
             }
         } else {
@@ -378,7 +379,7 @@ const CategoryViewPage = ({route, navigation}) => {
 
         }).catch(error => {
             console.error(error);
-            dispatchThreads({type: 'error', error: error?.response?.data?.message || "An error occurred. Try checking your network connection and retry."})
+            dispatchThreads({type: 'error', error: ParseErrorMessage(error)})
         })
     }
 

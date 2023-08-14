@@ -98,6 +98,7 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const ThreadViewPage = ({navigation, route}) => {
     const {colors, dark} = useTheme()
@@ -278,7 +279,7 @@ const ThreadViewPage = ({navigation, route}) => {
         }).catch(error => {
             console.error(error);
             //setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -413,7 +414,7 @@ const ThreadViewPage = ({navigation, route}) => {
             console.error(error);
             setLoadingMoreComments(false)
             //setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -442,7 +443,7 @@ const ThreadViewPage = ({navigation, route}) => {
         }).catch(error => {
             console.error(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -580,7 +581,7 @@ const ThreadViewPage = ({navigation, route}) => {
                             neitherVotedComments.push(commentId)
                             setNeitherVotes(neitherVotedComments)
                         }
-                        handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                        handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
                     })
                 }
             }
@@ -723,7 +724,7 @@ const ThreadViewPage = ({navigation, route}) => {
                             neitherVotedComments.push(commentId)
                             setNeitherVotes(neitherVotedComments)
                         }
-                        handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                        handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
                     })
                 }
             }
@@ -874,7 +875,7 @@ const ThreadViewPage = ({navigation, route}) => {
             }).catch(error => {
                 console.error(error);
                 setThreadUpOrDownVoted("UpVoted");
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true});
@@ -916,7 +917,7 @@ const ThreadViewPage = ({navigation, route}) => {
             }).catch(error => {
                 console.error(error);
                 setThreadUpOrDownVoted("UpVoted")
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true});

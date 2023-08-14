@@ -118,6 +118,7 @@ import ThreadPost from '../components/Posts/ThreadPost';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import useCategoryReducer from '../hooks/useCategoryReducer';
 import CategoryItem from '../components/Posts/CategoryItem';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const ProfilePages = ({ route, navigation }) => {
     const [images, dispatchImages] = usePostReducer();
@@ -225,8 +226,7 @@ const ProfilePages = ({ route, navigation }) => {
             }).catch(error => {
                 console.error(error);
                 //setSubmitting(false);
-                console.error(error?.response?.data?.message || 'An unknown error occurred.')
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                handleMessage(ParseErrorMessage(error));
                 setLoadingFollowers('Error')
                 resolve()
             })
@@ -628,7 +628,7 @@ const ProfilePages = ({ route, navigation }) => {
                 layoutImagePosts({data});
             }).catch(error => {
                 console.error(error);
-                dispatchImages({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading images. Please check your internet connection and retry.'})
+                dispatchImages({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -786,7 +786,7 @@ const ProfilePages = ({ route, navigation }) => {
                 layoutPollPosts(data);
             }).catch(error => {
                 console.error(error);
-                dispatchPolls({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading polls. Please check your internet connection and retry.'})
+                dispatchPolls({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -871,7 +871,7 @@ const ProfilePages = ({ route, navigation }) => {
             }
         }).catch(error => {
             console.error('An error occurred while loading threads from ProfilePages.js:', error)
-            dispatchThreads({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading threads. Please check your internet connection and try again.'})
+            dispatchThreads({type: 'error', error: ParseErrorMessage(error)})
         })
     }
 
@@ -901,7 +901,7 @@ const ProfilePages = ({ route, navigation }) => {
                 layoutThreadPosts({data});
             }).catch(error => {
                 console.error(error);
-                dispatchThreads({type: 'error', error: error?.response?.data?.message || "An error occured. Try checking your network connection and retry."})
+                dispatchThreads({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -989,7 +989,7 @@ const ProfilePages = ({ route, navigation }) => {
                 layoutCategoriesFound(data)
             }).catch(error => {
                 console.error(error);
-                dispatchCategories({type: 'error', error: error?.response?.data?.message || "An error occured. Try checking your network connection and retry."})
+                dispatchCategories({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -1098,7 +1098,7 @@ const ProfilePages = ({ route, navigation }) => {
                     }).catch(error => {
                         console.error(error);
                         setSettingUpChat(false);
-                        setSettingUpChatErrorMessage(error?.response?.data?.message || "Network Error.");
+                        setSettingUpChatErrorMessage(ParseErrorMessage(error));
                         setSettingUpChatErrorOrigin('creating the DM')
                     })
                 }
@@ -1131,7 +1131,7 @@ const ProfilePages = ({ route, navigation }) => {
         }).catch(error => {
             console.log(error);
             setSettingUpChat(false)
-            setSettingUpChatErrorMessage(error?.response?.data?.message || "Network Error.");
+            setSettingUpChatErrorMessage(ParseErrorMessage(error));
             setSettingUpChatErrorOrigin('getting the chat info from ID')
         })
     }
@@ -1168,7 +1168,7 @@ const ProfilePages = ({ route, navigation }) => {
                 }
             }).catch(error => {
                 console.error(error)
-                alert(error?.response?.data?.message || 'An error occured. Please try again.')
+                alert(ParseErrorMessage(error))
                 setBlockingUser(false)
             })
         } else {
@@ -1288,7 +1288,7 @@ const ProfilePages = ({ route, navigation }) => {
             }).catch(error => {
                 console.log(error);
                 setTogglingFollow(false)
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                handleMessage(ParseErrorMessage(error));
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true})

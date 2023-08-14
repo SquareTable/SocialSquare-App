@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const useUpload = (serverUrl, storedCredentials) => {
     const [posts, setPosts] = useState({})
@@ -109,7 +110,7 @@ const useUpload = (serverUrl, storedCredentials) => {
             }
 
         }).catch(error => {
-            handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
+            handleError(ParseErrorMessage(error), uploadId)
         })
     }
 
@@ -128,7 +129,7 @@ const useUpload = (serverUrl, storedCredentials) => {
             }
 
         }).catch(error => {
-            handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
+            handleError(ParseErrorMessage(error), uploadId)
         })
     }
 
@@ -150,7 +151,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
+                handleError(ParseErrorMessage(error), uploadId)
             })
         } else if (selectFormat == "Images") {
             //Set up formdata
@@ -190,7 +191,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
+                handleError(ParseErrorMessage(error), uploadId)
             })
         }
     }
@@ -229,7 +230,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
+                handleError(ParseErrorMessage(error), uploadId)
             })
         } else {
             const url = serverUrl + '/tempRoute/postcategorywithoutimage';
@@ -246,7 +247,7 @@ const useUpload = (serverUrl, storedCredentials) => {
                 }
 
             }).catch(error => {
-                handleError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection.', uploadId)
+                handleError(ParseErrorMessage(error), uploadId)
             })
         }
     }
