@@ -48,7 +48,8 @@ const reducer = (state, action) => {
             loadingFeed: true,
             reloadingFeed: true,
             categories: [],
-            error: null
+            error: null,
+            noMoreCategories: false
         };
     }
 
@@ -64,7 +65,8 @@ const reducer = (state, action) => {
         return {
             ...state,
             categories: [],
-            error: null
+            error: null,
+            noMoreCategories: false
         }
     }
 

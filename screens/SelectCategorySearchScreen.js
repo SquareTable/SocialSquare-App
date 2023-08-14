@@ -163,7 +163,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                             handleCategorySearch(searchText.current)
                         }
                     }
-                            }}
+                }}
                 style={{height: '100%', width: '100%'}}
             />
 
