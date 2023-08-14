@@ -1,46 +1,19 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
-    InnerContainer,
-    PageTitle,
-    SubTitle,
-    StyledFormArea,
-    StyledButton,
-    ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
-    Colors,
-    Avatar,
-    StyledContainer,
     StyledInputLabel,
     StyledTextInput,
     SearchBarArea,
-    LeftIcon,
-    SearchHorizontalView,
-    SearchHorizontalViewItem,
-    SearchHorizontalViewItemCenter,
-    SearchSubTitle,
-    ProfIcons,
-    SearchUserViewItemCenter,
-    SearchFrame,
-    PostIcons,
-    ChangePollOptionColorButtons
+    LeftIcon
 } from '../screens/screenStylings/styling.js';
 
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterGrey, midWhite, red} = Colors;
-
 // icons
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
-
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Octicons from 'react-native-vector-icons/Octicons.js';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { View, SectionList, SafeAreaView, Image, TouchableOpacity, Text, ActivityIndicator, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, FlatList, SafeAreaView, Image, TouchableOpacity, Text, ActivityIndicator, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 // formik
 import {Formik} from 'formik';
@@ -52,24 +25,14 @@ import { useTheme } from '@react-navigation/native';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import CategoryItem from '../components/Posts/CategoryItem.js';
+import useCategoryReducer from '../hooks/useCategoryReducer.js';
 
 const SelectCategorySearchScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme()
-     //context
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {photoUrl} = storedCredentials;
     const {threadFormat, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImage, threadImageDescription, threadNSFW, threadNSFL} = route.params;
-    const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
-    var submitting = false;
-    const [message, setMessage] = useState();
-    const [messageType, setMessageType] = useState();
-    const [foundAmount, setFoundAmount] = useState();
-    const [debounce, setDebounce] = useState(false);
-    const [changeSections, setChangeSections] = useState([]);
-    const [noResults, setNoResults] = useState(false);
-    const [loadingResults, setLoadingResults] = useState(false);
-    const [errorMessage, setErrorMessage] = useState();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
+    const [categories, dispatch] = useCategoryReducer()
+    const searchText = useRef('')
 
     const onPressFunction = (categoryTitle, allowScreenShots, categoryId) => {
         navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true), categoryId})
@@ -77,13 +40,24 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
 
     async function getImageInCategory(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
-        .then(res => res.data);
+        .then(res => res.data)
+        .catch(error => {
+            console.error(error)
+            return SocialSquareLogo_B64_png
+        })
     }
 
-    const handleCategorySearch = (val) => {
-        if (val !== "") {
-            const layoutCategoriesFound = (data) => {
-                setFoundAmount("Poll Comments:")
+    const handleCategorySearch = (val, force) => {
+        if (!categories.noMoreCategories || force) {
+            if (val === "") return dispatch({type: "resetCategories"})
+
+            if (force) {
+                dispatch({type: 'startReload'})
+            } else {
+                dispatch({type: 'startLoad'})
+            }
+
+            const layoutCategoriesFound = (data, noMoreCategories) => {
                 var allData = data
                 console.log(allData)
                 console.log(allData.length)
@@ -93,84 +67,55 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                     if (allData[index].imageKey !== "") {
                         async function asyncFunctionForImages() {
                             const imageB64 = `data:image/jpg;base64,${await getImageInCategory(allData[index].imageKey)}`
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
+                            var tempSectionsTemp = {categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
-                                setLoadingResults(false)
-                                setChangeSections(tempSections)
+                                dispatch({type: 'addCategories', categories: tempSections})
+                                if (noMoreCategories) dispatch({type: 'noMoreCategories'})
                             }
                         }
                         asyncFunctionForImages()
                     } else {
-                        var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
+                        var tempSectionsTemp = {categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}
                         tempSections.push(tempSectionsTemp)
                         itemsProcessed++;
                         if(itemsProcessed === allData.length) {
-                            setLoadingResults(false)
-                            setChangeSections(tempSections)
+                            dispatch({type: 'addCategories', categories: tempSections})
+                            if (noMoreCategories) dispatch({type: 'noMoreCategories'})
                         }
                     }
                 });
             }
 
-            handleMessage(null);
+
             const url = `${serverUrl}/tempRoute/searchpagesearchcategories`;
             const toSend = {
-                val
+                val,
+                lastCategoryId: categories.categories.length ? categories.categories[categories.categories.length - 1].categoryId : undefined
             }
-            submitting = true;
-            setLoadingResults(true);
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const {data} = result;
 
-                if (status !== 'SUCCESS') {
-                    if (message === 'No results') {
-                        setNoResults(true)
-                        setLoadingResults(false)
-                        setErrorMessage()
-                        return
-                    }
-                    setErrorMessage(message);
-                    setNoResults(false)
-                    setLoadingResults(false)
-                } else {
-                    console.log(data)
-                    layoutCategoriesFound(data)
-                    console.log('Search complete.')
-                    setNoResults(false)
-                    setErrorMessage()
-                    //persistLogin({...data[0]}, message, status);
-                }
-                submitting = false;
+                const {categories, noMoreCategories} = data;
+
+                if (categories?.length === 0) return dispatch({type: 'noMoreCategories'})
+
+                console.log(categories)
+                layoutCategoriesFound(categories, noMoreCategories)
+                console.log('Search complete.')
 
             }).catch(error => {
-                console.log(error);
-                submitting = false;
-                setErrorMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
-                setNoResults(false)
-                setLoadingResults(false)
+                console.error(error);
+                dispatch({type: 'error', error: error?.response?.data?.message ? String(error?.response?.data?.message) : 'An unknown error occurred. Please try checking your network connection and try again.'})
             })
-        } else {
-            console.log('Empty search')
-            setNoResults(false)
-            setLoadingResults(false)
-            setChangeSections([])
-            setErrorMessage()
         }
-    }
-
-    const handleMessage = (message, type = 'FAILED') => {
-        setMessage(message);
-        setMessageType(type);
     }
 
     const handleChange = (val) => {
-        if (submitting == false) {
-            console.log(val)
-            handleCategorySearch(val)
-        }
+        searchText.current = val;
+        handleCategorySearch(val, true)
     }
 
     return(
@@ -187,27 +132,38 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                     <SearchBarArea>
                         <UserTextInput
                             placeholder="Search"
-                            placeholderTextColor={darkLight}
+                            placeholderTextColor={colors.darkLight}
                             onChangeText={(val) => handleChange(val)}
                             style={{backgroundColor: colors.primary, borderColor: colors.tertiary, color: colors.tertiary}}
                         />
                     </SearchBarArea>
                 </SafeAreaView>
             </TouchableWithoutFeedback>
-            <SectionList
-                sections={changeSections}
-                keyExtractor={(item, index) => item + index}
+            <FlatList
+                data={categories.categories}
+                keyExtractor={(item) => item._id}
                 renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots} categoryId={item.categoryId} onPressFunction={onPressFunction}/>}
                 ListFooterComponent={
-                    loadingResults ? 
+                    categories.loadingFeed ? 
                         <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 10}}/> 
-                    : errorMessage ?
-                        <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>{errorMessage}</Text>
-                    : noResults ?
+                    : categories.error ?
+                        <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>{String(categories.error)}</Text>
+                    : categories.categories.length === 0 && !categories.loadingFeed ?
                         <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>No results</Text>
+                    : categories.noMoreCategories ?
+                        <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>No more categories</Text>
                     :
                         null
                 }
+                onEndReachedThreshold={3}
+                onEndReached = {({distanceFromEnd})=>{
+                    if (distanceFromEnd > 0) {
+                        console.log('End of the categories feed was reached with ' + distanceFromEnd + ' pixels from the end.')
+                        if (categories.loadingFeed === false) {
+                            handleCategorySearch(searchText.current)
+                        }
+                    }
+                            }}
                 style={{height: '100%', width: '100%'}}
             />
 
@@ -216,10 +172,11 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
 }
 
 const UserTextInput = ({label, icon, isPassword, ...props}) => {
+    const {colors} = useTheme();
     return(
         <SearchBarArea>
             <LeftIcon searchIcon={true}>
-                <Octicons name={"search"} size={20} color={brand} />
+                <Octicons name={"search"} size={20} color={colors.brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput searchPage={true} {...props}/>
