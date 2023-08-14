@@ -54,6 +54,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { ExperimentalFeaturesEnabledContext } from '../components/ExperimentalFeaturesEnabledContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import CategoryItem from '../components/Posts/CategoryItem.js';
+import useCategoryReducer from '../hooks/useCategoryReducer.js';
 
 class UserItem extends PureComponent {
     constructor(props) {
@@ -111,23 +112,20 @@ const FindScreen = ({navigation}) => {
     const [filterFormatSearch, setFilterFormatSearch] = useState("Users")
     const [foundAmount, setFoundAmount] = useState();
     const [changeSectionsOne, setChangeSectionsOne] = useState([])
-    const [changeSectionsTwo, setChangeSectionsTwo] = useState([])
     const [loadingOne, setLoadingOne] = useState(false)
-    const [loadingTwo, setLoadingTwo] = useState(false)
     const [noResults, setNoResults] = useState(false);
     const [errorOccured, setErrorOccured] = useState(null)
     const searchValue = useRef(null);
-    let cancelTokenPostFormatOne = axios.CancelToken.source();
-    let cancelTokenPostFormatTwo = axios.CancelToken.source();
     const {serverUrl, setServerurl} = useContext(ServerUrlContext);
     const StatusBarHeight = useContext(StatusBarHeightContext);
     const {height, width} = useWindowDimensions();
     const userListHeight = useRef(null);
     const debounceTimeout = useRef(null);
     const abortControllerRef = useRef(new AbortController())
+    const [categoriesReducer, dispatchCategories] = useCategoryReducer();
 
     useEffect(() => {
-        if (typeof userListHeight.current === 'number' && height > userListHeight.current && !noResults && filterFormatSearch === "Users" && searchValue.current !== "" && searchValue.currrent !== null) {
+        if (typeof userListHeight.current === 'number' && height > userListHeight.current && !noResults && filterFormatSearch === "Users" && searchValue.current !== "" && searchValue.current !== null) {
             handleUserSearch(searchValue.current)
         }
     }, [height, changeSectionsOne, filterFormatSearch])
@@ -145,6 +143,12 @@ const FindScreen = ({navigation}) => {
     async function getImageWithKeyOne(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { signal: abortControllerRef.current.signal})
         .then(res => 'data:image/jpeg;base64,' + res.data)
+        .catch(error => {
+            if (!(error instanceof CanceledError)) {
+                console.error(error)
+                return SocialSquareLogo_B64_png
+            }
+        })
     }
 
     const handleUserSearch = (val, clear) => {
@@ -246,84 +250,79 @@ const FindScreen = ({navigation}) => {
         .then(res => 'data:image/jpeg;base64,' + res.data);
     }
 
-    const handleCategorySearch = (val) => {
-        if (val !== "") {
-            setChangeSectionsTwo([])
-            setNoResults(false)
-            const layoutCategoriesFound = (data) => {
-                setFoundAmount("Poll Comments:")
-                var allData = data
-                console.log(allData)
-                console.log(allData.length)
-                var tempSections = []
-                var itemsProcessed = 0;
-                allData.forEach(function (item, index) {
-                    if (allData[index].imageKey !== "") {   
-                        async function asyncFunctionForImages() {
-                            const imageB64 = await getImageInCategory(allData[index].imageKey)
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
+    const handleCategorySearch = (val, clear) => {
+        if (!categoriesReducer.noMoreCategories || clear) {
+            if (categoriesReducer.loadingFeed && clear) {
+                abortControllerRef.current.abort();
+                abortControllerRef.current = new AbortController();
+            }
+    
+            if (val !== "") {
+                dispatchCategories({type: clear ? 'startReload' : 'startLoad'})
+    
+                const layoutCategoriesFound = (data, noMoreCategories) => {
+                    if (data.length === 0) {
+                        return dispatchCategories({type: 'noMoreCategories'})
+                    }
+
+                    var allData = data
+                    console.log(allData)
+                    console.log(allData.length)
+                    var tempSections = []
+                    var itemsProcessed = 0;
+                    allData.forEach(function (item, index) {
+                        if (allData[index].imageKey !== "") {   
+                            async function asyncFunctionForImages() {
+                                const imageB64 = await getImageInCategory(allData[index].imageKey)
+                                var tempSectionsTemp = {categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}
+                                tempSections.push(tempSectionsTemp)
+                                itemsProcessed++;
+                                if(itemsProcessed === allData.length) {
+                                    dispatchCategories({type: 'addCategories', categories: tempSections})
+                                    if (noMoreCategories) dispatchCategories({type: 'noMoreCategories'})
+                                }
+                            }
+                            asyncFunctionForImages()
+                        } else {     
+                            var tempSectionsTemp = {categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
-                                setChangeSectionsTwo(tempSections)
-                                setLoadingTwo(false)
+                                dispatchCategories({type: 'addCategories', categories: tempSections})
+                                if (noMoreCategories) dispatchCategories({type: 'noMoreCategories'})
                             }
                         }
-                        asyncFunctionForImages()
-                    } else {     
-                        var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots, categoryId: allData[index].categoryId}]}
-                        tempSections.push(tempSectionsTemp)
-                        itemsProcessed++;
-                        if(itemsProcessed === allData.length) {
-                            setChangeSectionsTwo(tempSections)
-                            setLoadingTwo(false)
-                        }
-                    }
-                });
-            }
-
-            setLoadingTwo(true)
-            setErrorOccured(null)
-            const url = serverUrl + '/tempRoute/searchpagesearchcategories'
-            const toSend = {
-                val
-            }
-            axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-
-                if (status !== 'SUCCESS') {
-                    if (message === 'No results') {
-                        setNoResults(true)
-                        setLoadingTwo(false)
-                        return
-                    }
-                    setErrorOccured(message)
-                    setLoadingTwo(false)
-                    setNoResults(false)
-                } else {
+                    });
+                }
+    
+    
+                const url = serverUrl + '/tempRoute/searchpagesearchcategories'
+                const toSend = {
+                    val,
+                    lastCategoryId: categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
+                }
+                axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
+                    const result = response.data;
+                    const {data} = result;
+    
+                    const {categories, noMoreCategories} = data;
+    
                     console.log(data)
-                    setNoResults(false)
-                    layoutCategoriesFound(data)
+                    layoutCategoriesFound(categories, noMoreCategories)
                     console.log('Category search was a success')
-                    //persistLogin({...data[0]}, message, status);
-                }
-
-            }).catch(error => {
-                if (error instanceof CanceledError) {
-                    console.warn('Intentionally failed request')
-                } else {
-                    console.log(error);
-                    setLoadingTwo(false)
-                    setNoResults(false)
-                    setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
-                    console.error(error)
-                }
-            })
-        } else {
-            console.log('Empty category search')
-            setNoResults(false)
-            setChangeSectionsTwo([])
+    
+                }).catch(error => {
+                    if (error instanceof CanceledError) {
+                        console.warn('Intentionally failed request')
+                    } else {
+                        console.error(error);
+                        dispatchCategories({type: 'error', error: error?.response?.data?.message ? String(error?.response?.data?.message) : 'An unknown error occurred. Please try checking your network connection and try again.'})
+                    }
+                })
+            } else {
+                console.log('Empty category search')
+                dispatchCategories({type: 'resetCategories'})
+            }
         }
     }
 
@@ -341,7 +340,7 @@ const FindScreen = ({navigation}) => {
                 handleUserSearch(val, true)
             } else if (filterFormatSearch == "Categories") {
                 console.log(val)
-                handleCategorySearch(val)
+                handleCategorySearch(val, true)
             } 
         }, 200)
     }
@@ -352,7 +351,7 @@ const FindScreen = ({navigation}) => {
             if (filterFormatSearch == "Users") {
                 handleUserSearch(searchValue.current)
             } else if (filterFormatSearch == "Categories") {
-                handleCategorySearch(searchValue.current)
+                handleCategorySearch(searchValue.current, true)
             }
         }
     }, [filterFormatSearch])
@@ -375,7 +374,8 @@ const FindScreen = ({navigation}) => {
                                         )}
                                         {filterFormatSearch !== "Users" && (
                                             <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                cancelTokenPostFormatTwo.cancel()
+                                                abortControllerRef.current.abort();
+                                                abortControllerRef.current = new AbortController()
                                                 setChangeSectionsOne([])
                                                 setFilterFormatSearch("Users")  
                                             }}>
@@ -392,9 +392,10 @@ const FindScreen = ({navigation}) => {
                                         )}
                                         {filterFormatSearch !== "Categories" && (
                                             <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                cancelTokenPostFormatOne.cancel()
-                                                setChangeSectionsTwo([])
-                                                setFilterFormatSearch("Categories")
+                                                abortControllerRef.current.abort();
+                                                abortControllerRef.current = new AbortController();
+                                                dispatchCategories({type: 'resetCategories'})
+                                                setFilterFormatSearch("Categories");
                                             }}>
                                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
                                             </TouchableOpacity>
@@ -409,8 +410,6 @@ const FindScreen = ({navigation}) => {
                                         )}
                                         {filterFormatSearch !== "Images" && (
                                             <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                //cancelTokenPostFormatOne.cancel()
-                                                //cancelTokenPostFormatTwo.cancel()
                                                 //setChangeSections([])
                                                 //setFilterFormatSearch("Images")
                                                 alert('This feature is coming soon')
@@ -464,16 +463,22 @@ const FindScreen = ({navigation}) => {
                         />
                     )}
                     {filterFormatSearch == "Categories" && (
-                        <SectionList
-                            sections={changeSectionsTwo}
-                            keyExtractor={(item, index) => item + index}
+                        <FlatList
+                            data={categoriesReducer.categories}
+                            keyExtractor={(item) => item.categoryId}
                             renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots} categoryId={item.categoryId}/>}
                             ListFooterComponent={
                                 <>
-                                    <View style={{marginTop: 20}}>
-                                        {loadingTwo == true && (
+                                    <View style={{marginVertical: 20}}>
+                                        {categoriesReducer.loadingFeed == true ?
                                             <ActivityIndicator size="large" color={colors.brand} />     
-                                        )}
+                                        : categoriesReducer.categories.length === 0 && categoriesReducer.noMoreCategories ?
+                                            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No categories</Text>
+                                        : categoriesReducer.error ?
+                                            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.errorColor, textAlign: 'center'}}>{String(categoriesReducer.error)}</Text>
+                                        : categoriesReducer.noMoreCategories ?
+                                            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>There are no more categories to show</Text>
+                                        : null}
                                     </View>
                                 </>
                             }
@@ -493,6 +498,15 @@ const FindScreen = ({navigation}) => {
                             }
                             keyboardDismissMode="on-drag"
                             keyboardShouldPersistTaps="handled"
+                            onEndReachedThreshold={3}
+                            onEndReached = {({distanceFromEnd})=>{
+                                if (distanceFromEnd > 0) {
+                                    console.log('End of the categories feed was reached with ' + distanceFromEnd + ' pixels from the end.')
+                                    if (categoriesReducer.loadingFeed === false) {
+                                        handleCategorySearch(searchValue.current)
+                                    }
+                                }
+                            }}
                         />
                     )}
                     {filterFormatSearch == "Images" && (

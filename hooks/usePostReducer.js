@@ -144,7 +144,8 @@ const reducer = (state, action) => {
             loadingFeed: true,
             reloadingFeed: true,
             posts: [],
-            error: null
+            error: null,
+            noMorePosts: false
         };
     }
 
@@ -160,7 +161,8 @@ const reducer = (state, action) => {
         return {
             ...state,
             posts: [],
-            error: null
+            error: null,
+            noMorePosts: false
         }
     }
 
