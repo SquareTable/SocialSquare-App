@@ -34,6 +34,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const [categories, dispatch] = useCategoryReducer()
     const searchText = useRef('')
     const abortControllerRef = useRef(new AbortController())
+    const debounceTimeoutRef = useRef(null)
 
     const onPressFunction = (categoryTitle, allowScreenShots, categoryId) => {
         navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true), categoryId})
@@ -119,8 +120,18 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     }
 
     const handleChange = (val) => {
-        searchText.current = val;
-        handleCategorySearch(val, true)
+        if (debounceTimeoutRef.current !== null) {
+            clearTimeout(debounceTimeoutRef.current)
+        }
+
+        debounceTimeoutRef.current = setTimeout(() => {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = new AbortController();
+            console.warn('Intentionally canceled request')
+            
+            searchText.current = val;
+            handleCategorySearch(val, true)
+        }, 200)
     }
 
     useEffect(() => {
