@@ -24,6 +24,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const ResetPasswordScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme();
@@ -104,7 +105,7 @@ const ResetPasswordScreen = ({route, navigation}) => {
             setSubmitting(false);
         }).catch((error) => {
             console.error(error)
-            handleMessage(error?.response?.data?.message || error?.message || 'An unexpected error occured. Try again.', 'FAILED');
+            handleMessage(ParseErrorMessage(error), 'FAILED');
             setSubmitting(false);
             setContainerIsFocused(true);
             inputFocusRef?.current?.focus();
@@ -138,7 +139,7 @@ const ResetPasswordScreen = ({route, navigation}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || 'An error occured while resending verification code. Try checking your network connection and then try again.');
+            handleMessage(ParseErrorMessage(error));
         });
     }
     return (

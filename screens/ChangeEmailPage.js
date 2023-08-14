@@ -51,6 +51,7 @@ import { withRepeat } from 'react-native-reanimated';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 
 const ChangeEmailPage = ({navigation}) => {
@@ -83,7 +84,7 @@ const ChangeEmailPage = ({navigation}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 

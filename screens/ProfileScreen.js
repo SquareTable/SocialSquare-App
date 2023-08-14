@@ -111,6 +111,7 @@ import ThreadPost from '../components/Posts/ThreadPost.js';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet.js';
 import useCategoryReducer from '../hooks/useCategoryReducer.js';
 import CategoryItem from '../components/Posts/CategoryItem.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const Welcome = ({navigation, route}) => {
     const [images, dispatchImages] = usePostReducer();
@@ -503,7 +504,7 @@ const Welcome = ({navigation, route}) => {
                 layoutImagePosts({data});
             }).catch(error => {
                 console.error(error);
-                dispatchImages({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading images. Please check your internet connection and retry.'})
+                dispatchImages({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -661,7 +662,7 @@ const Welcome = ({navigation, route}) => {
                 layoutPollPosts(data);
             }).catch(error => {
                 console.error(error);
-                dispatchPolls({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading polls. Please check your internet connection and retry.'})
+                dispatchPolls({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -745,7 +746,7 @@ const Welcome = ({navigation, route}) => {
             }
         }).catch(error => {
             console.error('An error occurred while loading threads from ProfileScreen.js:', error)
-            dispatchThreads({type: 'error', error: error?.response?.data?.message || 'An unknown error occurred while loading threads. Please check your internet connection and try again.'})
+            dispatchThreads({type: 'error', error: ParseErrorMessage(error)})
         })
     }
 
@@ -775,7 +776,7 @@ const Welcome = ({navigation, route}) => {
                 layoutThreadPosts({data});
             }).catch(error => {
                 console.error(error);
-                dispatchThreads({type: 'error', error: error?.response?.data?.message || "An error occured. Try checking your network connection and retry."})
+                dispatchThreads({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -863,7 +864,7 @@ const Welcome = ({navigation, route}) => {
                 layoutCategoriesFound(data)
             }).catch(error => {
                 console.error(error);
-                dispatchCategories({type: 'error', error: error?.response?.data?.message || "An error occured. Try checking your network connection and retry."})
+                dispatchCategories({type: 'error', error: ParseErrorMessage(error)})
             })
         }
     }
@@ -975,7 +976,7 @@ const Welcome = ({navigation, route}) => {
         }).catch(error => {
             console.log(error);
             setChangingPfp(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -1095,7 +1096,7 @@ const Welcome = ({navigation, route}) => {
         }).catch(error => {
             console.log(error);
             setRefreshing(false)
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     })
 

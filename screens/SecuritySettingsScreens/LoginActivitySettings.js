@@ -13,6 +13,7 @@ import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.
 import axios from 'axios';
 import { ServerUrlContext } from '../../components/ServerUrlContext.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ParseErrorMessage from '../../components/ParseErrorMessage.js';
 
 var _ = require('lodash');
 
@@ -49,7 +50,7 @@ const LoginActivitySettings = ({navigation, route}) => {
         }).catch(error => {
             setSettingsLoading(false)
             console.error(error)
-            setSettingsLoadError(error?.response?.data?.message || 'An unknown error occurred. Please check your internet connection and try again.')
+            setSettingsLoadError(ParseErrorMessage(error))
         })
     }
 
@@ -108,7 +109,7 @@ const LoginActivitySettings = ({navigation, route}) => {
                 }).catch(error => {
                     setSavingSettings(false)
                     console.error(error)
-                    showAccountSetupAlert(error?.response?.data?.message)
+                    showAccountSetupAlert(ParseErrorMessage(error))
                 })
             } else {
                 goToNextScreen()
@@ -132,7 +133,7 @@ const LoginActivitySettings = ({navigation, route}) => {
             }).catch(error => {
                 console.error(error)
                 setSavingSettings(false)
-                alert(error?.response?.data?.message || 'An unknown error occurred while saving login activity settings. Please check your internet connection and try again.')
+                alert(ParseErrorMessage(error))
             })
         }
     }

@@ -108,6 +108,7 @@ import ThreadPost from '../components/Posts/ThreadPost.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet.js';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
 
@@ -504,7 +505,7 @@ const HomeScreen = ({navigation, route}) => {
                 }).catch(error => {
                     console.log(error);
                     dispatchFollowingFeed({type: 'stopLoad'})
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    handleMessage(ParseErrorMessage(error));
                 })
             }
         } else if ("For You") {
@@ -542,9 +543,8 @@ const HomeScreen = ({navigation, route}) => {
 
                 }).catch(error => {
                     console.error(error);
-                    console.error(error?.response?.data?.message || 'An unknown error occurred.')
                     dispatchForYouFeed({type: 'stopLoad'})
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    handleMessage(ParseErrorMessage(error));
                 })
             }
         }
@@ -639,7 +639,7 @@ const HomeScreen = ({navigation, route}) => {
                 }).catch(error => {
                     console.log(error);
                     dispatchFollowingFeed({type: 'stopLoad'})
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    handleMessage(ParseErrorMessage(error));
                 })
             } else if (currentFeed == "For You") {
                 dispatchForYouFeed({type: 'startReload'})
@@ -671,9 +671,8 @@ const HomeScreen = ({navigation, route}) => {
 
                 }).catch(error => {
                     console.error(error);
-                    console.error(error?.response?.data?.message || 'An unknown error occurred.')
                     dispatchForYouFeed({type: 'stopLoad'})
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    handleMessage(ParseErrorMessage(error));
                 })
             }
         } else {
@@ -767,7 +766,7 @@ const HomeScreen = ({navigation, route}) => {
                             
                         }).catch(error => {
                             console.log(error);
-                            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', index);
+                            handleMessage(ParseErrorMessage(error), 'FAILED', index);
                             removeInCaseOfErrorOrNotSuccess(idOfPost)
                         })
                     }
@@ -802,7 +801,7 @@ const HomeScreen = ({navigation, route}) => {
                             
                         }).catch(error => {
                             console.log(error);
-                            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', index);
+                            handleMessage(ParseErrorMessage(error), 'FAILED', index);
                             removeInCaseOfErrorOrNotSuccess(idOfPost)
                         })
                     }
@@ -837,7 +836,7 @@ const HomeScreen = ({navigation, route}) => {
                             
                         }).catch(error => {
                             console.log(error);
-                            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', index);
+                            handleMessage(ParseErrorMessage(error), 'FAILED', index);
                             removeInCaseOfErrorOrNotSuccess(idOfPost)
                         })
                     }
@@ -986,7 +985,7 @@ const HomeScreen = ({navigation, route}) => {
                 }
             }).catch((error) => {
                 console.log(error);
-                alert(error?.response?.data?.message || 'An error occured. Try checking your internet connection and then try again.')
+                alert(ParseErrorMessage(error))
             });
         } else {
             logoPressedTimes.current = 0;

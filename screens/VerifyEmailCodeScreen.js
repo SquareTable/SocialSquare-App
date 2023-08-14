@@ -32,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {storeJWT} from './../jwtHandler'
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const VerifyEmailCodeScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme();
@@ -150,7 +151,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
             }).catch(error => {
                 console.error(error);
                 //setSubmitting(false);
-                handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                handleMessage(ParseErrorMessage(error));
             })
         }
         NetInfo.fetch().then(state => {
@@ -246,7 +247,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 setSubmitting(false);
             }).catch((error) => {
                 console.error(error)
-                handleMessage(error?.response?.data?.message || error?.message || 'An unexpected error occured. Try again.', 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
                 setSubmitting(false);
                 setContainerIsFocused(true);
                 inputFocusRef?.current?.focus();
@@ -273,7 +274,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 }
             }).catch((error) => {
                 console.error(error)
-                handleMessage(error?.response?.data?.message || error?.message || 'An unexpected error occured. Try again.', 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
                 setSubmitting(false);
                 setContainerIsFocused(true);
                 inputFocusRef?.current?.focus();
@@ -300,7 +301,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 }
             }).catch((error) => {
                 console.error(error)
-                handleMessage(error?.response?.data?.message || error?.message || 'An unexpected error occured. Try again.', 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
                 setSubmitting(false);
                 setContainerIsFocused(true);
                 inputFocusRef?.current?.focus();
@@ -328,7 +329,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 setSubmitting(false);
             }).catch((error) => {
                 console.error(error)
-                handleMessage(error?.response?.data?.message || error?.message || 'An unexpected error occured. Try again.', 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
                 setSubmitting(false);
                 setContainerIsFocused(true);
                 inputFocusRef?.current?.focus();
@@ -353,7 +354,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 }
             }).catch((error) => {
                 console.error(error)
-                handleMessage(error?.response?.data?.message || error?.message || 'An unexpected error occured. Try again.', 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
                 setSubmitting(false);
                 setContainerIsFocused(true);
                 inputFocusRef?.current?.focus();
@@ -378,7 +379,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 }
             }).catch((error) => {
                 console.error(error)
-                handleMessage(error?.response?.data?.message || error?.message || 'An unexpected error occured. Try again.', 'FAILED');
+                handleMessage(ParseErrorMessage(error), 'FAILED');
                 setSubmitting(false);
                 setContainerIsFocused(true);
                 inputFocusRef?.current?.focus();

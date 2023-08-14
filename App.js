@@ -58,6 +58,7 @@ import {Logout} from './components/HandleLogout';
 import {storeJWT} from './jwtHandler';
 import mobileAds, { MaxAdContentRating, TestIds } from 'react-native-google-mobile-ads';
 import { SERVER_URL } from './defaults.js';
+import ParseErrorMessage from './components/ParseErrorMessage.js';
 
 mobileAds()
   .setRequestConfiguration({
@@ -197,7 +198,7 @@ const App = () => {
         console.log("No JWT passed?")
         //setAuthAsHeaders() // why not // cant do anymore since userid is used in the keys for multiple accounts
       } else if (status == 403) {
-        if (error.response.data.message == "Token generated.") {
+        if (ParseErrorMessage(error) == "Token generated.") {
           console.log("New token generated.")
           //refresh occured so repeat last request
           let token = error.response.data.token;
@@ -1338,7 +1339,7 @@ const App = () => {
               }).catch(error => {
                   console.error(error);
                   //setSubmitting(false);
-                  handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                  handleMessage(ParseErrorMessage(error));
               })
             }
             let credentialsListObject = await AsyncStorage.getItem('socialSquare_AllCredentialsList');

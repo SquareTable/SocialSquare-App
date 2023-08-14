@@ -18,6 +18,7 @@ import { Formik } from 'formik';
 import {Octicons} from '@expo/vector-icons';
 import axios from 'axios';
 import { ServerUrlContext } from '../components/ServerUrlContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 
 const ReportPost = ({navigation, route}) => {
@@ -65,7 +66,7 @@ const ReportPost = ({navigation, route}) => {
             }
         }).catch(error => {
             console.error(error)
-            setError(error?.response?.data?.message || 'An error occured while sending report. Please check your internet connection and try again later.')
+            setError(ParseErrorMessage(error))
         })
     }
 

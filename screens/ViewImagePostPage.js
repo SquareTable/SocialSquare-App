@@ -113,6 +113,7 @@ import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import usePostReducer from '../hooks/usePostReducer';
 import ImagePost from '../components/Posts/ImagePost';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 
 const ViewImagePostPage = ({route, navigation}) => {
@@ -287,7 +288,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             console.error(error);
             setLoadingMoreComments(false)
             //setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -316,7 +317,7 @@ const ViewImagePostPage = ({route, navigation}) => {
         }).catch(error => {
             console.error(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 

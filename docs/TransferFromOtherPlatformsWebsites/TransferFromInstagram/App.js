@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import ParseErrorMessage from '../../../components/ParseErrorMessage';
 
 //const postsJSON = require('./posts_1.json')
 
@@ -77,9 +78,9 @@ export default function App() {
           setCurrentAppPage('transfer')
         }
       }).catch((error) => {
-        console.log(error)
+        console.error(error)
         setLoggingIn(false)
-        setMessage(error?.response?.data?.message || String(error))
+        setMessage(ParseErrorMessage(error))
       })
     }
   }

@@ -23,6 +23,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const ForgottenPasswordScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -56,7 +57,7 @@ const ForgottenPasswordScreen = ({navigation}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || 'An error occured. Try checking your network connection and then try again.');
+            handleMessage(ParseErrorMessage(error));
         })
     }
     return (

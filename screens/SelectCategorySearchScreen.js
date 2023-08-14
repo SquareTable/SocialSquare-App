@@ -26,6 +26,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import CategoryItem from '../components/Posts/CategoryItem.js';
 import useCategoryReducer from '../hooks/useCategoryReducer.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const SelectCategorySearchScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme()
@@ -113,7 +114,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             }).catch(error => {
                 if (!(error instanceof CanceledError)) {
                     console.error(error);
-                    dispatch({type: 'error', error: error?.response?.data?.message ? String(error?.response?.data?.message) : 'An unknown error occurred. Please try checking your network connection and try again.'})
+                    dispatch({type: 'error', error: ParseErrorMessage(error)})
                 }
             })
         }

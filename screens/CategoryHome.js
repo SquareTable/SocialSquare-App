@@ -49,6 +49,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '@react-navigation/native';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const CategoryHome = ({navigation}) => {
     const {colors, dark} = useTheme()
@@ -136,7 +137,7 @@ const CategoryHome = ({navigation}) => {
         }).catch(error => {
             console.log(error);
             submitting = false;
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 

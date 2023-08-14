@@ -36,6 +36,7 @@ import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 var _ = require('lodash');
 
@@ -83,7 +84,7 @@ const NotificationsSettingsScreen = ({navigation}) => {
                 setShowSettings(true)
             }
         }).catch(error => {
-            setErrorOccuredDownloadingNotificationSettings(error?.response?.data?.message || ('An error occured: ' + String(error)))
+            setErrorOccuredDownloadingNotificationSettings(ParseErrorMessage(error))
         })
     }
 
@@ -102,7 +103,7 @@ const NotificationsSettingsScreen = ({navigation}) => {
                 navigation.goBack()
             }
         }).catch(error => {
-            alert(error?.response?.data?.message || ('An error occured: ' + String(error)))
+            alert(ParseErrorMessage(error))
             setSavingChanges(false)
         })
     }

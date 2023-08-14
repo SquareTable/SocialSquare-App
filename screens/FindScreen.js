@@ -55,6 +55,7 @@ import { ExperimentalFeaturesEnabledContext } from '../components/ExperimentalFe
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import CategoryItem from '../components/Posts/CategoryItem.js';
 import useCategoryReducer from '../hooks/useCategoryReducer.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 class UserItem extends PureComponent {
     constructor(props) {
@@ -232,9 +233,8 @@ const FindScreen = ({navigation}) => {
                     console.warn('Cancelled intentionally')
                 } else {
                     console.error(error);
-                    console.log(error?.response?.data?.message)
                     setLoadingOne(false)
-                    setErrorOccured(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    setErrorOccured(ParseErrorMessage(error));
                     setNoResults(false)
                 }
             })
@@ -316,7 +316,7 @@ const FindScreen = ({navigation}) => {
                         console.warn('Intentionally failed request')
                     } else {
                         console.error(error);
-                        dispatchCategories({type: 'error', error: error?.response?.data?.message ? String(error?.response?.data?.message) : 'An unknown error occurred. Please try checking your network connection and try again.'})
+                        dispatchCategories({type: 'error', error: ParseErrorMessage(error)})
                     }
                 })
             } else {

@@ -94,6 +94,7 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const CommentViewPage = ({route, navigation}) => {
      //context
@@ -242,7 +243,7 @@ const CommentViewPage = ({route, navigation}) => {
         }).catch(error => {
             console.error(error);
             //setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -382,7 +383,7 @@ const CommentViewPage = ({route, navigation}) => {
             console.log(error);
             setLoadingMoreComments(false)
             //setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -411,7 +412,7 @@ const CommentViewPage = ({route, navigation}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -548,7 +549,7 @@ const CommentViewPage = ({route, navigation}) => {
                         neitherVotedComments.push(commentId)
                         setNeitherVotes(neitherVotedComments)
                     }
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
                 })
             }
         }
@@ -687,7 +688,7 @@ const CommentViewPage = ({route, navigation}) => {
                         neitherVotedComments.push(commentId)
                         setNeitherVotes(neitherVotedComments)
                     }
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
                 })
             }
         }

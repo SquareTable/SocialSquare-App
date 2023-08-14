@@ -13,6 +13,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import { useTheme } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import { ServerUrlContext } from '../components/ServerUrlContext';
+import ParseErrorMessage from '../components/ParseErrorMessage';
 
 const ReportAccount = ({navigation, route: routeData}) => {
     const { colors } = useTheme();
@@ -50,7 +51,7 @@ const ReportAccount = ({navigation, route: routeData}) => {
                 console.log("An error occured while reporting user.")
                 console.log(error)
                 setSendingReport(false)
-                setError(error?.response?.data?.message || 'An error occured. Please check your internet connection and try again later.')
+                setError(ParseErrorMessage(error))
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true})

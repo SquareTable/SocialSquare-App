@@ -14,6 +14,7 @@ import {
 import axios from 'axios';
 import {ServerUrlContext} from '../../../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../../../components/StatusBarHeightContext.js';
+import ParseErrorMessage from '../../../components/ParseErrorMessage.js';
 
 const ActivateEmailMFA = ({navigation, route}) => {
     const {colors, dark} = useTheme();
@@ -42,7 +43,7 @@ const ActivateEmailMFA = ({navigation, route}) => {
         }).catch(error => {
             console.error(error);
             setTurningOffEmailMFA(false);
-            alert(error?.response?.data?.message || "An error occured while turning off email multi-factor authentication. Please try again later.");
+            alert(ParseErrorMessage(error));
         })
     }
     return (

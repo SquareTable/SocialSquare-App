@@ -15,6 +15,7 @@ import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.
 import axios from 'axios';
 import { ServerUrlContext } from '../../components/ServerUrlContext.js';
 import { getTimeFromUTCMS } from '../../libraries/Time.js';
+import ParseErrorMessage from '../../components/ParseErrorMessage.js';
 
 class RefreshTokenItem extends Component {
     constructor(props) {
@@ -82,7 +83,7 @@ const LoginActivity = ({navigation}) => {
                 })
             }
         }).catch(error => {
-            alert(error?.response?.data?.message || 'An unknown error occurred while logging out device. Please try again later.')
+            alert(ParseErrorMessage(error))
         })
     }
 
@@ -104,7 +105,7 @@ const LoginActivity = ({navigation}) => {
                 setLoading(false)
             }).catch(error => {
                 console.error(error)
-                setError(error?.response?.data?.message || "An unknown error occurred. Please try again.")
+                setError(ParseErrorMessage(error))
                 setLoading(false)
             })
         }
@@ -135,7 +136,7 @@ const LoginActivity = ({navigation}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert(error?.response?.data?.message || 'An unknown error occurred. Please try again.')
+            alert(ParseErrorMessage(error))
         })
     }
 

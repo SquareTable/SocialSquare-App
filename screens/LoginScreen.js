@@ -60,6 +60,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import {storeJWT} from './../jwtHandler'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const LoginScreen = ({navigation, route}) => {
     const { colors, dark } = useTheme();
@@ -101,7 +102,7 @@ const LoginScreen = ({navigation, route}) => {
         }).catch(error => {
             console.log(error);
             setSubmitting(false);
-            handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+            handleMessage(ParseErrorMessage(error));
         })
     }
 
@@ -169,13 +170,13 @@ const LoginScreen = ({navigation, route}) => {
                 //setSubmitting(false);
     
             }).catch(error => {
-                if (error?.response?.data?.message === 'No profile image.') {
+                if (ParseErrorMessage(error) === 'No profile image.') {
                     console.log('This account does not have a profile picture')
                     setProfilePictureUri(SocialSquareLogo_B64_png)
                     setProfilePictureData([SocialSquareLogo_B64_png, message, status, credentialsToUse])
                 } else {
                     console.error(error);
-                    handleMessage(error?.response?.data?.message || "An error occured. Try checking your network connection and retry.");
+                    handleMessage(ParseErrorMessage(error));
                     setDownloadingPfp(false)
                 }
             })
