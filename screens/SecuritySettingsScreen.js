@@ -144,7 +144,7 @@ const SecuritySettingsScreen = ({navigation}) => {
 
     useEffect(() => {
         if (destroyingLocalData == true && prevDestroyingLocalData == false) {
-            setStoredCredentials(null)
+            setStoredCredentials({})
             setAppStylingContextState('Default')
             setProfilePictureUri(SocialSquareLogo_B64_png);
             setDestroyingLocalData(false)

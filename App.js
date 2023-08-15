@@ -1291,7 +1291,7 @@ const App = () => {
           if (result !== null) {
             setStoredCredentials(JSON.parse(result));
           } else {
-            setStoredCredentials(null);
+            setStoredCredentials({});
           }
           async function refreshProfilePictureContext(credentials) {
             const getProfilePicture = () => {
@@ -1344,8 +1344,8 @@ const App = () => {
             }
             let credentialsListObject = await AsyncStorage.getItem('socialSquare_AllCredentialsList');
             if (credentialsListObject == null && credentials) {
-              setStoredCredentials(null);
-              setAllCredentialsStoredList(null);
+              setStoredCredentials({});
+              setAllCredentialsStoredList([]);
             } else {
               let parsedCredentialsListObject = JSON.parse(credentialsListObject);
               setAllCredentialsStoredList(parsedCredentialsListObject);
