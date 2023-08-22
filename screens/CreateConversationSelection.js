@@ -95,13 +95,6 @@ const CreateConversationSelection = ({navigation}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
-
 const UserTextInput = ({label, icon, isPassword, ...props}) => {
     return(
         <SearchBarArea style={{width: '100%'}}>

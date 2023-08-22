@@ -1,67 +1,23 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
-// formik
-import {Formik} from 'formik';
-
 import {
-    InnerContainer,
     PageTitle,
     SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
-    WelcomeContainer,
     Colors,
-    WelcomeImage,
-    Avatar,
-    StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    PostTypeSelector,
-    PostHorizontalView,
-    PostIcons,
-    PostCollectionView,
-    PostMsgBox,
     MultiMediaPostFrame,
-    StyledTextInput,
-    LeftIcon,
-    StyledInputLabel,
     MsgBox
 } from '../screenStylings/styling.js';
 import {ActivityIndicator} from 'react-native';
 
-// icons
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
-
 // Colors
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary} = Colors;
-
-// axios
-import axios from 'axios';
-
-// keyboard avoiding view
-import KeyboardAvoidingWrapper from '../../components/KeyboardAvoidingWrapper';
-
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../../components/CredentialsContext';
 import { ImageBackground, ScrollView, Image, View, Text } from 'react-native';
-
-import { cos } from 'react-native-reanimated';
 
 import { useTheme } from '@react-navigation/native';
 

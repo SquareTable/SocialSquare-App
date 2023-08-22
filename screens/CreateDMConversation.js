@@ -17,27 +17,9 @@ import {
     InnerContainer,
     PageLogo,
     PageTitle,
-    SubTitle,
-    StyledFormArea,
-    LeftIcon,
-    RightIcon,
-    StyledInputLabel,
-    StyledTextInput,
     StyledButton,
     ButtonText,
-    Colors,
-    MsgBox,
-    Line,
-    ExtraView,
-    ExtraText,
-    TextLink,
-    TextLinkContent,
-    AboveButtonText,
-    PostHorizontalView,
-    CheckBoxForPosts,
-    PostIcons,
-    MultiMediaPostFrame,
-    Avatar
+    Colors
 } from './screenStylings/styling.js';
 const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor} = Colors;
 

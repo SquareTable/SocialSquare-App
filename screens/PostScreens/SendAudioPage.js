@@ -52,56 +52,27 @@ import { CredentialsContext } from '../../components/CredentialsContext';
 import KeyboardAvoidingWrapper_NoScrollview from '../../components/KeyboardAvoidingWrapper_NoScrollview.js';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 
+const UserTextInput = ({label, icon, ...props}) => {
+    return(
+        <View>
+            <LeftIcon>
+                <Octicons name={icon} size={30} color={colors.brand} />
+            </LeftIcon>
+            <StyledInputLabel>{label}</StyledInputLabel>
+            <StyledTextInput {...props} />
+        </View>
+    )
+}
+
 
 const SendAudioPage = ({navigation}) => {
     const { colors, dark} = useTheme();
-    const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [screenshotsAllowed, setScreenshotsAllowed] = useState(false);
     const StatusBarHeight = useContext(StatusBarHeightContext);
 
-    const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
-        return(
-            <View>
-                <LeftIcon>
-                    <Octicons name={icon} size={30} color={colors.brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput {...props} />
-                {isPassword && (
-                    <RightIcon onPress={() => setHidePassword(!hidePassword)}>
-                        <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
-                    </RightIcon>
-                )}
-            </View>
-        )
-    }
-
-    //context
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-
     const handleLogin = (credentials, setSubmitting) => {
-        /* GET KOVID TO CHANGE THE CODE TO UPLOAD AUDIO TO THE BACKEND SERVER
-        handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/signin";
-
-        axios.post(url, credentials).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message,status);
-            } else {
-                persistLogin({...data[0]}, message, status);
-                navigation.replace("Tabs");
-            }
-            setSubmitting(false);
-        }).catch(error => {
-            console.log(error);
-            setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        }) */
         alert("Coming soon")
         setSubmitting(false);
     }
@@ -109,20 +80,6 @@ const SendAudioPage = ({navigation}) => {
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);
-    }
-
-    const persistLogin = (credentials, message, status) => {
-        AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(credentials))
-        .then(() => {
-            handleMessage(message, status);
-            setStoredCredentials(credentials);
-            console.log(credentials)
-            console.log(storedCredentials)
-        })
-        .catch((error) => {
-            console.error(error);
-            handleMessage('Persisting login failed');
-        })
     }
 
     return(

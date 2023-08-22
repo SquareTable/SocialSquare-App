@@ -6,16 +6,9 @@ import {
     Navigator_BackButton,
     ChatScreen_Title,
     TestText,
-    InnerContainer,
-    StyledFormArea,
-    StyledTextInput,
     StyledButton,
     ButtonText,
-    MsgBox,
-    SubTitle,
-    RightIcon,
-    LeftIcon,
-    StyledInputLabel
+    MsgBox
 } from './screenStylings/styling.js';
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper.js';
 import { Formik } from 'formik';

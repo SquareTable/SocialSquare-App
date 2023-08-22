@@ -5,21 +5,11 @@ import {
     ChatScreen_Title,
     Navigator_BackButton,
     TestText,
-    Colors,
-    SearchBarArea,
-    LeftIcon,
-    StyledInputLabel,
-    StyledTextInput,
-    ProfileOptionsView,
-    StyledFormArea,
-    StyledButton,
-    ButtonText
+    Colors
 } from './screenStylings/styling.js'
-import Icon from 'react-native-vector-icons/Entypo';
 
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
+import Octicons from 'react-native-vector-icons/Octicons.js'
 
-import { Formik } from 'formik';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppStylingContext } from '../components/AppStylingContext.js';
@@ -29,8 +19,6 @@ const BuiltInStylingMenu = ({navigation}) => {
     const {dark, colors} = useTheme()
     const StatusBarHeight = useContext(StatusBarHeightContext);
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
-
-    const {darkLight, brand} = Colors;
 
     const handlePress = async (style) => {
         console.log('Setting color styling to ' + style)
