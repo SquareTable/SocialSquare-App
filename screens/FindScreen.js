@@ -2,47 +2,23 @@ import React, {useContext, useEffect, useState, useRef, memo, PureComponent} fro
 import { StatusBar } from 'expo-status-bar';
 
 import {
-    InnerContainer,
-    PageTitle,
     SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
-    Colors,
     Avatar,
-    StyledContainer,
     StyledInputLabel,
     StyledTextInput,
     SearchBarArea,
     LeftIcon,
-    SearchHorizontalView,
-    SearchHorizontalViewItem,
-    SearchHorizontalViewItemCenter,
-    SearchSubTitle,
-    ProfIcons,
-    SearchUserViewItemCenter,
-    SearchFrame,
     PostIcons
 } from './screenStylings/styling.js';
 
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterGrey, midWhite, red} = Colors;
-
 // icons
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
-
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Octicons from 'react-native-vector-icons';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator, Text, SafeAreaView, Keyboard, FlatList, useWindowDimensions } from 'react-native';
-
-// formik
-import {Formik} from 'formik';
+import { View, ActivityIndicator, Text, Keyboard, FlatList, useWindowDimensions } from 'react-native';
 
 //axios
 import axios, { CanceledError } from 'axios';
@@ -368,12 +344,12 @@ const FindScreen = ({navigation}) => {
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Users</SubTitle>
                                         {filterFormatSearch == "Users" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
                                             </TouchableOpacity>
                                         )}
                                         {filterFormatSearch !== "Users" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                                 abortControllerRef.current.abort();
                                                 abortControllerRef.current = new AbortController()
                                                 setChangeSectionsOne([])
@@ -386,12 +362,12 @@ const FindScreen = ({navigation}) => {
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Categories</SubTitle>
                                         {filterFormatSearch == "Categories" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
                                             </TouchableOpacity>
                                         )}
                                         {filterFormatSearch !== "Categories" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                                 abortControllerRef.current.abort();
                                                 abortControllerRef.current = new AbortController();
                                                 dispatchCategories({type: 'resetCategories'})
@@ -404,12 +380,12 @@ const FindScreen = ({navigation}) => {
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
                                         {filterFormatSearch == "Images" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
                                             </TouchableOpacity>
                                         )}
                                         {filterFormatSearch !== "Images" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                                 //setChangeSections([])
                                                 //setFilterFormatSearch("Images")
                                                 alert('This feature is coming soon')
