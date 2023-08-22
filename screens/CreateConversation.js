@@ -295,13 +295,6 @@ const ConversationCreationPage = ({route, navigation}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
-
 const UserTextInput = ({label, icon, body, colors, ...props}) => {
     if (body == true) {
         return(

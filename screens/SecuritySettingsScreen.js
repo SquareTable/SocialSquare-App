@@ -14,13 +14,7 @@ import {
     ConfirmLogoutView,
     ConfirmLogoutText,
     ConfirmLogoutButtons,
-    ConfirmLogoutButtonText,
-    Colors,
-    StyledFormArea,
-    LeftIcon,
-    StyledInputLabel,
-    StyledTextInput,
-    RightIcon
+    ConfirmLogoutButtonText
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
 
@@ -48,7 +42,6 @@ import { AppStylingContext } from '../components/AppStylingContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import AppCredits from '../components/AppCredits.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
-const {brand} = Colors;
 
 
 const SecuritySettingsScreen = ({navigation}) => {
@@ -243,23 +236,6 @@ const SecuritySettingsScreen = ({navigation}) => {
             </BackgroundDarkColor>
         </>
     );
-}
-
-const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
-    return(
-        <View>
-            <LeftIcon>
-                <Octicons name={icon} size={30} color={brand} />
-            </LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput {...props}/>
-            {isPassword && (
-                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
-                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-        </View>
-    )
 }
 
 export default SecuritySettingsScreen;

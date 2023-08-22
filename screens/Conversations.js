@@ -680,18 +680,12 @@ const Conversations = ({navigation}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
-
 const UserTextInput = ({label, icon, isPassword, ...props}) => {
+    const {colors} = useTheme();
     return(
         <SearchBarArea style={{width: '100%'}}>
             <LeftIcon searchIcon={true}>
-                <Octicons name={"search"} size={20} color={brand} />
+                <Octicons name={"search"} size={20} color={colors.brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput searchPage={true} {...props}/>

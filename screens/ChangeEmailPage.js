@@ -201,24 +201,18 @@ const ChangeEmailPage = ({navigation}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
-
 const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
+    const {colors} = useTheme();
     return(
         <View>
             <LeftIcon>
-                <Octicons name={icon} size={30} color={brand} />
+                <Octicons name={icon} size={30} color={colors.brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput {...props}/>
             {isPassword && (
                 <RightIcon style={{top: 32}} onPress={() => setHidePassword(!hidePassword)}>
-                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
+                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={colors.brand}/>
                 </RightIcon>
             )}
         </View>

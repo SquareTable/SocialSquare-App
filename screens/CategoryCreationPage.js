@@ -80,30 +80,6 @@ const CategoryCreationPage = ({navigation, route}) => {
         setImage(imageFromRoute)
     })
 
-    const UserTextInput = ({label, icon, body, ...props}) => {
-        if (body == true) {
-            return(
-                <View>
-                    <LeftIcon searchIcon={true}>
-                        <Octicons name={icon} size={30} color={brand} />
-                    </LeftIcon>
-                    <StyledInputLabel>{label}</StyledInputLabel>
-                    <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
-                </View>
-            )
-        } else {
-            return(
-                <View>
-                    <LeftIcon style={{top: 27}} searchIcon={true}>
-                        <Octicons name={icon} size={30} color={brand} />
-                    </LeftIcon>
-                    <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-                    <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey}} {...props}/>
-                </View>
-            )
-        }
-    }
-
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);
@@ -313,11 +289,29 @@ const CategoryCreationPage = ({navigation, route}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
+const UserTextInput = ({label, icon, body, ...props}) => {
+    const {colors} = useTheme()
+    if (body == true) {
+        return(
+            <View>
+                <LeftIcon searchIcon={true}>
+                    <Octicons name={icon} size={30} color={brand} />
+                </LeftIcon>
+                <StyledInputLabel>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: colors.midWhite, borderRadius: 10}} {...props}/>
+            </View>
+        )
+    } else {
+        return(
+            <View>
+                <LeftIcon style={{top: 27}} searchIcon={true}>
+                    <Octicons name={icon} size={30} color={brand} />
+                </LeftIcon>
+                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: colors.slightlyLighterGrey}} {...props}/>
+            </View>
+        )
     }
-})
+}
 
 export default CategoryCreationPage;

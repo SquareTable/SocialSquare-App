@@ -47,6 +47,31 @@ import { UseUploadContext } from '../../components/UseUploadContext.js';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+const UserTextInput = ({label, icon, body, ...props}) => {
+    const {colors, dark} = useTheme();
+    if (body == true) {
+        return(
+            <View>
+                <LeftIcon style={{top: 28}} searchIcon={true}>
+                    <Octicons name={icon} size={30} color={colors.brand} />
+                </LeftIcon>
+                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: dark ? colors.midWhite : colors.greyish, borderRadius: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, borderWidth: 3, color: colors.tertiary}} {...props}/>
+            </View>
+        )
+    } else {
+        return(
+            <View>
+                <LeftIcon style={{top: 26.5}} searchIcon={true}>
+                    <Octicons name={icon} size={30} color={colors.brand} />
+                </LeftIcon>
+                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: dark ? colors.slightlyLighterGrey : colors.greyish, backgroundColor: dark ? colors.darkLight : colors.borderColor, color: colors.tertiary}} {...props}/>
+            </View>
+        )
+    }
+}
+
 const ThreadUploadPage = ({route, navigation}) => {
     const { uploadPost } = useContext(UseUploadContext)
     const {colors, dark} = useTheme();
@@ -175,30 +200,6 @@ const ThreadUploadPage = ({route, navigation}) => {
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);
-    }
-
-    const UserTextInput = ({label, icon, body, ...props}) => {
-        if (body == true) {
-            return(
-                <View>
-                    <LeftIcon style={{top: 28}} searchIcon={true}>
-                        <Octicons name={icon} size={30} color={brand} />
-                    </LeftIcon>
-                    <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-                    <StyledTextInput searchPage={true} style={{borderColor: dark ? midWhite : greyish, borderRadius: 10, backgroundColor: dark ? darkLight : colors.borderColor, borderWidth: 3, color: colors.tertiary}} {...props}/>
-                </View>
-            )
-        } else {
-            return(
-                <View>
-                    <LeftIcon style={{top: 26.5}} searchIcon={true}>
-                        <Octicons name={icon} size={30} color={brand} />
-                    </LeftIcon>
-                    <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-                    <StyledTextInput searchPage={true} style={{borderColor: dark ? slightlyLighterGrey : greyish, backgroundColor: dark ? darkLight : colors.borderColor, color: colors.tertiary}} {...props}/>
-                </View>
-            )
-        }
     }
 
     const pickImage = async () => {

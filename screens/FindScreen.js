@@ -535,7 +535,7 @@ const UserTextInput = ({label, icon, isPassword, colors, ...props}) => {
     return(
         <SearchBarArea>
             <LeftIcon searchIcon={true}>
-                <Octicons name={"search"} size={20} color={brand} />
+                <Octicons name={"search"} size={20} color={colors.brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}} searchPage={true} {...props}/>

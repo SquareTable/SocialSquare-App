@@ -52,48 +52,44 @@ import { UseUploadContext } from '../../components/UseUploadContext.js';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-
-const PollUploadPage = ({navigation}) => {
-    const { uploadPost } = useContext(UseUploadContext)
-    // Start User Text Input
-
-    const UserTextInput = ({
-        label, 
-        icon, 
-        optionOneColor, 
-        setOptionOneColor,
-        optionOneColorChangeViewVisible,
-        setOptionOneColorChangeViewVisible,
-        optionTwoColor, 
-        setOptionTwoColor,
-        optionTwoColorChangeViewVisible,
-        setOptionTwoColorChangeViewVisible,
-        optionThreeColor, 
-        setOptionThreeColor,
-        optionThreeColorChangeViewVisible,
-        setOptionThreeColorChangeViewVisible,
-        optionFourColor, 
-        setOptionFourColor,
-        optionFourColorChangeViewVisible,
-        setOptionFourColorChangeViewVisible,
-        optionFiveColor, 
-        setOptionFiveColor,
-        optionFiveColorChangeViewVisible,
-        setOptionFiveColorChangeViewVisible,
-        optionSixColor, 
-        setOptionSixColor,
-        optionSixColorChangeViewVisible,
-        setOptionSixColorChangeViewVisible,
-        isOptionOne,
-        isOptionTwo,
-        isOptionThree,
-        isOptionFour,
-        isOptionFive,
-        isOptionSix,
-        hidePassword,
-        selectedOptionForColor,
-        setSelectedOptionForColor,
-        ...props}) => {
+const UserTextInput = ({
+    label, 
+    icon, 
+    optionOneColor, 
+    setOptionOneColor,
+    optionOneColorChangeViewVisible,
+    setOptionOneColorChangeViewVisible,
+    optionTwoColor, 
+    setOptionTwoColor,
+    optionTwoColorChangeViewVisible,
+    setOptionTwoColorChangeViewVisible,
+    optionThreeColor, 
+    setOptionThreeColor,
+    optionThreeColorChangeViewVisible,
+    setOptionThreeColorChangeViewVisible,
+    optionFourColor, 
+    setOptionFourColor,
+    optionFourColorChangeViewVisible,
+    setOptionFourColorChangeViewVisible,
+    optionFiveColor, 
+    setOptionFiveColor,
+    optionFiveColorChangeViewVisible,
+    setOptionFiveColorChangeViewVisible,
+    optionSixColor, 
+    setOptionSixColor,
+    optionSixColorChangeViewVisible,
+    setOptionSixColorChangeViewVisible,
+    isOptionOne,
+    isOptionTwo,
+    isOptionThree,
+    isOptionFour,
+    isOptionFive,
+    isOptionSix,
+    hidePassword,
+    selectedOptionForColor,
+    setSelectedOptionForColor,
+    ...props}) => {
+        const {colors} = useTheme();
         return(
             <View>
                 <LeftIcon style={{top: icon == "note" ? 35 : 33}}>
@@ -140,9 +136,11 @@ const PollUploadPage = ({navigation}) => {
                 )}
             </View>
         )
-    }
+}
 
-    // End of User Text Input
+
+const PollUploadPage = ({navigation}) => {
+    const { uploadPost } = useContext(UseUploadContext)
     const {colors, dark} = useTheme();
     const [optionOneColorChangeViewVisible, setOptionOneColorChangeViewVisible] = useState(true);
     const [optionOneColor, setOptionOneColor] = useState("");

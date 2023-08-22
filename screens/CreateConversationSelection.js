@@ -1,60 +1,15 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
-// formik
-import {Formik} from 'formik';
-
-// icons
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
-
 import {
-    StyledContainer,
-    InnerContainer,
-    PageLogo,
-    PageTitle,
     SubTitle,
-    StyledFormArea,
-    LeftIcon,
-    RightIcon,
-    StyledInputLabel,
-    StyledTextInput,
-    StyledButton,
-    ButtonText,
     Colors,
-    MsgBox,
-    Line,
-    ExtraView,
-    ExtraText,
-    TextLink,
-    TextLinkContent,
-    SearchBarArea,
-    PostsHorizontalView,
-    PostsVerticalView,
-    PostCreatorIcon,
     WelcomeContainer,
     ChatScreen_Title,
     Navigator_BackButton,
     TestText
 } from './screenStylings/styling.js';
-import {View, ActivityIndicator, ImageBackground, StyleSheet, Image, SectionList, Text} from 'react-native';
-
-// Colors
-const {brand, primary, tertiary, darkLight, descTextColor, slightlyLighterPrimary, red} = Colors;
-
-// keyboard avoiding view
-import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
-
-// API client
-import axios from 'axios';
-
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-//credentials context
-import { CredentialsContext } from './../components/CredentialsContext';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-
-import { useIsFocused } from '@react-navigation/native';
+import {View, TouchableOpacity, Image, Text} from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
@@ -93,25 +48,6 @@ const CreateConversationSelection = ({navigation}) => {
             </WelcomeContainer>
         </>
     );
-}
-
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
-
-const UserTextInput = ({label, icon, isPassword, ...props}) => {
-    return(
-        <SearchBarArea style={{width: '100%'}}>
-            <LeftIcon searchIcon={true}>
-                <Octicons name={"search"} size={20} color={brand} />
-            </LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput searchPage={true} {...props}/>
-        </SearchBarArea>
-    )
 }
 
 export default CreateConversationSelection;

@@ -63,6 +63,19 @@ import { useTheme } from '@react-navigation/native';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
+    const {colors} = useTheme();
+    return(
+        <View>
+            <LeftIcon>
+                <Octicons name={icon} size={30} color={colors.brand} />
+            </LeftIcon>
+            <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+            <StyledTextInput {...props}/>
+        </View>
+    )
+}
+
 const MultiMediaUploadPage = ({navigation, route}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -117,18 +130,6 @@ const MultiMediaUploadPage = ({navigation, route}) => {
 
     const checkForCameraPermissions = async () => {
         navigation.navigate('TakeImage_Camera', {locationToGoTo: 'MultiMediaUploadPage'})
-    }
-
-    const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
-        return(
-            <View>
-                <LeftIcon>
-                    <Octicons name={icon} size={30} color={brand} />
-                </LeftIcon>
-                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-                <StyledTextInput {...props}/>
-            </View>
-        )
     }
 
     return(

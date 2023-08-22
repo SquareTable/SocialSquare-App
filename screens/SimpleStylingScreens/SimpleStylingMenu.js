@@ -30,6 +30,19 @@ import { SimpleStylingVersion } from '../../components/StylingVersionsFile.js';
 import {CredentialsContext} from '../../components/CredentialsContext.js';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 
+const UserTextInput = ({label, icon, isPassword, ...props}) => {
+    const {colors} = useTheme();
+    return(
+        <SearchBarArea>
+            <LeftIcon style={{top: 30}}>
+                <Octicons name={"pencil"} size={20} color={colors.brand} />
+            </LeftIcon>
+            <StyledInputLabel>{label}</StyledInputLabel>
+            <StyledTextInput style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}} searchPage={true} {...props}/>
+        </SearchBarArea>
+    )
+}
+
 const SimpleStylingMenu = ({navigation, route}) => {
     const {dark, colors, indexNum} = useTheme()
     const StatusBarHeight = useContext(StatusBarHeightContext);
@@ -85,19 +98,6 @@ const SimpleStylingMenu = ({navigation, route}) => {
     }
 
     const {darkLight, brand} = Colors;
-
-    const UserTextInput = ({label, icon, isPassword, ...props}) => {
-        const {colors, dark} = useTheme();
-        return(
-            <SearchBarArea>
-                <LeftIcon style={{top: 30}}>
-                    <Octicons name={"pencil"} size={20} color={brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}} searchPage={true} {...props}/>
-            </SearchBarArea>
-        )
-    }
 
     const handleNewCreation = (name) => {
         for (let i = 0; i < simpleStylingData.length; i++) {
