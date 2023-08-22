@@ -53,6 +53,7 @@ import KeyboardAvoidingWrapper_NoScrollview from '../../components/KeyboardAvoid
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 
 const UserTextInput = ({label, icon, ...props}) => {
+    const {colors} = useTheme();
     return(
         <View>
             <LeftIcon>

@@ -169,6 +169,7 @@ const ChangePasswordScreen = ({navigation}) => {
 export default ChangePasswordScreen;
 
 const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, colors, ...props}) => {
+    const {colors} = useTheme();
     return(
         <View>
             <LeftIcon>

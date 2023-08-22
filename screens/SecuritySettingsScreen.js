@@ -14,13 +14,7 @@ import {
     ConfirmLogoutView,
     ConfirmLogoutText,
     ConfirmLogoutButtons,
-    ConfirmLogoutButtonText,
-    Colors,
-    StyledFormArea,
-    LeftIcon,
-    StyledInputLabel,
-    StyledTextInput,
-    RightIcon
+    ConfirmLogoutButtonText
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
 
@@ -48,7 +42,6 @@ import { AppStylingContext } from '../components/AppStylingContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import AppCredits from '../components/AppCredits.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
-const {brand} = Colors;
 
 
 const SecuritySettingsScreen = ({navigation}) => {

@@ -31,11 +31,11 @@ import {CredentialsContext} from '../../components/CredentialsContext.js';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 
 const UserTextInput = ({label, icon, isPassword, ...props}) => {
-    const {colors, dark} = useTheme();
+    const {colors} = useTheme();
     return(
         <SearchBarArea>
             <LeftIcon style={{top: 30}}>
-                <Octicons name={"pencil"} size={20} color={brand} />
+                <Octicons name={"pencil"} size={20} color={colors.brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}} searchPage={true} {...props}/>

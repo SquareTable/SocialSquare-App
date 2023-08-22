@@ -8,16 +8,9 @@ import {
     StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
     WelcomeContainer,
-    WelcomeImage,
     Colors,
     Avatar,
-    StyledContainer,
-    StyledInputLabel,
-    StyledTextInput,
-    SearchBarArea,
-    LeftIcon,
     SearchHorizontalView,
     SearchHorizontalViewItem,
     SearchHorizontalViewItemCenter,
@@ -179,18 +172,6 @@ const CategoryHome = ({navigation}) => {
 
         </>
     );
-}
-
-const UserTextInput = ({label, icon, isPassword, ...props}) => {
-    return(
-        <SearchBarArea>
-            <LeftIcon searchIcon={true}>
-                <Octicons name={"search"} size={20} color={brand} />
-            </LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput searchPage={true} {...props}/>
-        </SearchBarArea>
-    )
 }
 
 export default CategoryHome;

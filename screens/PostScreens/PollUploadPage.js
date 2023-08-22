@@ -89,52 +89,53 @@ const UserTextInput = ({
     selectedOptionForColor,
     setSelectedOptionForColor,
     ...props}) => {
-    return(
-        <View>
-            <LeftIcon style={{top: icon == "note" ? 35 : 33}}>
-                <Octicons name={icon} size={30} color={
-                    isOptionOne ? optionOneColor !== '' ? colors[optionOneColor.toLowerCase()] : colors.brand :
-                    isOptionTwo ? optionTwoColor !== '' ? colors[optionTwoColor.toLowerCase()] : colors.brand :
-                    isOptionThree ? optionThreeColor !== '' ? colors[optionThreeColor.toLowerCase()] : colors.brand :
-                    isOptionFour ? optionFourColor !== '' ? colors[optionFourColor.toLowerCase()] : colors.brand : 
-                    isOptionFive ? optionFiveColor !== '' ? colors[optionFiveColor.toLowerCase()] : colors.brand :
-                    isOptionSix ? optionSixColor !== '' ? colors[optionSixColor.toLowerCase()] : colors.brand : colors.brand
-                } />
-            </LeftIcon>
-            <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-            <StyledTextInput {...props}/>
-            {isOptionOne && (
-                <RightIcon style={{top: 33}} onPress={() => setOptionOneColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={optionOneColor !== '' ? colors[optionOneColor.toLowerCase()] : brand}/>
-                </RightIcon>
-            )}
-            {isOptionTwo && (
-                <RightIcon style={{top: 33}} onPress={() => setOptionTwoColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={optionTwoColor !== '' ? colors[optionTwoColor.toLowerCase()] : brand}/>
-                </RightIcon>
-            )}
-            {isOptionThree && (
-                <RightIcon style={{top: 33}} onPress={() => setOptionThreeColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={optionThreeColor !== '' ? colors[optionThreeColor.toLowerCase()] : brand}/>
-                </RightIcon>
-            )}
-            {isOptionFour && (
-                <RightIcon style={{top: 33}} onPress={() => setOptionFourColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={optionFourColor !== '' ? colors[optionFourColor.toLowerCase()] : brand}/>
-                </RightIcon>
-            )}
-            {isOptionFive && (
-                <RightIcon style={{top: 33}} onPress={() => setOptionFiveColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={optionFiveColor !== '' ? colors[optionFiveColor.toLowerCase()] : brand}/>
-                </RightIcon>
-            )}
-            {isOptionSix && (
-                <RightIcon style={{top: 33}} onPress={() => setOptionSixColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={optionSixColor !== '' ? colors[optionSixColor.toLowerCase()] : brand}/>
-                </RightIcon>
-            )}
-        </View>
-    )
+        const {colors} = useTheme();
+        return(
+            <View>
+                <LeftIcon style={{top: icon == "note" ? 35 : 33}}>
+                    <Octicons name={icon} size={30} color={
+                        isOptionOne ? optionOneColor !== '' ? colors[optionOneColor.toLowerCase()] : colors.brand :
+                        isOptionTwo ? optionTwoColor !== '' ? colors[optionTwoColor.toLowerCase()] : colors.brand :
+                        isOptionThree ? optionThreeColor !== '' ? colors[optionThreeColor.toLowerCase()] : colors.brand :
+                        isOptionFour ? optionFourColor !== '' ? colors[optionFourColor.toLowerCase()] : colors.brand : 
+                        isOptionFive ? optionFiveColor !== '' ? colors[optionFiveColor.toLowerCase()] : colors.brand :
+                        isOptionSix ? optionSixColor !== '' ? colors[optionSixColor.toLowerCase()] : colors.brand : colors.brand
+                    } />
+                </LeftIcon>
+                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                <StyledTextInput {...props}/>
+                {isOptionOne && (
+                    <RightIcon style={{top: 33}} onPress={() => setOptionOneColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionOneColor !== '' ? colors[optionOneColor.toLowerCase()] : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionTwo && (
+                    <RightIcon style={{top: 33}} onPress={() => setOptionTwoColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionTwoColor !== '' ? colors[optionTwoColor.toLowerCase()] : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionThree && (
+                    <RightIcon style={{top: 33}} onPress={() => setOptionThreeColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionThreeColor !== '' ? colors[optionThreeColor.toLowerCase()] : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionFour && (
+                    <RightIcon style={{top: 33}} onPress={() => setOptionFourColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionFourColor !== '' ? colors[optionFourColor.toLowerCase()] : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionFive && (
+                    <RightIcon style={{top: 33}} onPress={() => setOptionFiveColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionFiveColor !== '' ? colors[optionFiveColor.toLowerCase()] : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionSix && (
+                    <RightIcon style={{top: 33}} onPress={() => setOptionSixColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionSixColor !== '' ? colors[optionSixColor.toLowerCase()] : brand}/>
+                    </RightIcon>
+                )}
+            </View>
+        )
 }
 
 

@@ -290,6 +290,7 @@ const CategoryCreationPage = ({navigation, route}) => {
 }
 
 const UserTextInput = ({label, icon, body, ...props}) => {
+    const {colors} = useTheme()
     if (body == true) {
         return(
             <View>
@@ -297,7 +298,7 @@ const UserTextInput = ({label, icon, body, ...props}) => {
                     <Octicons name={icon} size={30} color={brand} />
                 </LeftIcon>
                 <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
+                <StyledTextInput searchPage={true} style={{borderColor: colors.midWhite, borderRadius: 10}} {...props}/>
             </View>
         )
     } else {
@@ -307,7 +308,7 @@ const UserTextInput = ({label, icon, body, ...props}) => {
                     <Octicons name={icon} size={30} color={brand} />
                 </LeftIcon>
                 <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey}} {...props}/>
+                <StyledTextInput searchPage={true} style={{borderColor: colors.slightlyLighterGrey}} {...props}/>
             </View>
         )
     }

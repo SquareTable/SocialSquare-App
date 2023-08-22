@@ -359,14 +359,8 @@ const LoginScreen = ({navigation, route}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
-
 const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, octiconColor, handleSubmit, ...props}) => {
+    const {colors} = useTheme();
     return(
         <View>
             <LeftIcon style={{top: 34}}>
@@ -376,7 +370,7 @@ const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, 
             <StyledTextInput onSubmitEditing={handleSubmit} {...props} />
             {isPassword && (
                 <RightIcon style={{top: 31}} onPress={() => setHidePassword(!hidePassword)}>
-                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
+                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={colors.brand}/>
                 </RightIcon>
             )}
         </View>
