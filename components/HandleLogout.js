@@ -15,10 +15,10 @@ export function Logout(storedCredentials, setStoredCredentials, allCredentialsSt
             console.log('Running logout code for when allCredentialsStoredLists length is 1 or 0');
             setProfilePictureUri(SocialSquareLogo_B64_png);
             AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-                setStoredCredentials({})
+                setStoredCredentials('')
             })
             AsyncStorage.removeItem('socialSquare_AllCredentialsList').then(() => {
-                setAllCredentialsStoredList({})
+                setAllCredentialsStoredList([])
             })
             Promise.all([
                 SecureStore.deleteItemAsync(storedCredentials._id + '-auth-web-token'),
@@ -59,7 +59,7 @@ export function Logout(storedCredentials, setStoredCredentials, allCredentialsSt
     } else {
         setProfilePictureUri(SocialSquareLogo_B64_png);
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-            setStoredCredentials({})
+            setStoredCredentials('')
         })
         AsyncStorage.removeItem('socialSquare_AllCredentialsList').then(() => {
             setAllCredentialsStoredList([])
@@ -81,7 +81,7 @@ export function Logout(storedCredentials, setStoredCredentials, allCredentialsSt
 
 export async function LogoutOfAllAccounts(allCredentialsStoredList, setStoredCredentials, setAllCredentialsStoredList, navigation, setProfilePictureUri) {
     deleteHeaders()
-    setStoredCredentials({})
+    setStoredCredentials('')
     setAllCredentialsStoredList([])
     setProfilePictureUri(SocialSquareLogo_B64_png);
     await AsyncStorage.removeItem('socialSquareCredentials')
