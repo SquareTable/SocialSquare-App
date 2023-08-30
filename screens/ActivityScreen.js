@@ -58,10 +58,6 @@ const ActivityScreen = ({navigation}) => {
                         <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         <SettingsItemText style={{color: colors.tertiary}}>Thread Downvotes</SettingsItemText>
                     </SettingsPageItemTouchableOpacity>
-                    <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("PollUpvotesActivityScreen")}>
-                        <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                        <SettingsItemText style={{color: colors.tertiary}}>Categories you're a part of</SettingsItemText>
-                    </SettingsPageItemTouchableOpacity>
                 </ScrollView>
             :
                 <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
