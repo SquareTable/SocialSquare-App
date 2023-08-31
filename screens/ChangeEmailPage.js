@@ -21,19 +21,10 @@ import {
     StyledTextInput,
     StyledButton,
     ButtonText,
-    Colors,
     MsgBox,
-    Line,
-    ExtraView,
-    ExtraText,
-    TextLink,
-    TextLinkContent,
     Navigator_BackButton
 } from '../screens/screenStylings/styling.js';
 import {View, ActivityIndicator, ImageBackground, StyleSheet, Image} from 'react-native';
-
-// Colors
-const {brand, primary, tertiary} = Colors;
 
 // keyboard avoiding view
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
@@ -184,7 +175,7 @@ const ChangeEmailPage = ({navigation}) => {
                                         </StyledButton>)}
 
                                         {isSubmitting && (<StyledButton disabled={true}>
-                                            <ActivityIndicator size="large" color={primary} />
+                                            <ActivityIndicator size="large" color={colors.primary} />
                                         </StyledButton>)}
                                         
                                         <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
