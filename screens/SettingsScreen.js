@@ -117,7 +117,7 @@ const SettingsPage = ({navigation}) => {
                 <ConfirmLogoutView style={[loggingOut ? {justifyContent: 'center', alignItems: 'center'} : {}, {backgroundColor: colors.primary}]} viewHidden={logoutViewState}>
                     {loggingOut ?
                         <>
-                            <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary}}>Logging you out...</Text>
+                            <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, marginBottom: 10}}>Logging you out...</Text>
                             <ActivityIndicator color={colors.brand} size="large"/>
                         </>
                     :
