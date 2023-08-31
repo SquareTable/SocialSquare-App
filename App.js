@@ -203,7 +203,7 @@ const App = () => {
           //refresh occured so repeat last request
           let token = error.response.data.token;
           const forAsync = async () => {
-            await storeJWT({webToken: token, refreshToken: ""}, error.response.data.userId)
+            await storeJWT({webToken: token, refreshToken: "", refreshTokenId: ""}, error.response.data.userId)
             let configOfOriginal = error.config;
             //console.log("Config of og:")
             //console.log(configOfOriginal)

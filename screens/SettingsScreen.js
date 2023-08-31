@@ -30,7 +30,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, Switch, Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import * as Linking from 'expo-linking';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import * as WebBrowser from 'expo-web-browser';
@@ -39,6 +39,11 @@ import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredC
 import AppCredits from '../components/AppCredits.js';
 import {Logout} from '../components/HandleLogout.js';
 import { ExperimentalFeaturesEnabledContext } from '../components/ExperimentalFeaturesEnabledContext.js';
+import * as SecureStore from 'expo-secure-store';
+
+import axios from 'axios';
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 
 const SettingsPage = ({navigation}) => {
@@ -50,12 +55,35 @@ const SettingsPage = ({navigation}) => {
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
     const {experimentalFeaturesEnabled, setExperimentalFeaturesEnabled} = useContext(ExperimentalFeaturesEnabledContext);
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
+    const [loggingOut, setLoggingOut] = useState(false)
 
-    const clearLogin = () => {
+    const logoutUser = () => {
+        setLoggingOut(false)
         AsyncStorage.removeItem('SocialSquareDMsList');
         AsyncStorage.removeItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage');
         AsyncStorage.removeItem('UserProfilePicture');
         Logout(storedCredentials, setStoredCredentials, allCredentialsStoredList, setAllCredentialsStoredList, navigation, setProfilePictureUri);
+    }
+
+    const clearLogin = async () => {
+        setLoggingOut(true)
+        try {
+            const url = serverUrl + '/tempRoute/logoutuser'
+            const toSend = {
+                refreshTokenId: await SecureStore.getItemAsync(storedCredentials?._id + '-auth-refresh-token-id')
+            }
+            console.log('toSend:', toSend)
+            axios.post(url, toSend).then(logoutUser).catch(error => {
+                alert(ParseErrorMessage(error))
+                setLoggingOut(false)
+                console.error(error)
+            })
+        } catch (error) {
+            alert('An error occurred while finding refresh token.')
+            console.error(String(error))
+            setLoggingOut(false)
+        }
     }
 
     const changeLogoutView = () => {
@@ -86,14 +114,23 @@ const SettingsPage = ({navigation}) => {
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
             <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
-                <ConfirmLogoutView style={{backgroundColor: colors.primary}} viewHidden={logoutViewState}>
-                    <ConfirmLogoutText style={{color: colors.tertiary}}>Are you sure you want to logout?</ConfirmLogoutText>
-                    <ConfirmLogoutButtons cancelButton={true} onPress={changeLogoutView}>
-                        <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
-                    </ConfirmLogoutButtons> 
-                    <ConfirmLogoutButtons confirmButton={true} onPress={clearLogin}>
-                        <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
-                    </ConfirmLogoutButtons> 
+                <ConfirmLogoutView style={[loggingOut ? {justifyContent: 'center', alignItems: 'center'} : {}, {backgroundColor: colors.primary}]} viewHidden={logoutViewState}>
+                    {loggingOut ?
+                        <>
+                            <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, marginBottom: 10}}>Logging you out...</Text>
+                            <ActivityIndicator color={colors.brand} size="large"/>
+                        </>
+                    :
+                        <>
+                            <ConfirmLogoutText style={{color: colors.tertiary}}>Are you sure you want to logout?</ConfirmLogoutText>
+                            <ConfirmLogoutButtons cancelButton={true} onPress={changeLogoutView}>
+                                <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
+                            </ConfirmLogoutButtons> 
+                            <ConfirmLogoutButtons confirmButton={true} onPress={clearLogin}>
+                                <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
+                            </ConfirmLogoutButtons> 
+                        </>
+                    }
                 </ConfirmLogoutView>
                 <ScrollView scrollEnabled={logoutViewState}>
                     <WelcomeContainer style={{backgroundColor: colors.primary}}>

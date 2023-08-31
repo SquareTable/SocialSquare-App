@@ -122,7 +122,7 @@ const Signup = ({navigation, route}) => {
     }
 
     const persistLogin = async (credentials, message, status, tokens, refreshTokenId) => {
-        await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken}, credentials._id)
+        await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken, refreshTokenId}, credentials._id)
         let credentialsToUse = credentials;
         var temp = allCredentialsStoredList;
         credentialsToUse.profilePictureUri = SocialSquareLogo_B64_png

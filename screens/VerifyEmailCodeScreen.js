@@ -90,7 +90,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
     }
 
     const persistLogin = async (credentials, message, status, tokens) => {
-        await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken}, credentials._id)
+        await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken, refreshTokenId: tokens.refreshTokenId}, credentials._id)
         let credentialsToUse = credentials;
         if (allCredentialsStoredList) {
             for (let i = 0; i < allCredentialsStoredList.length; i++) {
@@ -357,7 +357,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
             const toSend = {username: undefined, verificationCode: code, task: 'Verify Email MFA Code', getAccountMethod: 'secondId', userID: undefined, secondId: secondId}
             axios.post(checkURL, toSend).then((response) => {
                 const result = response.data;
-                const {message, status, data, token, refreshToken} = result;
+                const {message, status, data, token, refreshToken, refreshTokenId} = result;
 
                 if (status !== 'SUCCESS') {
                     handleMessage(message, 'FAILED');
@@ -368,7 +368,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 } else {
                     console.log(message);
                     setCode('');
-                    persistLogin(data, message, status, {token: token, refreshToken: refreshToken});
+                    persistLogin(data, message, status, {token: token, refreshToken: refreshToken, refreshTokenId});
                 }
             }).catch((error) => {
                 console.error(error)

@@ -86,7 +86,7 @@ const LoginScreen = ({navigation, route}) => {
 
         axios.post(url, credentials).then((response) => {
             const result = response.data;
-            const {message, status, data, token, refreshToken} = result;
+            const {message, status, data, token, refreshToken, refreshTokenId} = result;
 
             if (status !== 'SUCCESS') {
                 handleMessage(String(message),status);
@@ -94,7 +94,7 @@ const LoginScreen = ({navigation, route}) => {
                 if (message == "Email") {
                     navigation.navigate('VerifyEmailCodeScreen', {task: 'Verify Email MFA Code', email: data.email, fromAddress: data.fromAddress, username: undefined, userID: undefined, secondId: data.secondId});
                 } else {
-                    persistLogin(data, message, status, {token: token, refreshToken: refreshToken});
+                    persistLogin(data, message, status, {token: token, refreshToken: refreshToken, refreshTokenId});
                     setDownloadingPfp(true);
                 }
             }
@@ -114,7 +114,7 @@ const LoginScreen = ({navigation, route}) => {
 
     const persistLogin = async (credentials, message, status, tokens) => {
         try {
-            await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken}, credentials._id)
+            await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken, refreshTokenId: tokens.refreshTokenId}, credentials._id)
         } catch (error) {
             console.error(error)
             handleMessage('An error occurred while storing JWT')

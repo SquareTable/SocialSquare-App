@@ -40,7 +40,7 @@ const ChangePasswordScreen = ({navigation}) => {
         const toSend = values;
         axios.post(url, toSend).then(async (response) => {
             const result = response.data;
-            const {message, status, data, token, refreshToken} = result;
+            const {message, status, data, token, refreshToken, refreshTokenId} = result;
             console.log(message)
             console.log(status)
             console.log(data)
@@ -48,7 +48,7 @@ const ChangePasswordScreen = ({navigation}) => {
             if (status !== 'SUCCESS') {
                 handleMessage(message,status);
             } else {
-                await storeJWT({webToken: token, refreshToken: refreshToken}, storedCredentials._id)
+                await storeJWT({webToken: token, refreshToken: refreshToken, refreshTokenId}, storedCredentials._id)
                 handleMessage(message,status);
                 setTimeout(() => {
                     navigation.goBack();
