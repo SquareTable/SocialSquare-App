@@ -30,6 +30,10 @@ export const storeJWT = async (tokens, userId) => {
         await SecureStore.setItemAsync(userId + "-auth-refresh-token", tokens.refreshToken)
         console.log("Set: " + userId + "-auth-refresh-token" + JSON.stringify(tokens.refreshToken))
     }
+    if (tokens.refreshTokenId !== "") {
+        await SecureStore.setItemAsync(userId + '-auth-refresh-token-id', tokens.refreshTokenId)
+        console.log('Set:', userId + '-auth-refresh-token-id', ':', tokens.refreshTokenId)
+    }
     await setAuthAsHeaders(userId)
     return
 }
