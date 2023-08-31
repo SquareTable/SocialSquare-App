@@ -16,25 +16,17 @@ import {
     SubTitle,
     StyledFormArea,
     LeftIcon,
-    RightIcon,
     StyledInputLabel,
     StyledTextInput,
     StyledButton,
     ButtonText,
-    Colors,
     MsgBox,
-    Line,
-    ExtraView,
-    ExtraText,
-    TextLink,
-    TextLinkContent,
     AboveButtonText,
     PostHorizontalView,
     CheckBoxForPosts,
     PostIcons,
     MultiMediaPostFrame
 } from '../screenStylings/styling.js';
-const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite, greyish} = Colors;
 
 //From react native
 import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity, Text} from 'react-native';
@@ -301,7 +293,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         label="Thread Title"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('threadTitle')}
                                         onBlur={handleBlur('threadTitle')}
                                         value={values.threadTitle}
@@ -310,7 +302,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         label="Thread Subtitle (optional)"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('threadSubtitle')}
                                         onBlur={handleBlur('threadSubtitle')}
                                         value={values.threadSubtitle}
@@ -319,7 +311,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         label="Tags (optional)"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('threadTags')}
                                         onBlur={handleBlur('threadTags')}
                                         value={values.threadTags}
@@ -327,51 +319,31 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     <View style={{width: '100%', flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                                         <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                                             <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Text</SubTitle>
-                                            {selectFormat == "Text" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                    <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                                                </TouchableOpacity>
-                                            )}
-                                            {selectFormat !== "Text" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                    setSelectFormat("Text")
-                                                    values.threadFormat="Text"
-                                                }}>
-                                                    <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                                                </TouchableOpacity>
-                                            )}
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: selectFormat === "Text" ? colors.brand : colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                                setSelectFormat("Text")
+                                                values.threadFormat="Text"
+                                            }}>
+                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
+                                            </TouchableOpacity>
                                         </View>
                                         <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                                             <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
-                                            {selectFormat == "Images" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                    <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                                                </TouchableOpacity>
-                                            )}
-                                            {selectFormat !== "Images" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                    setSelectFormat("Images")
-                                                    values.threadFormat="Images"
-                                                }}>
-                                                    <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                                                </TouchableOpacity>
-                                            )}
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: selectFormat === "Images" ? colors.brand : colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                                setSelectFormat("Images")
+                                                values.threadFormat="Images"
+                                            }}>
+                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                                            </TouchableOpacity>
                                         </View>
                                         <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                                             <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>User Posts</SubTitle>
-                                            {selectFormat == "User Posts" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                    <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                                                </TouchableOpacity>
-                                            )}
-                                            {selectFormat !== "User Posts" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                    setSelectFormat("User Posts")
-                                                    values.threadFormat="User Posts"
-                                                }}>
-                                                    <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                                                </TouchableOpacity>
-                                            )}
+                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: selectFormat === "User Posts" ? colors.brand : colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                                //setSelectFormat("User Posts")
+                                                //values.threadFormat="User Posts"
+                                                alert('Coming soon')
+                                            }}>
+                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     {selectFormat == "Text" && (
@@ -381,7 +353,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                             placeholder=""
                                             body={true}
                                             multiline={true}
-                                            placeholderTextColor={tertiary}
+                                            placeholderTextColor={colors.tertiary}
                                             onChangeText={handleChange('threadBody')}
                                             onBlur={handleBlur('threadBody')}
                                             value={values.threadBody}
@@ -421,7 +393,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                                 placeholder=""
                                                 body={true}
                                                 multiline={true}
-                                                placeholderTextColor={tertiary}
+                                                placeholderTextColor={colors.tertiary}
                                                 onChangeText={handleChange('threadImageDescription')}
                                                 onBlur={handleBlur('threadImageDescription')}
                                                 value={values.threadImageDescription}
@@ -463,12 +435,5 @@ const ThreadUploadPage = ({route, navigation}) => {
         </KeyboardAwareScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
 
 export default ThreadUploadPage;
