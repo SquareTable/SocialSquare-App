@@ -1,67 +1,17 @@
-import React, {useState, useContext, Component, useRef, useEffect} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 // formik
 import {Formik} from 'formik';
 
-// icons
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
-
 
 import {
-    InnerContainer,
-    PageTitle,
-    SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
-    Avatar,
-    Colors,
-    StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    ProfileSelectMediaTypeItem,
-    ProfileSelectMediaTypeHorizontalView,
-    ProfileSelectMediaTypeIcons,
-    ProfileSelectMediaTypeIconsBorder,
-    PollPostFrame,
-    LeftIcon,
     StyledInputLabel,
     StyledTextInput,
     PollPostTitle,
     PollPostSubTitle,
-    PollBarOutline,
-    PollBarItem,
-    PollKeyViewOne,
-    PollKeyViewTwo,
-    PollKeyViewThree,
-    PollKeyViewFour,
-    PollKeyViewFive,
-    PollKeyViewSix,
-    PollKeysCircle,
-    PollPostHorizontalView,
-    PollPostIcons,
-    AboveBarPollPostHorizontalView,
-    BottomPollPostHorizontalView,
-    LikesView,
-    CommentsView,
-    PollBottomItem,
-    ViewScreenPollPostFrame,
-    PollHorizontalViewItem,
-    PollHorizontalViewItemCenter,
     ViewScreenPollPostCommentsFrame,
     CommentsContainer,
     CommenterName,
@@ -73,23 +23,10 @@ import {
     CommentsHorizontalViewItem,
     VoteText,
     MsgBox,
-    VoteTextBox,
-    MultiMediaPostFrame,
-    ImagePostFrame,
-    PostCreatorIcon,
-    PostsHorizontalView,
-    PostsVerticalView,
-    PostHorizontalView,
-    PostsIcons,
-    PostsIconFrame,
-    ImagePostTextFrame,
     ChatScreen_Title,
     Navigator_BackButton,
     TestText
 } from './screenStylings/styling';
-
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterPrimary, descTextColor} = Colors;
 
 // keyboard avoiding view
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
@@ -97,13 +34,10 @@ import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 // API client
 import axios from 'axios';
 
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
 
-import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
+import { View, ScrollView, SectionList, ActivityIndicator, TouchableOpacity, Image, Text } from 'react-native';
 
 import { useIsFocused, useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
@@ -201,7 +135,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                         {datePosted}
                     </VoteText>
                     <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, postId: post.imageKey, postFormat: "Image"})}}>
-                        <VoteText style={{color: brand}}>
+                        <VoteText style={{color: colors.brand}}>
                             {commentReplies} replies
                         </VoteText>
                     </TouchableOpacity>
@@ -388,7 +322,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                                                 <CommentsVerticalView>
                                                     <UserTextInput
                                                         placeholder="Post a comment"
-                                                        placeholderTextColor={darkLight}
+                                                        placeholderTextColor={colors.darkLight}
                                                         onChangeText={handleChange('comment')}
                                                         onBlur={handleBlur('comment')}
                                                         value={values.comment}
@@ -419,7 +353,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                                 renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
                             />
                             {loadingMoreComments == true && (
-                                <ActivityIndicator size="small" color={brand} />  
+                                <ActivityIndicator size="small" color={colors.brand} />  
                             )}
                         </ViewScreenPollPostCommentsFrame>
                     :
