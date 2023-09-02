@@ -14,7 +14,7 @@ import {
 } from './screenStylings/styling.js';
 
 // icons
-import Octicons from 'react-native-vector-icons';
+import Octicons from 'react-native-vector-icons/Octicons.js';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
