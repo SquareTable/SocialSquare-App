@@ -5,39 +5,14 @@ import { StatusBar } from 'expo-status-bar';
 import {Formik} from 'formik';
 
 // icons
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
+import Octicons from 'react-native-vector-icons/Octicons'
 
 import {
-    InnerContainer,
-    PageTitle,
     SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
     WelcomeContainer,
-    WelcomeImage,
-    Avatar,
-    Colors,
-    StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
     ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    ProfileSelectMediaTypeItem,
-    ProfileSelectMediaTypeHorizontalView,
-    ProfileSelectMediaTypeIcons,
-    ProfileSelectMediaTypeIconsBorder,
-    PollPostFrame,
-    LeftIcon,
     StyledInputLabel,
     StyledTextInput,
     PollPostTitle,
@@ -52,12 +27,7 @@ import {
     PollKeyViewSix,
     PollKeysCircle,
     PollPostHorizontalView,
-    PollPostIcons,
     AboveBarPollPostHorizontalView,
-    BottomPollPostHorizontalView,
-    LikesView,
-    CommentsView,
-    PollBottomItem,
     ViewScreenPollPostFrame,
     PollHorizontalViewItem,
     PollHorizontalViewItemCenter,
@@ -72,7 +42,6 @@ import {
     CommentsHorizontalViewItem,
     VoteText,
     MsgBox,
-    VoteTextBox,
     PostHorizontalView,
     PostsIconFrame,
     PostsIcons,
@@ -83,9 +52,6 @@ import {
     Navigator_BackButton,
     TestText
 } from './screenStylings/styling';
-
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, darkest, descTextColor, red, orange, yellow, green, purple} = Colors;
 
 // keyboard avoiding view
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
@@ -133,7 +99,6 @@ const ViewPollPostPage = ({route, navigation}) => {
     const [optionFiveVoteText, setOptionFiveVoteText] = useState("Vote")
     const [optionSixVoteText, setOptionSixVoteText] = useState("Vote")
     const [limitVoteTextChange, setLimitVoteTextChange] = useState(false)
-    const [changePollIfLiked, setChangePollIfLiked] = useState(tertiary)
     const [likeSubmitting, setLikeSubmitting] = useState(false)
     //Comment stuff
     const [ifCommentText, setIfCommentText] = useState("No comments found")
@@ -355,7 +320,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                         {datePosted}
                     </VoteText>
                     <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, postId: pollId, postFormat: "Poll"})}}>
-                        <VoteText style={{color: brand}}>
+                        <VoteText style={{color: colors.brand}}>
                             {commentReplies} replies
                         </VoteText>
                     </TouchableOpacity>
@@ -1002,12 +967,12 @@ const ViewPollPostPage = ({route, navigation}) => {
                 <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
                     <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
                         <ViewScreenPollPostFrame style={{width: '100%'}}>
-                            <PostsHorizontalView style={{borderBottomWidth: 3, borderColor: darkLight, width: '100%', paddingBottom: 5}}>
+                            <PostsHorizontalView style={{borderBottomWidth: 3, borderColor: colors.darkLight, width: '100%', paddingBottom: 5}}>
                                 <PostsVerticalView>
                                     <PostCreatorIcon source={{uri: creatorPfpB64}}/>
                                 </PostsVerticalView>
                                 <PostsVerticalView style={{marginTop: 9}}>
-                                    <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
+                                    <SubTitle style={{fontSize: 20, color: colors.brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
                                     <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{creatorName}</SubTitle>
                                 </PostsVerticalView>
                             </PostsHorizontalView>
@@ -1038,22 +1003,22 @@ const ViewPollPostPage = ({route, navigation}) => {
                                 </PollPostSubTitle>
                             </AboveBarPollPostHorizontalView>
                             <PollBarOutline>
-                            <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength+'%', backgroundColor: optionOnesColor == 'Not Specified' ? brand : eval(optionOnesColor.toLowerCase())}}></PollBarItem>
-                            <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength+'%', backgroundColor: optionTwosColor == 'Not Specified' ? brand : eval(optionTwosColor.toLowerCase() )}}></PollBarItem>
-                            <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength+'%', backgroundColor: optionThreesColor == 'Not Specified' ? brand : eval(optionThreesColor.toLowerCase()) }}></PollBarItem>
-                            <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength+'%', backgroundColor: optionFoursColor == 'Not Specified' ? brand : eval(optionFoursColor.toLowerCase()) }}></PollBarItem>
-                            <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength+'%', backgroundColor: optionFivesColor == 'Not Specified' ? brand : eval(optionFivesColor.toLowerCase()) }}></PollBarItem>
-                            <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%', backgroundColor: optionSixesColor == 'Not Specified' ? brand : eval(optionSixesColor.toLowerCase()) }}></PollBarItem>
+                            <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength+'%', backgroundColor: optionOnesColor == 'Not Specified' ? colors.brand : colors[optionOnesColor.toLowerCase()] || colors.brand}}></PollBarItem>
+                            <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength+'%', backgroundColor: optionTwosColor == 'Not Specified' ? colors.brand : colors[optionTwosColor.toLowerCase()] || colors.brand}}></PollBarItem>
+                            <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength+'%', backgroundColor: optionThreesColor == 'Not Specified' ? colors.brand : colors[optionThreesColor.toLowerCase()] || colors.brand }}></PollBarItem>
+                            <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength+'%', backgroundColor: optionFoursColor == 'Not Specified' ? colors.brand : colors[optionFoursColor.toLowerCase()] || colors.brand }}></PollBarItem>
+                            <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength+'%', backgroundColor: optionFivesColor == 'Not Specified' ? colors.brand : colors[optionFivesColor.toLowerCase()] || colors.brand }}></PollBarItem>
+                            <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%', backgroundColor: optionSixesColor == 'Not Specified' ? colors.brand : colors[optionSixesColor.toLowerCase()] || colors.brand }}></PollBarItem>
                             </PollBarOutline>
                             <PollPostHorizontalView>
                                 <PollKeyViewOne pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionOne}>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionOnesColor}></PollKeysCircle>
                                     <PollPostSubTitle style={{color: colors.tertiary}}>
                                         1. {objectForAllData.data.optionOne || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionOnesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                 </PollKeyViewOne>
                             </PollPostHorizontalView>
                             
@@ -1081,13 +1046,13 @@ const ViewPollPostPage = ({route, navigation}) => {
 
                             <PollPostHorizontalView>
                                 <PollKeyViewTwo pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionTwo}>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionTwosColor}></PollKeysCircle>
                                     <PollPostSubTitle style={{color: colors.tertiary}}>
                                         2. {objectForAllData.data.optionTwo || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionTwosColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                 </PollKeyViewTwo>
                             </PollPostHorizontalView>
                             
@@ -1113,13 +1078,13 @@ const ViewPollPostPage = ({route, navigation}) => {
 
                             <PollPostHorizontalView>
                                 <PollKeyViewThree pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionThree}>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionThreesColor}></PollKeysCircle>
                                     <PollPostSubTitle style={{color: colors.tertiary}}>
                                         3. {objectForAllData.data.optionThree || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionThreesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                 </PollKeyViewThree>
                             </PollPostHorizontalView>
                             
@@ -1145,13 +1110,13 @@ const ViewPollPostPage = ({route, navigation}) => {
 
                             <PollPostHorizontalView>
                                 <PollKeyViewFour pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionFour}>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFoursColor}></PollKeysCircle>
                                     <PollPostSubTitle style={{color: colors.tertiary}}>
                                         4. {objectForAllData.data.optionFour || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFoursColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                 </PollKeyViewFour>
                             </PollPostHorizontalView>
 
@@ -1177,13 +1142,13 @@ const ViewPollPostPage = ({route, navigation}) => {
 
                             <PollPostHorizontalView>
                                 <PollKeyViewFive pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionFive}>
-                                <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFivesColor}></PollKeysCircle>
                                     <PollPostSubTitle style={{color: colors.tertiary}}>
                                         5. {objectForAllData.data.optionFive || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFivesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                 </PollKeyViewFive>
                             </PollPostHorizontalView>
 
@@ -1209,13 +1174,13 @@ const ViewPollPostPage = ({route, navigation}) => {
 
                             <PollPostHorizontalView>
                                 <PollKeyViewSix pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionSix}>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionSixesColor}></PollKeysCircle>
                                     <PollPostSubTitle style={{color: colors.tertiary}}>
                                         6. {objectForAllData.data.optionSix || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionSixesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? colors.greyish : colors.tertiary} />
                                 </PollKeyViewSix>
                             </PollPostHorizontalView>
 
@@ -1253,43 +1218,43 @@ const ViewPollPostPage = ({route, navigation}) => {
                                 {pollUpOrDownVoted == "Changing" && (<PostsIconFrame></PostsIconFrame>)}
 
                                 {pollUpOrDownVoted == "Finding" && (<PostsIconFrame style={{flex: 3}}>
-                                    <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
+                                    <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
                                 </PostsIconFrame>)}
                                 {pollUpOrDownVoted == "UpVoted" && (<PostsIconFrame>
                                     {initialPollUpOrDownVoted == "UpVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
                                     )}
                                     {initialPollUpOrDownVoted == "Neither" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+1}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+1}</SubTitle>
                                     )}
                                     {initialPollUpOrDownVoted == "DownVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+2}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+2}</SubTitle>
                                     )}
                                 </PostsIconFrame>)}
                                 {pollUpOrDownVoted == "Neither" && (<PostsIconFrame>
                                     {initialPollUpOrDownVoted == "Neither" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
                                     )}
                                     {initialPollUpOrDownVoted == "UpVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-1}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-1}</SubTitle>
                                     )}
                                     {initialPollUpOrDownVoted == "DownVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+1}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+1}</SubTitle>
                                     )}
                                 </PostsIconFrame>)}
                                 {pollUpOrDownVoted == "DownVoted" && (<PostsIconFrame>
                                     {initialPollUpOrDownVoted == "DownVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
                                     )}
                                     {initialPollUpOrDownVoted == "Neither" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-1}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-1}</SubTitle>
                                     )}
                                     {initialPollUpOrDownVoted == "UpVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-2}</SubTitle>
+                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-2}</SubTitle>
                                     )}
                                 </PostsIconFrame>)}
                                 {pollUpOrDownVoted == "Changing" && (<PostsIconFrame>
-                                    <ActivityIndicator size="small" color={brand} />                
+                                    <ActivityIndicator size="small" color={colors.brand} />                
                                 </PostsIconFrame>)}
                                 
                                 {pollUpOrDownVoted == "DownVoted" && (<PostsIconFrame onPress={() => {DownVotePoll()}}>
@@ -1320,8 +1285,8 @@ const ViewPollPostPage = ({route, navigation}) => {
                             <PollPostSubTitle votesText={true} style={{flex: 1, color: colors.tertiary}}>
                                 Total Votes: {pollVotesForOptions.optionOne+pollVotesForOptions.optionTwo+pollVotesForOptions.optionThree+pollVotesForOptions.optionFour+pollVotesForOptions.optionFive+pollVotesForOptions.optionSix}
                             </PollPostSubTitle>
-                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
-                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
+                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
+                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
                         </ViewScreenPollPostFrame>
                         {storedCredentials ?
                             <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
@@ -1358,7 +1323,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                                                     <CommentsVerticalView>
                                                         <UserTextInput
                                                             placeholder="Post a comment"
-                                                            placeholderTextColor={darkLight}
+                                                            placeholderTextColor={colors.darkLight}
                                                             onChangeText={handleChange('comment')}
                                                             onBlur={handleBlur('comment')}
                                                             value={values.comment}
@@ -1389,7 +1354,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                                     renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
                                 />
                                 {loadingMoreComments == true && (
-                                    <ActivityIndicator size="small" color={brand} />  
+                                    <ActivityIndicator size="small" color={colors.brand} />  
                                 )}
                             </ViewScreenPollPostCommentsFrame>
                         :
