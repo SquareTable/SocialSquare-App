@@ -242,7 +242,7 @@ const Welcome = ({navigation, route}) => {
                         </View>
                     )}
                     {displayName != '' &&
-                        <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        <Text style={{paddingVertical: 0, paddingHorizontal: 10, color: colors.brand, fontSize: 35, fontWeight: 'bold'}}>{displayName || name || "Couldn't get name"}</Text>
                     }
                     {BadgesArea(badges)}
                     {bio ? <SubTitle style={{color: colors.tertiary, marginBottom: 5, fontSize: 14, textAlign: 'center'}} bioText={true}>{bio}</SubTitle> : null}
@@ -1302,7 +1302,7 @@ const Welcome = ({navigation, route}) => {
                             }
                             <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                                 <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
-                                    <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                                    <PageTitle style={{fontSize: 24, padding: 0, color: colors.brand}}>{displayName || name || "Couldn't get name"}</PageTitle>
                                 </TouchableOpacity>
                                 <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
                             </View>
