@@ -294,7 +294,7 @@ const ProfilePages = ({ route, navigation }) => {
                 </ProfileHorizontalView>
                 <ProfInfoAreaImage style={{marginTop: 1}}>
                     <Avatar resizeMode="cover" source={{uri: profileKey}} />
-                    <PageTitle welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
+                    <Text style={{fontSize: 35, fontWeight: 'bold', textAlign: 'center', color: colors.brand, paddingVertical: 0, paddingHorizontal: 10}}>{profilesDisplayName || profilesName || "Couldn't get name"}</Text>
                     <SubTitle style={{color: colors.tertiary, marginBottom: 0}}>{"@" + profilesName}</SubTitle>
                     {BadgesArea(badges)}
                     {bio ? <SubTitle style={{color: colors.tertiary, marginBottom: 5, fontSize: 14, textAlign: 'center'}} bioText={true} >{bio}</SubTitle> : null}
@@ -1374,7 +1374,7 @@ const ProfilePages = ({ route, navigation }) => {
                         </TouchableOpacity>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <PageTitle style={{fontSize: 24}} welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
+                        <PageTitle style={{fontSize: 24, padding: 0}} welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
                         <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profileKey}}/>
                     </View>
                     <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
