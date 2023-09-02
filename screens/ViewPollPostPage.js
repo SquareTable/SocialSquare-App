@@ -72,6 +72,7 @@ import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
+import { getTimeFromUTCMS } from '../libraries/Time';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -1285,7 +1286,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                             <PollPostSubTitle votesText={true} style={{flex: 1, color: colors.tertiary}}>
                                 Total Votes: {pollVotesForOptions.optionOne+pollVotesForOptions.optionTwo+pollVotesForOptions.optionThree+pollVotesForOptions.optionFour+pollVotesForOptions.optionFive+pollVotesForOptions.optionSix}
                             </PollPostSubTitle>
-                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
+                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{getTimeFromUTCMS(datePosted)}</SubTitle>
                             <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
                         </ViewScreenPollPostFrame>
                         {storedCredentials ?
