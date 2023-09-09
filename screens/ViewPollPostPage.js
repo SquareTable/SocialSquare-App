@@ -112,8 +112,10 @@ const ViewPollPostPage = ({route, navigation}) => {
     //change stuff
     const [pollUpOrDownVotes, setPollUpOrDownVotes] = useState("Finding")
     const [initialPollUpOrDownVotes, setInitialPollUpOrDownVotes] = useState("Finding")
-    const [pollUpOrDownVoted, setPollUpOrDownVoted] = useState("Finding")
-    const [initialPollUpOrDownVoted, setInitialPollUpOrDownVoted] = useState("Finding")
+    const [pollUpvoted, setPollUpvoted] = useState("Finding")
+    const [pollDownvoted, setPollDownvoted] = useState("Finding")
+    const [pollInitiallyUpvoted, setPollInitiallyUpvoted] = useState("Finding")
+    const [pollInitiallyDownvoted, setPollInitiallyDownvoted] = useState("Finding")
     const [pollVotesForOptions, setPollVotesForOptions] = useState({optionOne: "Finding", optionTwo: "Finding", optionThree: "Finding", optionFour: "Finding", optionFive: "Finding", optionSix: "Finding"})
     const [initialPollVotesForOptions, setInitialPollVotesForOptions] = useState({optionOne: "Finding", optionTwo: "Finding", optionThree: "Finding", optionFour: "Finding", optionFive: "Finding", optionSix: "Finding"})
     const [pollBarLengths, setPollBarLengths] = useState({optionOnesBarLength: 0, optionTwosBarLength: 0, optionThreesBarLength: 0, optionFoursBarLength: 0, optionFivesBarLength:0, optionSixesBarLength: 0})
@@ -246,8 +248,10 @@ const ViewPollPostPage = ({route, navigation}) => {
         const changeVoteTexts = (data) => {
             //set initial values
             const pollData = data.data[0]
-            setPollUpOrDownVoted(pollData.pollUpOrDownVoted)
-            setInitialPollUpOrDownVoted(pollData.pollUpOrDownVoted)
+            setPollUpvoted(pollData.upvoted)
+            setPollDownvoted(pollData.downvoted)
+            setPollInitiallyUpvoted(pollData.upvoted)
+            setPollInitiallyDownvoted(pollData.downvoted)
             setPollUpOrDownVotes(pollData.pollUpOrDownVotes)
             setPollVoteOption(pollData.votedFor)
             setPollinitialVoteOption(pollData.votedFor)
