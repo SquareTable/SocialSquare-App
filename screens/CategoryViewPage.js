@@ -234,37 +234,20 @@ const CategoryViewPage = ({route, navigation}) => {
         setGetCategoryItems(true)
     }
 
-    const JoinCategory = () => {
+    const JoinLeaveCategory = () => {
         if (storedCredentials) {
-            if (inCategory !== "Finding") {
-                const url = serverUrl + "/tempRoute/joincategory";
+            if (typeof inCategory === 'boolean') {
+                const previousInCategory = inCategory;
+                setInCategory('Changing')
 
-                var toSend = {categoryId}
-                const beforeChange = inCategory
-                setInCategory("Changing")
-                console.log(toSend)
+                const url = serverUrl + "/tempRoute/" + (inCategory ? 'leavecategory' : 'joincategory')
+                const toSend = {categoryId}
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status);
-                        setInCategory(beforeChange)
-                    } else {
-                        handleMessage(message, status);
-                        if (message == "Joined Category") {
-                            setInCategory(true)
-                        } else {
-                            setInCategory(false)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
+                axios.post(url, toSend).then(() => {
+                    setInCategory(!previousInCategory)
                 }).catch(error => {
-                    console.log(error);
-                    setInCategory(beforeChange)
-                    handleMessage(ParseErrorMessage(error), 'FAILED');
+                    setInCategory(previousInCategory)
+                    handleMessage(ParseErrorMessage(error), 'FAILED')
                 })
             }
         } else {
@@ -463,7 +446,7 @@ const CategoryViewPage = ({route, navigation}) => {
                                 )}
                             </View>
                         )}
-                        <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinCategory}>
+                        <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinLeaveCategory}>
                             {typeof inCategory === "boolean" ?
                                 <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
                             : inCategory === "Changing" || inCategory === "Finding" ?
