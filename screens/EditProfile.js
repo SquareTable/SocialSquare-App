@@ -14,7 +14,8 @@ import {
     ConfirmLogoutButtonText,
     ConfirmLogoutText,
     ConfirmLogoutButtons,
-    ConfirmLogoutView
+    ConfirmLogoutView,
+    RightIcon
 } from './screenStylings/styling';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 import ActionSheet from 'react-native-actionsheet';
@@ -22,12 +23,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ServerUrlContext } from '../components/ServerUrlContext';
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext';
-import axios from 'axios';
+import axios, { CanceledError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { useIsFocused } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const EditProfile = ({navigation, route}) => {
     const {colors, dark} = useTheme()
@@ -55,6 +57,12 @@ const EditProfile = ({navigation, route}) => {
     const [hideMakeAccountPublicConfirmationScreen, setHideMakeAccountPublicConfirmationScreen] = useState(true);
     const [changingPrivateAccount, setChangingPrivateAccount] = useState(false);
     const isFocused = useIsFocused();
+    const [usernameAvailabilityLoading, setUsernameAvailabilityLoading] = useState(false)
+    const [usernameIsAvailable, setUsernameIsAvailable] = useState()
+    const [usernameAvailableMessage, setUsernameAvailableMessage] = useState()
+    const [usernameAvailableMessageColor, setUsernameAvailableMessageColor] = useState()
+    const usernameCheckDebounceTimeoutRef = useRef()
+    const usernameCheckAbortController = useRef(new AbortController())
     const PfpPickerActionMenuOptions = [
         'Take Photo',
         'Choose from Photo Library',
@@ -435,7 +443,68 @@ const EditProfile = ({navigation, route}) => {
                 navigation.goBack()
             }
 
-        }), [navigation, savingChanges]);
+        }
+    ), [navigation, savingChanges]);
+
+    const checkIfUsernameIsAvailable = (username) => {
+        clearTimeout(usernameCheckDebounceTimeoutRef.current)
+        usernameCheckDebounceTimeoutRef.current = setTimeout(() => {
+            usernameCheckAbortController.current.abort()
+            console.warn('Aborted usernameCheckAbortController')
+            usernameCheckAbortController.current = new AbortController()
+
+            if (username.length < 1) {
+                setUsernameIsAvailable(false);
+                setUsernameAvailableMessage('Username cannot be blank')
+                setUsernameAvailableMessageColor(colors.red)
+            } else if (username === name) {
+                setUsernameAvailabilityLoading(false)
+                setUsernameAvailableMessage()
+                setUsernameAvailableMessageColor()
+                setUsernameIsAvailable()
+            } else {
+                setUsernameAvailabilityLoading(true)
+                const url = serverUrl + '/user/checkusernameavailability';
+                axios.post(url, {username}, {signal: usernameCheckAbortController.current.signal}).then((response) => {
+                    const result = response.data;
+                    const {message} = result;
+                    console.log(message)
+                    if (message == 'Username is available') {
+                        setUsernameIsAvailable(true);
+                        setUsernameAvailableMessage('This username is available')
+                        setUsernameAvailableMessageColor(colors.green)
+                    } else if (message == 'Username is not available') {
+                        setUsernameIsAvailable(false);
+                        setUsernameAvailableMessage('This username is not available')
+                        setUsernameAvailableMessageColor(colors.red)
+                    } else {
+                        setUsernameAvailableMessage('An error occurred while checking if your desired username is available. Try checking your network connection and retry.')
+                        setUsernameAvailableMessageColor(colors.red)
+                    }
+                    setUsernameAvailabilityLoading(false)
+                }).catch(error => {
+                    if (!(error instanceof CanceledError)) {
+                        //Error was not caused by intentional cancellation of the request
+                        console.log(error);
+                        setUsernameIsAvailable(false)
+                        setUsernameAvailabilityLoading(false)
+                        setUsernameAvailableMessage(ParseErrorMessage(error))
+                        setUsernameAvailableMessageColor(colors.red)
+                    }
+                })
+            }
+        }, 500)
+    };
+
+    useEffect(() => {
+        return () => {
+            if (usernameCheckAbortController.current instanceof AbortController) {
+                usernameCheckAbortController.current.abort()
+            }
+            console.warn('Aborting any network requests from EditProfile.js as the Edit Profile screen has been unmounted')
+        }
+    }, [])
+
     return (
         <>
             <ConfirmLogoutView style={{backgroundColor: colors.primary, height: 500}} viewHidden={hideMakeAccountPrivateConfirmationScreen}>
@@ -514,13 +583,24 @@ const EditProfile = ({navigation, route}) => {
                     <UserTextInput
                         label="Username"
                         icon="pencil"
-                        onChangeText={(text) => {savingChanges ? null : setNameText(text.toLowerCase().trim())}}
+                        onChangeText={(text) => {
+                            if (!savingChanges) {
+                                const username = text.toLowerCase().trim()
+                                setNameText(username)
+                                checkIfUsernameIsAvailable(username)
+                            }
+                        }}
                         value={nameText}
                         style={{backgroundColor: colors.primary, color: colors.tertiary}}
                         colors={colors}
                         autoCapitalize="none"
                         autoCorrect={false}
+                        usernameIsAvailable={usernameIsAvailable}
+                        usernameAvailabilityLoading={usernameAvailabilityLoading}
                     />
+
+                    {usernameAvailableMessage ? <Text style={{color: usernameAvailableMessageColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>{usernameAvailabilityLoading ? ' ' : usernameAvailableMessage}</Text> : null}
+
                     <UserTextInput
                         label="Display Name"
                         icon="pencil"
@@ -568,7 +648,7 @@ const EditProfile = ({navigation, route}) => {
 
 export default EditProfile;
 
-const UserTextInput = ({label, icon, colors, ...props}) => {
+const UserTextInput = ({label, icon, colors, usernameAvailabilityLoading, usernameIsAvailable, ...props}) => {
     return(
         <View>
             <LeftIcon style={{top: 34.5}}>
@@ -576,6 +656,17 @@ const UserTextInput = ({label, icon, colors, ...props}) => {
             </LeftIcon>
             <StyledInputLabel style={{marginLeft: 10}}>{label}</StyledInputLabel>
             <StyledTextInput {...props}/>
+            {label === 'Username' ?
+                usernameAvailabilityLoading ?
+                    <RightIcon disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
+                        <ActivityIndicator size="large" color={colors.brand} style={{transform: [{scale: 0.75}]}}/>
+                    </RightIcon>
+                : usernameIsAvailable !== undefined ?
+                    <RightIcon style={{top: 32.5}} disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
+                        <Ionicons name={usernameIsAvailable ? 'checkmark-circle-outline' : 'close-circle-outline'} size={30} color={usernameIsAvailable ? colors.green : colors.red}/>
+                    </RightIcon>
+                : null
+            : null}
         </View>
     )
 }
