@@ -72,6 +72,7 @@ const Signup = ({navigation, route}) => {
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
     const [usernameIsAvailable, setUsernameIsAvailable] = useState(undefined)
+    const [usernameAvailabilityLoading, setUsernameAvailabilityLoading] = useState(false)
     const [usernameAvailableMessage, setUsernameAvailableMessage] = useState(undefined)
     const [usernameAvailableMessageColor, setUsernameAvailableMessageColor] = useState(undefined)
 
@@ -181,6 +182,7 @@ const Signup = ({navigation, route}) => {
             setUsernameAvailableMessage('Username cannot be blank')
             setUsernameAvailableMessageColor(colors.red)
         } else {
+            setUsernameAvailabilityLoading(true)
             const url = serverUrl + '/user/checkusernameavailability';
             axios.post(url, {username}).then((response) => {
                 const result = response.data;
@@ -200,19 +202,19 @@ const Signup = ({navigation, route}) => {
                         setUsernameAvailableMessage('This username is not available')
                         setUsernameAvailableMessageColor(colors.red)
                     } else {
-                        setUsernameIsAvailable(false);
-                        setUsernameAvailableMessage('An error occured. Try checking your network connection and retry.')
+                        setUsernameAvailableMessage('An error occurred while checking if your desired username is available. Try checking your network connection and retry.')
                         setUsernameAvailableMessageColor(colors.red)
                     }
                 }
+                setUsernameAvailabilityLoading(false)
             }).catch(error => {
                 console.log(error);
-                setUsernameIsAvailable(false);
+                setUsernameAvailabilityLoading(false)
                 setUsernameAvailableMessage(ParseErrorMessage(error))
                 setUsernameAvailableMessageColor(colors.red)
             })
         }
-    }, 750);
+    }, 500);
     return(
         <KeyboardAwareScrollView>
             <StyledContainer style={{backgroundColor: colors.primary}}>
@@ -254,9 +256,10 @@ const Signup = ({navigation, route}) => {
                                     usernameIsAvailable={usernameIsAvailable}
                                     colors={colors}
                                     textContentType="username"
+                                    usernameAvailabilityLoading={usernameAvailabilityLoading}
                                 />
 
-                                {usernameAvailableMessage ? <Text style={{color: usernameAvailableMessageColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>{usernameAvailableMessage}</Text> : null}
+                                {usernameAvailableMessage ? <Text style={{color: usernameAvailableMessageColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>{usernameAvailabilityLoading ? ' ' : usernameAvailableMessage}</Text> : null}
 
                                 <UserTextInput
                                     label="Email Address"
@@ -309,7 +312,7 @@ const Signup = ({navigation, route}) => {
                                     passwordRules="minlength: 8; maxlength: 17;"
                                 />
                                 <MsgBox type={messageType}>{message}</MsgBox>
-                                {!isSubmitting && (<StyledButton onPress={handleSubmit} style={usernameIsAvailable == true ? {opacity: 1} : {opacity: 0.2}} disabled={usernameIsAvailable == true ? false : true}>
+                                {!isSubmitting && (<StyledButton onPress={handleSubmit} style={usernameIsAvailable !== false ? {opacity: 1} : {opacity: 0.2}} disabled={usernameIsAvailable === false}>
                                     <ButtonText> Signup </ButtonText>
                                 </StyledButton>)}
 
@@ -348,7 +351,7 @@ const Signup = ({navigation, route}) => {
     );
 }
 
-const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, usernameIsAvailable, colors, ...props}) => {
+const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, usernameIsAvailable, colors, usernameAvailabilityLoading, ...props}) => {
     return(
         <View>
             <LeftIcon style={{top: 34.5}}>
@@ -361,11 +364,17 @@ const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, 
                     <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={colors.brand}/>
                 </RightIcon>
             )}
-            {label == 'Username' && usernameIsAvailable != undefined && (
-                <RightIcon style={{top: 32.5}} disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
-                    <Ionicons name={usernameIsAvailable ? 'checkmark-circle-outline' : 'close-circle-outline'} size={30} color={usernameIsAvailable ? colors.green : colors.red}/>
-                </RightIcon>
-            )}
+            {label === 'Username' ?
+                usernameAvailabilityLoading ?
+                    <RightIcon>
+                        <ActivityIndicator size="large" color={colors.brand} style={{transform: [{scale: 0.75}]}}/>
+                    </RightIcon>
+                : usernameIsAvailable !== undefined ?
+                    <RightIcon style={{top: 32.5}} disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
+                        <Ionicons name={usernameIsAvailable ? 'checkmark-circle-outline' : 'close-circle-outline'} size={30} color={usernameIsAvailable ? colors.green : colors.red}/>
+                    </RightIcon>
+                : null
+            : null}
         </View>
     )
 }
