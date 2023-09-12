@@ -14,7 +14,8 @@ import {
     ConfirmLogoutButtonText,
     ConfirmLogoutText,
     ConfirmLogoutButtons,
-    ConfirmLogoutView
+    ConfirmLogoutView,
+    RightIcon
 } from './screenStylings/styling';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 import ActionSheet from 'react-native-actionsheet';
@@ -28,6 +29,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import { useIsFocused } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const EditProfile = ({navigation, route}) => {
     const {colors, dark} = useTheme()
@@ -55,6 +57,8 @@ const EditProfile = ({navigation, route}) => {
     const [hideMakeAccountPublicConfirmationScreen, setHideMakeAccountPublicConfirmationScreen] = useState(true);
     const [changingPrivateAccount, setChangingPrivateAccount] = useState(false);
     const isFocused = useIsFocused();
+    const [usernameAvailabilityLoading, setUsernameAvailabilityLoading] = useState(false)
+    const [usernameIsAvailable, setUsernameIsAvailable] = useState()
     const PfpPickerActionMenuOptions = [
         'Take Photo',
         'Choose from Photo Library',
@@ -520,6 +524,8 @@ const EditProfile = ({navigation, route}) => {
                         colors={colors}
                         autoCapitalize="none"
                         autoCorrect={false}
+                        usernameIsAvailable={usernameIsAvailable}
+                        usernameAvailabilityLoading={usernameAvailabilityLoading}
                     />
                     <UserTextInput
                         label="Display Name"
@@ -568,7 +574,7 @@ const EditProfile = ({navigation, route}) => {
 
 export default EditProfile;
 
-const UserTextInput = ({label, icon, colors, ...props}) => {
+const UserTextInput = ({label, icon, colors, usernameAvailabilityLoading, usernameIsAvailable, ...props}) => {
     return(
         <View>
             <LeftIcon style={{top: 34.5}}>
@@ -576,6 +582,17 @@ const UserTextInput = ({label, icon, colors, ...props}) => {
             </LeftIcon>
             <StyledInputLabel style={{marginLeft: 10}}>{label}</StyledInputLabel>
             <StyledTextInput {...props}/>
+            {label === 'Username' ?
+                usernameAvailabilityLoading ?
+                    <RightIcon disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
+                        <ActivityIndicator size="large" color={colors.brand} style={{transform: [{scale: 0.75}]}}/>
+                    </RightIcon>
+                : usernameIsAvailable !== undefined ?
+                    <RightIcon style={{top: 32.5}} disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
+                        <Ionicons name={usernameIsAvailable ? 'checkmark-circle-outline' : 'close-circle-outline'} size={30} color={usernameIsAvailable ? colors.green : colors.red}/>
+                    </RightIcon>
+                : null
+            : null}
         </View>
     )
 }
