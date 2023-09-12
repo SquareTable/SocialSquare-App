@@ -23,7 +23,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ServerUrlContext } from '../components/ServerUrlContext';
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext';
-import axios from 'axios';
+import axios, { CanceledError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { useIsFocused } from '@react-navigation/native';
@@ -59,6 +59,10 @@ const EditProfile = ({navigation, route}) => {
     const isFocused = useIsFocused();
     const [usernameAvailabilityLoading, setUsernameAvailabilityLoading] = useState(false)
     const [usernameIsAvailable, setUsernameIsAvailable] = useState()
+    const [usernameAvailableMessage, setUsernameAvailableMessage] = useState()
+    const [usernameAvailableMessageColor, setUsernameAvailableMessageColor] = useState()
+    const usernameCheckDebounceTimeoutRef = useRef()
+    const usernameCheckAbortController = useRef(new AbortController())
     const PfpPickerActionMenuOptions = [
         'Take Photo',
         'Choose from Photo Library',
@@ -439,7 +443,68 @@ const EditProfile = ({navigation, route}) => {
                 navigation.goBack()
             }
 
-        }), [navigation, savingChanges]);
+        }
+    ), [navigation, savingChanges]);
+
+    const checkIfUsernameIsAvailable = (username) => {
+        clearTimeout(usernameCheckDebounceTimeoutRef.current)
+        usernameCheckDebounceTimeoutRef.current = setTimeout(() => {
+            usernameCheckAbortController.current.abort()
+            console.warn('Aborted usernameCheckAbortController')
+            usernameCheckAbortController.current = new AbortController()
+
+            if (username.length < 1) {
+                setUsernameIsAvailable(false);
+                setUsernameAvailableMessage('Username cannot be blank')
+                setUsernameAvailableMessageColor(colors.red)
+            } else if (username === name) {
+                setUsernameAvailabilityLoading(false)
+                setUsernameAvailableMessage()
+                setUsernameAvailableMessageColor()
+                setUsernameIsAvailable()
+            } else {
+                setUsernameAvailabilityLoading(true)
+                const url = serverUrl + '/user/checkusernameavailability';
+                axios.post(url, {username}, {signal: usernameCheckAbortController.current.signal}).then((response) => {
+                    const result = response.data;
+                    const {message} = result;
+                    console.log(message)
+                    if (message == 'Username is available') {
+                        setUsernameIsAvailable(true);
+                        setUsernameAvailableMessage('This username is available')
+                        setUsernameAvailableMessageColor(colors.green)
+                    } else if (message == 'Username is not available') {
+                        setUsernameIsAvailable(false);
+                        setUsernameAvailableMessage('This username is not available')
+                        setUsernameAvailableMessageColor(colors.red)
+                    } else {
+                        setUsernameAvailableMessage('An error occurred while checking if your desired username is available. Try checking your network connection and retry.')
+                        setUsernameAvailableMessageColor(colors.red)
+                    }
+                    setUsernameAvailabilityLoading(false)
+                }).catch(error => {
+                    if (!(error instanceof CanceledError)) {
+                        //Error was not caused by intentional cancellation of the request
+                        console.log(error);
+                        setUsernameIsAvailable(false)
+                        setUsernameAvailabilityLoading(false)
+                        setUsernameAvailableMessage(ParseErrorMessage(error))
+                        setUsernameAvailableMessageColor(colors.red)
+                    }
+                })
+            }
+        }, 500)
+    };
+
+    useEffect(() => {
+        return () => {
+            if (usernameCheckAbortController.current instanceof AbortController) {
+                usernameCheckAbortController.current.abort()
+            }
+            console.warn('Aborting any network requests from EditProfile.js as the Edit Profile screen has been unmounted')
+        }
+    }, [])
+
     return (
         <>
             <ConfirmLogoutView style={{backgroundColor: colors.primary, height: 500}} viewHidden={hideMakeAccountPrivateConfirmationScreen}>
@@ -518,7 +583,13 @@ const EditProfile = ({navigation, route}) => {
                     <UserTextInput
                         label="Username"
                         icon="pencil"
-                        onChangeText={(text) => {savingChanges ? null : setNameText(text.toLowerCase().trim())}}
+                        onChangeText={(text) => {
+                            if (!savingChanges) {
+                                const username = text.toLowerCase().trim()
+                                setNameText(username)
+                                checkIfUsernameIsAvailable(username)
+                            }
+                        }}
                         value={nameText}
                         style={{backgroundColor: colors.primary, color: colors.tertiary}}
                         colors={colors}
@@ -527,6 +598,9 @@ const EditProfile = ({navigation, route}) => {
                         usernameIsAvailable={usernameIsAvailable}
                         usernameAvailabilityLoading={usernameAvailabilityLoading}
                     />
+
+                    {usernameAvailableMessage ? <Text style={{color: usernameAvailableMessageColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>{usernameAvailabilityLoading ? ' ' : usernameAvailableMessage}</Text> : null}
+
                     <UserTextInput
                         label="Display Name"
                         icon="pencil"
