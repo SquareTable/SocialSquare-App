@@ -212,6 +212,7 @@ const Signup = ({navigation, route}) => {
                 setUsernameAvailabilityLoading(false)
                 setUsernameAvailableMessage(ParseErrorMessage(error))
                 setUsernameAvailableMessageColor(colors.red)
+                setUsernameIsAvailable(false)
             })
         }
     }, 500);
