@@ -366,7 +366,7 @@ const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, 
             )}
             {label === 'Username' ?
                 usernameAvailabilityLoading ?
-                    <RightIcon>
+                    <RightIcon disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
                         <ActivityIndicator size="large" color={colors.brand} style={{transform: [{scale: 0.75}]}}/>
                     </RightIcon>
                 : usernameIsAvailable !== undefined ?
