@@ -343,6 +343,8 @@ class Poll extends Component {
     }
 }
 
+export const PollClass = Poll;
+
 export default function(props) {
     const navigation = useNavigation();
     const {serverUrl} = useContext(ServerUrlContext);
