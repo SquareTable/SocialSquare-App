@@ -156,7 +156,7 @@ class PollWithVotes extends PollClass {
                 <ViewScreenPollPostFrame style={{width: '100%'}}>
                     <PostsHorizontalView style={{borderBottomWidth: 3, borderColor: this.props.colors.darkLight, width: '100%', paddingBottom: 5}}>
                         <PostsVerticalView>
-                            <PostCreatorIcon source={{uri: this.props.post.creatorPfpB64}}/>
+                            <PostCreatorIcon source={{uri: this.props.post.pfpB64}}/>
                         </PostsVerticalView>
                         <PostsVerticalView style={{marginTop: 9}}>
                             <SubTitle style={{fontSize: 20, color: this.props.colors.brand, marginBottom: 0}}>{this.props.post.creatorDisplayName}</SubTitle>
