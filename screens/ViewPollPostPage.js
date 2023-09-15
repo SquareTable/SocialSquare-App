@@ -73,6 +73,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
 import { getTimeFromUTCMS } from '../libraries/Time';
+import PollWithVotes from '../components/Posts/PollWithVotes';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -590,6 +591,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             <ScrollView style={{backgroundColor: colors.primary}}>
                 <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
                     <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
+                        <PollWithVotes/>
                         {storedCredentials ?
                             <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
                                 <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>

@@ -415,5 +415,5 @@ export default function(props) {
         storedCredentials
     }
 
-    return <Poll {...postProps}/>
+    return <PollWithVotes {...postProps}/>
 };
