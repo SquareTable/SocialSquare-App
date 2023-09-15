@@ -129,6 +129,21 @@ class PollWithVotes extends PollClass {
         return true;
     }
 
+    openThreeDotsMenu = () => {
+        if (this.props.post.isOwner !== true && this.props.post.isOwner !== false) {
+            alert("isOwner is not true or false. An error has occured.")
+            return
+        }
+
+        this.props.dispatch({
+            type: 'showMenu',
+            postId: this.props.post._id,
+            postFormat: 'Poll',
+            isOwner: this.props.post.isOwner,
+            postIndex: this.props.index
+        })
+    }
+
     render() {
         return (
             <>
@@ -406,7 +421,7 @@ class PollWithVotes extends PollClass {
                         <PostsIconFrame>
                             <PostsIcons style={{flex: 1, height: 30, width: 30, tintColor: this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
                         </PostsIconFrame>
-                        <PostsIconFrame>
+                        <PostsIconFrame onPress={this.openThreeDotsMenu}>
                             <PostsIcons style={{flex: 1, tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
                         </PostsIconFrame>
                     </PostHorizontalView>

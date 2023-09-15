@@ -75,6 +75,7 @@ import ParseErrorMessage from '../components/ParseErrorMessage';
 import { getTimeFromUTCMS } from '../libraries/Time';
 import PollWithVotes from '../components/Posts/PollWithVotes';
 import usePostReducer from '../hooks/usePostReducer';
+import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -284,7 +285,8 @@ const ViewPollPostPage = ({route, navigation}) => {
     }, [isFocused])
 
     return(
-        <>    
+        <>
+            <ThreeDotMenuActionSheet dispatch={dispatch} threeDotsMenu={postReducer.threeDotsMenu}/>
             <StatusBar style={colors.StatusBarColor}/>
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
                 <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
