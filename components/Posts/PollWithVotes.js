@@ -1,12 +1,38 @@
 import React, { useContext } from 'react';
 import { PollClass } from './PollPost';
-import { ActivityIndicator } from 'react-native';
-import { PostsIconFrame } from '../../screens/screenStylings/styling';
+import { ActivityIndicator, View } from 'react-native';
+import { 
+    PostsIconFrame,
+    ViewScreenPollPostFrame,
+    PostsHorizontalView,
+    PostsVerticalView,
+    SubTitle,
+    PostCreatorIcon,
+    PollPostSubTitle,
+    ProfIcons,
+    PollPostHorizontalView,
+    AboveBarPollPostHorizontalView,
+    PollPostTitle,
+    PollKeysCircle,
+    PollKeyViewOne,
+    PollKeyViewTwo,
+    PollKeyViewThree,
+    PollKeyViewFour,
+    PollKeyViewFive,
+    PollKeyViewSix,
+    PostsIcons,
+    PollBarOutline,
+    PollBarItem,
+    PollHorizontalViewItem,
+    PollHorizontalViewItemCenter,
+    PostHorizontalView
+} from '../../screens/screenStylings/styling';
 import { getTimeFromUTCMS } from '../../libraries/Time';
 import { useNavigation } from '@react-navigation/native';
 import { ServerUrlContext } from '../ServerUrlContext';
 import { CredentialsContext } from '../CredentialsContext';
 import ParseErrorMessage from '../ParseErrorMessage';
+import Octicons from 'react-native-vector-icons/Octicons'
 
 class PollWithVotes extends PollClass {
     constructor(props) {
@@ -125,7 +151,7 @@ class PollWithVotes extends PollClass {
                     <PollPostTitle viewPage={true}>
                         {this.props.post.pollTitle || "Couldn't recieve poll title"}
                     </PollPostTitle>
-                    <PollPostSubTitle style={{color: colors.tertiary}} viewPage={true}>
+                    <PollPostSubTitle style={{color: this.props.colors.tertiary}} viewPage={true}>
                         {this.props.post.pollSubTitle || "Couldn't recieve poll subtitle"}
                     </PollPostSubTitle>
                     <AboveBarPollPostHorizontalView viewPage={true}>
@@ -149,15 +175,15 @@ class PollWithVotes extends PollClass {
                         </PollPostSubTitle>
                     </AboveBarPollPostHorizontalView>
                     <PollBarOutline>
-                    <PollBarItem borderChange={this.props.post.optionOnesBarLength} style={{ width: this.props.post.optionOnesBarLength+'%', backgroundColor: this.props.optionOnesColor == 'Not Specified' ? colors.brand : colors[this.props.optionOnesColor.toLowerCase()] || this.props.colors.brand}}></PollBarItem>
-                    <PollBarItem borderChange={this.props.post.optionTwosBarLength} style={{ width: this.props.post.optionTwosBarLength+'%', backgroundColor: this.props.optionTwosColor == 'Not Specified' ? colors.brand : colors[this.props.optionTwosColor.toLowerCase()] || this.props.colors.brand}}></PollBarItem>
-                    <PollBarItem borderChange={this.props.post.optionThreesBarLength} style={{ width: this.props.post.optionThreesBarLength+'%', backgroundColor: this.props.optionThreesColor == 'Not Specified' ? colors.brand : colors[this.props.optionThreesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
-                    <PollBarItem borderChange={this.props.post.optionFoursBarLength} style={{ width: this.props.post.optionFoursBarLength+'%', backgroundColor: this.props.optionFoursColor == 'Not Specified' ? colors.brand : colors[this.props.optionFoursColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
-                    <PollBarItem borderChange={this.props.post.optionFivesBarLength} style={{ width: this.props.post.optionFivesBarLength+'%', backgroundColor: this.props.optionFivesColor == 'Not Specified' ? colors.brand : colors[this.props.optionFivesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
-                    <PollBarItem borderChange={this.props.post.optionSixesBarLength} style={{ width: this.props.post.optionSixesBarLength+'%', backgroundColor: this.props.optionSixesColor == 'Not Specified' ? colors.brand : colors[this.props.optionSixesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                    <PollBarItem borderChange={this.props.post.optionOnesBarLength} style={{ width: this.props.post.optionOnesBarLength+'%', backgroundColor: this.props.post.optionOnesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionOnesColor.toLowerCase()] || this.props.colors.brand}}></PollBarItem>
+                    <PollBarItem borderChange={this.props.post.optionTwosBarLength} style={{ width: this.props.post.optionTwosBarLength+'%', backgroundColor: this.props.post.optionTwosColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionTwosColor.toLowerCase()] || this.props.colors.brand}}></PollBarItem>
+                    <PollBarItem borderChange={this.props.post.optionThreesBarLength} style={{ width: this.props.post.optionThreesBarLength+'%', backgroundColor: this.props.post.optionThreesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionThreesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                    <PollBarItem borderChange={this.props.post.optionFoursBarLength} style={{ width: this.props.post.optionFoursBarLength+'%', backgroundColor: this.props.post.optionFoursColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionFoursColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                    <PollBarItem borderChange={this.props.post.optionFivesBarLength} style={{ width: this.props.post.optionFivesBarLength+'%', backgroundColor: this.props.post.optionFivesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionFivesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                    <PollBarItem borderChange={this.props.post.optionSixesBarLength} style={{ width: this.props.post.optionSixesBarLength+'%', backgroundColor: this.props.post.optionSixesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionSixesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
                     </PollBarOutline>
                     <PollPostHorizontalView>
-                        <PollKeyViewOne pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={openOptionOne}>
+                        <PollKeyViewOne pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={this.openOptionOne}>
                             <Octicons name={"chevron-down"} size={20} color={this.props.colors.greyish} />
                             <PollKeysCircle circleColor={this.props.post.optionOnesColor}></PollKeysCircle>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}}>
@@ -191,7 +217,7 @@ class PollWithVotes extends PollClass {
 
 
                     <PollPostHorizontalView>
-                        <PollKeyViewTwo pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={openOptionTwo}>
+                        <PollKeyViewTwo pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={this.openOptionTwo}>
                             <Octicons name={"chevron-down"} size={20} color={this.props.colors.greyish} />
                             <PollKeysCircle circleColor={this.props.post.optionTwosColor}></PollKeysCircle>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}}>
@@ -202,7 +228,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewTwo>
                     </PollPostHorizontalView>
                     
-                    <PollPostHorizontalView visible={optionTwoInfoState}>
+                    <PollPostHorizontalView visible={this.optionTwoInfoState}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -223,7 +249,7 @@ class PollWithVotes extends PollClass {
                     </PollPostHorizontalView>
 
                     <PollPostHorizontalView>
-                        <PollKeyViewThree pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={openOptionThree}>
+                        <PollKeyViewThree pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={this.openOptionThree}>
                             <Octicons name={"chevron-down"} size={20} color={this.props.colors.greyish} />
                             <PollKeysCircle circleColor={this.props.post.optionThreesColor}></PollKeysCircle>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}}>
@@ -234,7 +260,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewThree>
                     </PollPostHorizontalView>
                     
-                    <PollPostHorizontalView visible={optionThreeInfoState}>
+                    <PollPostHorizontalView visible={this.optionThreeInfoState}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -255,7 +281,7 @@ class PollWithVotes extends PollClass {
                     </PollPostHorizontalView>
 
                     <PollPostHorizontalView>
-                        <PollKeyViewFour pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={openOptionFour}>
+                        <PollKeyViewFour pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={this.openOptionFour}>
                             <Octicons name={"chevron-down"} size={20} color={this.props.colors.greyish} />
                             <PollKeysCircle circleColor={this.props.post.optionFoursColor}></PollKeysCircle>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}}>
@@ -266,7 +292,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewFour>
                     </PollPostHorizontalView>
 
-                    <PollPostHorizontalView visible={optionFourInfoState}>
+                    <PollPostHorizontalView visible={this.optionFourInfoState}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -287,7 +313,7 @@ class PollWithVotes extends PollClass {
                     </PollPostHorizontalView>
 
                     <PollPostHorizontalView>
-                        <PollKeyViewFive pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={openOptionFive}>
+                        <PollKeyViewFive pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={this.openOptionFive}>
                         <Octicons name={"chevron-down"} size={20} color={this.props.colors.greyish} />
                             <PollKeysCircle circleColor={this.props.post.optionFivesColor}></PollKeysCircle>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}}>
@@ -298,7 +324,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewFive>
                     </PollPostHorizontalView>
 
-                    <PollPostHorizontalView visible={optionFiveInfoState}>
+                    <PollPostHorizontalView visible={this.optionFiveInfoState}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -319,18 +345,18 @@ class PollWithVotes extends PollClass {
                     </PollPostHorizontalView>
 
                     <PollPostHorizontalView>
-                        <PollKeyViewSix pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={openOptionSix}>
-                            <Octicons name={"chevron-down"} size={20} color={colors.greyish} />
+                        <PollKeyViewSix pollOptions={this.props.post.totalNumberOfOptions} viewPage={true} onPress={this.openOptionSix}>
+                            <Octicons name={"chevron-down"} size={20} color={this.props.colors.greyish} />
                             <PollKeysCircle circleColor={this.props.post.optionSixesColor}></PollKeysCircle>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}}>
                                 6. {this.props.post.optionSix || "Couldn't load option six"}
                             </PollPostSubTitle>
                             <PollKeysCircle circleColor={this.props.post.optionSixesColor}></PollKeysCircle>
-                            <Octicons name={"chevron-down"} size={20} color={colors.greyish} />
+                            <Octicons name={"chevron-down"} size={20} color={this.props.colors.greyish} />
                         </PollKeyViewSix>
                     </PollPostHorizontalView>
 
-                    <PollPostHorizontalView visible={optionSixInfoState}>
+                    <PollPostHorizontalView visible={this.optionSixInfoState}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -384,9 +410,6 @@ class PollWithVotes extends PollClass {
                             <PostsIcons style={{flex: 1, tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
                         </PostsIconFrame>
                     </PostHorizontalView>
-                    {typeof message === 'string' || message instanceof String && (
-                        <MsgBox type={messageType}>{message}</MsgBox>
-                    )}
                     <PollPostSubTitle votesText={true} style={{flex: 1, color: this.props.colors.tertiary}}>
                         Total Votes: {this.props.post.optionOnesVotes + this.props.post.optionTwosVotes + this.props.post.optionThreesVotes + this.props.post.optionFoursVotes + this.props.post.optionFivesVotes + this.props.post.optionSixesVotes}
                     </PollPostSubTitle>

@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 // formik
@@ -66,7 +66,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from './../components/CredentialsContext';
 
 import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useIsFocused, useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
@@ -74,34 +74,18 @@ import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
 import { getTimeFromUTCMS } from '../libraries/Time';
 import PollWithVotes from '../components/Posts/PollWithVotes';
+import usePostReducer from '../hooks/usePostReducer';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
-    const {colors, dark} = useTheme();
-    const [hidePassword, setHidePassword] = useState(true);
+    const [postReducer, dispatch] = usePostReducer();
+    const [deleted, setDeleted] = useState(false)
+    const {colors, dark, colorsIndexNum} = useTheme();
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {name } = storedCredentials} else {var {name } = {name: 'SSGUEST'}};
-    const { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollLikes, pollId, votedFor, creatorPfpB64, creatorName, creatorDisplayName, datePosted} = route.params;
-    //Titles use states
-    var allDataCollected = {data: {pollTitle: pollTitle, pollSubTitle: pollSubTitle, optionOne: optionOne, optionOnesColor: optionOnesColor, optionOnesVotes: optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: optionTwo, optionTwosColor: optionTwosColor, optionTwosVotes: optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: optionThree, optionThreesColor: optionThreesColor, optionThreesVotes: optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: optionFour, optionFoursColor: optionFoursColor, optionFoursVotes: optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: optionFive, optionFivesColor: optionFivesColor, optionFivesVotes: optionFivesVotes, optionFivesBarLength: optionFivesBarLength, optionSix: optionSix, optionSixesColor: optionSixesColor, optionSixesVotes: optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: totalNumberOfOptions, pollLikes: pollLikes, pollId: pollId, votedFor: votedFor, creatorPfpB64: creatorPfpB64, creatorName: creatorName, creatorDisplayName: creatorName, datePosted}}
-    const [objectForAllData, setObjectForAllData] = useState(allDataCollected)
-    //
-    const [optionOneInfoState, setOptionOneInfoState] = useState(false)
-    const [optionTwoInfoState, setOptionTwoInfoState] = useState(false)
-    const [optionThreeInfoState, setOptionThreeInfoState] = useState(false)
-    const [optionFourInfoState, setOptionFourInfoState] = useState(false)
-    const [optionFiveInfoState, setOptionFiveInfoState] = useState(false)
-    const [optionSixInfoState, setOptionSixInfoState] = useState(false)
-    const [optionOneVoteText, setOptionOneVoteText] = useState("Vote")
-    const [optionTwoVoteText, setOptionTwoVoteText] = useState("Vote")
-    const [optionThreeVoteText, setOptionThreeVoteText] = useState("Vote")
-    const [optionFourVoteText, setOptionFourVoteText] = useState("Vote")
-    const [optionFiveVoteText, setOptionFiveVoteText] = useState("Vote")
-    const [optionSixVoteText, setOptionSixVoteText] = useState("Vote")
-    const [limitVoteTextChange, setLimitVoteTextChange] = useState(false)
-    const [likeSubmitting, setLikeSubmitting] = useState(false)
+    const { post, isOwner } = route.params;
     //Comment stuff
     const [ifCommentText, setIfCommentText] = useState("No comments found")
     const [changeSections, setChangeSections] = useState([])
@@ -110,18 +94,6 @@ const ViewPollPostPage = ({route, navigation}) => {
     const [commentLoadMax, setCommentLoadMax] = useState(10)
     const [commentsLength , setCommentsLength] = useState("Loading")
     const [loadingMoreComments, setLoadingMoreComments] = useState(false)
-    //change stuff
-    const [pollUpOrDownVotes, setPollUpOrDownVotes] = useState("Finding")
-    const [initialPollUpOrDownVotes, setInitialPollUpOrDownVotes] = useState("Finding")
-    const [pollUpvoted, setPollUpvoted] = useState("Finding")
-    const [pollDownvoted, setPollDownvoted] = useState("Finding")
-    const [pollInitiallyUpvoted, setPollInitiallyUpvoted] = useState("Finding")
-    const [pollInitiallyDownvoted, setPollInitiallyDownvoted] = useState("Finding")
-    const [pollVotesForOptions, setPollVotesForOptions] = useState({optionOne: "Finding", optionTwo: "Finding", optionThree: "Finding", optionFour: "Finding", optionFive: "Finding", optionSix: "Finding"})
-    const [initialPollVotesForOptions, setInitialPollVotesForOptions] = useState({optionOne: "Finding", optionTwo: "Finding", optionThree: "Finding", optionFour: "Finding", optionFive: "Finding", optionSix: "Finding"})
-    const [pollBarLengths, setPollBarLengths] = useState({optionOnesBarLength: 0, optionTwosBarLength: 0, optionThreesBarLength: 0, optionFoursBarLength: 0, optionFivesBarLength:0, optionSixesBarLength: 0})
-    const [pollVoteOption, setPollVoteOption] = useState("Finding")
-    const [pollinitialVoteOption, setPollinitialVoteOption] = useState("Finding")
     //PFP
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
     //Server stuff
@@ -129,164 +101,15 @@ const ViewPollPostPage = ({route, navigation}) => {
 
     const StatusBarHeight = useContext(StatusBarHeightContext);
 
-    //get image of post
-    async function getImageInPost(imageData, index) {
-        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
-        .then(res => 'data:image/jpeg;base64,' + res.data);
-    }
-    //profile image of creator
-    async function getImageInPfp(imageData, index) {
-        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].creatorPfpKey}`)
-        .then(res => 'data:image/jpeg;base64,' + res.data);
-    }
+    useEffect(() => {
+        dispatch({type: 'addPosts', posts: [post]})
+    }, [])
+
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${commentData[index].profileImageKey}`)
         .then(res => 'data:image/jpeg;base64,' + res.data);
     }
-
-    const layoutPollPosts = (data) => {
-        console.log("here is data")
-        console.log(data)
-        var pollData = data.data
-        console.log(pollData)
-        console.log(pollData.length) 
-        var optionOnesBarLength = 16.6666666667
-        var optionTwosBarLength = 16.6666666667
-        var optionThreesBarLength = 16.6666666667
-        var optionFoursBarLength = 16.6666666667
-        var optionFivesBarLength = 16.6666666667
-        var optionSixesBarLength = 16.6666666667
-        var totalVotes = pollData[0].optionOnesVotes+pollData[0].optionTwosVotes+pollData[0].optionThreesVotes+pollData[0].optionFoursVotes+pollData[0].optionFivesVotes+pollData[0].optionSixesVotes
-        if (totalVotes !== 0) {
-            optionOnesBarLength = (pollData[0].optionOnesVotes/totalVotes)*100
-            console.log("O1 BL")
-            console.log(optionOnesBarLength)
-            optionTwosBarLength = (pollData[0].optionTwosVotes/totalVotes)*100
-            console.log("O2 BL")
-            console.log(optionTwosBarLength)
-            optionThreesBarLength = (pollData[0].optionThreesVotes/totalVotes)*100
-            console.log("O3 BL")
-            console.log(optionThreesBarLength)
-            optionFoursBarLength = (pollData[0].optionFoursVotes/totalVotes)*100
-            console.log("O4 BL")
-            console.log(optionFoursBarLength)
-            optionFivesBarLength = (pollData[0].optionFivesVotes/totalVotes)*100
-            console.log("O5 BL")
-            console.log(optionFivesBarLength)
-            optionSixesBarLength = (pollData[0].optionSixesVotes/totalVotes)*100
-            console.log("O6 BL")
-            console.log(optionSixesBarLength)
-            if (Number.isNaN(optionOnesBarLength)) {
-                optionOnesBarLength = 0
-            }
-            if (Number.isNaN(optionTwosBarLength)) {
-                optionTwosBarLength = 0
-            }
-            if (Number.isNaN(optionThreesBarLength)) {
-                optionThreesBarLength = 0
-            }
-            if (Number.isNaN(optionFoursBarLength)) {
-                optionFoursBarLength = 0
-            }
-            if (Number.isNaN(optionFivesBarLength)) {
-                optionFivesBarLength = 0
-            }
-            if (Number.isNaN(optionSixesBarLength)) {
-                optionSixesBarLength = 0
-            }
-            setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-        } else {
-            if (totalVotes == 0) {
-                console.log("No Votes")
-                if (pollData[0].totalNumberOfOptions == "Two") {
-                    optionOnesBarLength = 100/2
-                    optionTwosBarLength = 100/2
-                    optionThreesBarLength = 0
-                    optionFoursBarLength = 0
-                    optionFivesBarLength = 0
-                    optionSixesBarLength = 0
-                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                } else if (pollData[0].totalNumberOfOptions == "Three") {
-                    optionOnesBarLength = 100/3
-                    optionTwosBarLength = 100/3
-                    optionThreesBarLength = 100/3
-                    optionFoursBarLength = 0
-                    optionFivesBarLength = 0
-                    optionSixesBarLength = 0
-                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                } else if (pollData[0].totalNumberOfOptions == "Four") {
-                    optionOnesBarLength = 100/4
-                    optionTwosBarLength = 100/4
-                    optionThreesBarLength = 100/4
-                    optionFoursBarLength = 100/4
-                    optionFivesBarLength = 0
-                    optionSixesBarLength = 0
-                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                } else if (pollData[0].totalNumberOfOptions == "Five") {
-                    optionOnesBarLength = 100/5
-                    optionTwosBarLength = 100/5
-                    optionThreesBarLength = 100/5
-                    optionFoursBarLength = 100/5
-                    optionFivesBarLength = 100/5
-                    optionSixesBarLength = 0
-                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                } else if (pollData[0].totalNumberOfOptions == "Six") {
-                    optionOnesBarLength = 100/6
-                    optionTwosBarLength = 100/6
-                    optionThreesBarLength = 100/6
-                    optionFoursBarLength = 100/6
-                    optionFivesBarLength = 100/6
-                    optionSixesBarLength = 100/6
-                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                }
-            }
-        }
-    }
-
-    //Change to voted
-    const prepareVotedandUpVoted = () => {
-        const changeVoteTexts = (data) => {
-            //set initial values
-            const pollData = data.data[0]
-            setPollUpvoted(pollData.upvoted)
-            setPollDownvoted(pollData.downvoted)
-            setPollInitiallyUpvoted(pollData.upvoted)
-            setPollInitiallyDownvoted(pollData.downvoted)
-            setPollUpOrDownVotes(pollData.pollUpOrDownVotes)
-            setPollVoteOption(pollData.votedFor)
-            setPollinitialVoteOption(pollData.votedFor)
-            setInitialPollVotesForOptions({optionOne: pollData.optionOnesVotes, optionTwo: pollData.optionTwosVotes, optionThree: pollData.optionThreesVotes, optionFour: pollData.optionFoursVotes, optionFive: pollData.optionFivesVotes, optionSix: pollData.optionSixesVotes})
-            setPollVotesForOptions({optionOne: pollData.optionOnesVotes, optionTwo: pollData.optionTwosVotes, optionThree: pollData.optionThreesVotes, optionFour: pollData.optionFoursVotes, optionFive: pollData.optionFivesVotes, optionSix: pollData.optionSixesVotes})
-        }
-        const url = serverUrl + "/tempRoute/searchforpollpostsbyid";
-    
-        var toSend = {"pollId": pollId}
-
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-    
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-            } else {
-                changeVoteTexts({data});
-                layoutPollPosts({data});
-            }
-            //setSubmitting(false);
-        }).catch(error => {
-            console.error(error);
-            //setSubmitting(false);
-            handleMessage(ParseErrorMessage(error));
-        })
-    }
-
-    if (limitVoteTextChange == false) {
-        setLimitVoteTextChange(true);
-        prepareVotedandUpVoted();
-    }
-
-    //
 
     const Item = ({commentId, commenterName, commenterDisplayName, commentsText, commentUpVotes, commentReplies, datePosted, commenterImageB64}) => (
         <CommentsContainer>
@@ -325,7 +148,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                     <VoteText style={{color: colors.tertiary}}>
                         {datePosted}
                     </VoteText>
-                    <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, postId: pollId, postFormat: "Poll"})}}>
+                    <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, postId: post._id, postFormat: "Poll"})}}>
                         <VoteText style={{color: colors.brand}}>
                             {commentReplies} replies
                         </VoteText>
@@ -389,7 +212,7 @@ const ViewPollPostPage = ({route, navigation}) => {
 
         const url = `${serverUrl}/tempRoute/searchforpollcomments`;
         const toSend = {
-            pollId
+            pollId: post._id
         }
         setLoadingMoreComments(true)
         axios.post(url, toSend).then((response) => {
@@ -446,133 +269,19 @@ const ViewPollPostPage = ({route, navigation}) => {
         setMessageType(type);
     }
 
-    const UpVotePoll = () => {
-        if (storedCredentials) {
-            //Change to loading circle
-            const beforeChange = pollUpOrDownVoted
-            setPollUpOrDownVoted("Changing")
-            //Do rest
-            handleMessage(null, null, null);
-            const url = serverUrl + "/tempRoute/upvotepoll";
+    const isFocused = useIsFocused();
 
-            var toSend = {pollId: pollId}
-
-            console.log(toSend)
-
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-            
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status, postNum);
-                    setPollUpOrDownVoted(beforeChange)
-                } else {
-                    handleMessage(message, status);
-                    if (message == "Post UpVoted") {
-                        setPollUpOrDownVoted("UpVoted")
-                    } else {
-                        setPollUpOrDownVoted("Neither")
-                    }
-                    //loadAndGetValues()
-                    //persistLogin({...data[0]}, message, status);
-                }
-            }).catch(error => {
-                console.error(error);
-                setPollUpOrDownVoted(beforeChange)
-                handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
-            })
+    const onDeleteCallback = () => {
+        if (isFocused) {
+            navigation.goBack();
         } else {
-            navigation.navigate('ModalLoginScreen', {modal: true})
+            setDeleted(true)
         }
     }
 
-    const DownVotePoll = () => {
-        if (storedCredentials) {
-            //Change to loading circle
-            const beforeChange = pollUpOrDownVoted
-            setPollUpOrDownVoted("Changing")
-            //Do rest
-            handleMessage(null, null, null);
-            const url = serverUrl + "/tempRoute/downvotepoll";
-
-            var toSend = {pollId: pollId}
-
-            console.log(toSend)
-
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-            
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status, postNum);
-                    setPollUpOrDownVoted(beforeChange)
-                } else {
-                    handleMessage(message, status);
-                    if (message == "Post DownVoted") {
-                        setPollUpOrDownVoted("DownVoted")
-                    } else {
-                        setPollUpOrDownVoted("Neither")
-                    }
-                    //loadAndGetValues()
-                    //persistLogin({...data[0]}, message, status);
-                }
-            }).catch(error => {
-                console.error(error);
-                setPollUpOrDownVoted(beforeChange)
-                handleMessage(ParseErrorMessage(error), 'FAILED', postNum);
-            })
-        } else {
-            navigation.navigate('ModalLoginScreen', {modal: true})
-        }
-    }
-
-    const openOptionOne = () => {
-        if (optionOneInfoState !== true) {
-            setOptionOneInfoState(true)
-        } else {
-            setOptionOneInfoState(false)
-        }
-    }
-
-    const openOptionTwo = () => {
-        if (optionTwoInfoState !== true) {
-            setOptionTwoInfoState(true)
-        } else {
-            setOptionTwoInfoState(false)
-        }
-    }
-
-    const openOptionThree = () => {
-        if (optionThreeInfoState !== true) {
-            setOptionThreeInfoState(true)
-        } else {
-            setOptionThreeInfoState(false)
-        }
-    }
-
-    const openOptionFour = () => {
-        if (optionFourInfoState !== true) {
-            setOptionFourInfoState(true)
-        } else {
-            setOptionFourInfoState(false)
-        }
-    }
-
-    const openOptionFive = () => {
-        if (optionFiveInfoState !== true) {
-            setOptionFiveInfoState(true)
-        } else {
-            setOptionFiveInfoState(false)
-        }
-    }
-
-    const openOptionSix = () => {
-        if (optionSixInfoState !== true) {
-            setOptionSixInfoState(true)
-        } else {
-            setOptionSixInfoState(false)
-        }
-    }
+    useEffect(() => {
+        if (isFocused && deleted) navigation.goBack();
+    }, [isFocused])
 
     return(
         <>    
@@ -586,18 +295,18 @@ const ViewPollPostPage = ({route, navigation}) => {
                         resizeMethod="resize"
                     />
                 </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{creatorDisplayName ? creatorDisplayName : creatorName}'s poll</TestText>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{(post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) || 'ERROR'}'s poll</TestText>
             </ChatScreen_Title>
             <ScrollView style={{backgroundColor: colors.primary}}>
                 <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
                     <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
-                        <PollWithVotes/>
+                        {postReducer.posts.length > 0 ? <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/> : null}
                         {storedCredentials ?
                             <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
                                 <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                                 <CommentsHorizontalView writeCommentArea={true}>
                                     <Formik
-                                        initialValues={{comment: '', userName: name, pollId: pollId}}
+                                        initialValues={{comment: '', userName: name, pollId: post._id}}
                                         onSubmit={(values, {setSubmitting}) => {
                                             if (values.comment == "") {
                                                 handleMessage('You cant post and empty comment');
