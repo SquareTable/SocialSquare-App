@@ -167,7 +167,7 @@ class Poll extends Component {
             optionSixesVotes: this.props.post.optionSixesVotes,
             optionSixesBarLength: this.props.post.optionSixesBarLength,
             totalNumberOfOptions: this.props.post.totalNumberOfOptions,
-            pollId: this.props.post.pollId,
+            _id: this.props.post._id,
             creatorPfpB64: this.props.post.pfpB64,
             creatorName: this.props.post.creatorName,
             creatorDisplayName: this.props.post.creatorDisplayName,

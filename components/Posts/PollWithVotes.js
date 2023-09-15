@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { PollClass } from './PollPost';
 import { ActivityIndicator } from 'react-native';
 import { PostsIconFrame } from '../../screens/screenStylings/styling';
 import { getTimeFromUTCMS } from '../../libraries/Time';
+import { useNavigation } from '@react-navigation/native';
+import { ServerUrlContext } from '../ServerUrlContext';
+import { CredentialsContext } from '../CredentialsContext';
+import ParseErrorMessage from '../ParseErrorMessage';
 
 class PollWithVotes extends PollClass {
     constructor(props) {
@@ -40,6 +44,48 @@ class PollWithVotes extends PollClass {
     optionFiveInfoState = false; //Temporary
     optionSixInfoState = false; //Temporary
 
+    handleVoteOnPoll = (optionSelected, voteNumber) => {
+        if (this.props.storedCredentials) {
+            this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
+            console.log(optionSelected)
+            const url = this.props.serverUrl + "/tempRoute/voteonpoll";
+
+            const toSend = {optionSelected: optionSelected, pollId: this.props.post._id}
+
+            console.log(toSend)
+
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({type: 'voteOnPoll', vote: voteNumber, postIndex: this.props.index})
+            }).catch(error => {
+                this.props.dispatch({type: 'stopPollVoteChange', postIndex: this.props.index})
+                console.error(error);
+                alert(ParseErrorMessage(error));
+            })
+        } else {
+            this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+        }
+    }
+
+    handleRemoveVoteOnPoll = () => {
+        if (this.props.storedCredentials) {
+            this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
+            const url = this.props.serverUrl + "/tempRoute/removevoteonpoll"
+            const toSend = {pollId: this.props.post._id}
+
+            console.log(toSend)
+
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({type: 'removeVoteOnPoll', postIndex: this.props.index})
+            }).catch(error => {
+                this.props.dispatch({type: 'stopPollVoteChange', postIndex: this.props.index})
+                console.error(error)
+                alert(ParseErrorMessage(error))
+            })
+        } else {
+            this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+        }
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
         const upvoteIsSame = nextProps.post.upvoted === this.props.post.upvoted;
         const downvoteIsSame = nextProps.post.downvoted === this.props.post.downvoted;
@@ -48,15 +94,11 @@ class PollWithVotes extends PollClass {
         const pollIdIsSame = nextProps.post.pollId === this.props.post.pollId;
         const deletingIsSame = nextProps.post.deleting === this.props.post.deleting;
         const profilePictureIsSame = nextProps.post.pfpB64 === this.props.post.pfpB64;
-        const voteOneSame = nextProps.post.optionOnesVotes === this.props.post.optionOnesVotes;
-        const voteTwoSame = nextProps.post.optionTwosVotes === this.props.post.optionTwosVotes;
-        const voteThreeSame = nextProps.post.optionThreesVotes === this.props.post.optionThreesVotes;
-        const voteFourSame = nextProps.post.optionFoursVotes === this.props.post.optionFoursVotes;
-        const voteFiveSame = nextProps.post.optionFivesVotes === this.props.post.optionFivesVotes;
-        const voteSixSame = nextProps.post.optionSixesVotes === this.props.post.optionSixesVotes;
+        const changingPollVoteIsSame = nextProps.post.pollVoteChanging === this.props.post.pollVoteChanging;
+        const votedForIsSame = nextProps.post.votedFor === this.props.post.votedFor
 
 
-        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && voteOneSame && voteTwoSame && voteThreeSame && voteFourSame && voteFiveSame && voteSixSame) return false;
+        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && changingPollVoteIsSame && votedForIsSame) return false;
 
         return true;
     }
@@ -133,10 +175,10 @@ class PollWithVotes extends PollClass {
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionOnesVotes} </PollPostSubTitle>
                         </PollHorizontalViewItem>
 
-                        <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionOnesVotes")}}>
+                        <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "One" ? this.handleRemoveVoteOnPoll() : handleVoteOnPoll("optionOnesVotes", "One")}}>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Option One </PollPostSubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionOne} </PollPostSubTitle>
+                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}>{this.props.post.votedFor === "One" ? "Voted" : "Vote"}</PollPostSubTitle>
                         </PollHorizontalViewItemCenter>
 
                         <PollHorizontalViewItem>
@@ -167,10 +209,10 @@ class PollWithVotes extends PollClass {
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionTwosVotes} </PollPostSubTitle>
                         </PollHorizontalViewItem>
 
-                        <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionTwosVotes")}}>
+                        <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Two" ? this.handleRemoveVoteOnPoll() : handleVoteOnPoll("optionTwosVotes", "Two")}}>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Option Two </PollPostSubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionTwo} </PollPostSubTitle>
+                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}>{this.props.post.votedFor === "Two" ? "Voted" : "Vote"}</PollPostSubTitle>
                         </PollHorizontalViewItemCenter>
 
                         <PollHorizontalViewItem>
@@ -199,10 +241,10 @@ class PollWithVotes extends PollClass {
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionThreesVotes} </PollPostSubTitle>
                         </PollHorizontalViewItem>
 
-                        <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionThreesVotes")}}>
+                        <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Three" ? this.handleRemoveVoteOnPoll() : handleVoteOnPoll("optionThreesVotes", "Three")}}>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Option Three </PollPostSubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionThree} </PollPostSubTitle>
+                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}>{this.props.post.votedFor === "Three" ? "Voted" : "Vote"}</PollPostSubTitle>
                         </PollHorizontalViewItemCenter>
 
                         <PollHorizontalViewItem>
@@ -231,10 +273,10 @@ class PollWithVotes extends PollClass {
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFoursVotes} </PollPostSubTitle>
                         </PollHorizontalViewItem>
 
-                        <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionFoursVotes")}}>
+                        <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Four" ? this.handleRemoveVoteOnPoll() : handleVoteOnPoll("optionFoursVotes", "Four")}}>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Option Four </PollPostSubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFour} </PollPostSubTitle>
+                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}>{this.props.post.votedFor === "Four" ? "Voted" : "Vote"}</PollPostSubTitle>
                         </PollHorizontalViewItemCenter>
 
                         <PollHorizontalViewItem>
@@ -263,10 +305,10 @@ class PollWithVotes extends PollClass {
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFivesVotes} </PollPostSubTitle>
                         </PollHorizontalViewItem>
 
-                        <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionFivesVotes")}}>
+                        <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Five" ? this.handleRemoveVoteOnPoll() : handleVoteOnPoll("optionFivesVotes", "Five")}}>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Option Five </PollPostSubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFive} </PollPostSubTitle>
+                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}>{this.props.post.votedFor === "Five" ? "Voted" : "Vote"}</PollPostSubTitle>
                         </PollHorizontalViewItemCenter>
 
                         <PollHorizontalViewItem>
@@ -295,10 +337,10 @@ class PollWithVotes extends PollClass {
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionSixesVotes} </PollPostSubTitle>
                         </PollHorizontalViewItem>
 
-                        <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionSixesVotes")}}>
+                        <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Six" ? this.handleRemoveVoteOnPoll() : handleVoteOnPoll("optionSixesVotes", "Six")}}>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Option Six </PollPostSubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionSix} </PollPostSubTitle>
+                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}>{this.props.post.votedFor === "Six" ? "Voted" : "Vote"}</PollPostSubTitle>
                         </PollHorizontalViewItemCenter>
 
                         <PollHorizontalViewItem>
@@ -356,4 +398,22 @@ class PollWithVotes extends PollClass {
     }
 }
 
-export default PollWithVotes;
+export default function(props) {
+    const navigation = useNavigation();
+    const {serverUrl} = useContext(ServerUrlContext)
+    const {storedCredentials} = useContext(CredentialsContext)
+
+    const postProps = {
+        navigation,
+        post: props.post,
+        colors: props.colors,
+        colorsIndexNum: props.colorsIndexNum,
+        dispatch: props.dispatch,
+        serverUrl,
+        index: props.index,
+        //No useRawImages support yet - Might want to add that in the future
+        storedCredentials
+    }
+
+    return <Poll {...postProps}/>
+};

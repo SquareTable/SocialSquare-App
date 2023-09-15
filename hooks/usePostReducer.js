@@ -240,6 +240,56 @@ const reducer = (state, action) => {
         }
     }
 
+    if (action.type === 'startPollVoteChange') {
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to startPollVoteChange action of usePostReducer')
+
+        if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
+
+        state.posts[action.postIndex] = {
+            ...state.posts[action.postIndex],
+            pollVoteChanging: true
+        }
+
+        return {...state};
+    }
+
+    if (action.type === 'stopPollVoteChange') {
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to stopPollVoteChange action of usePostReducer')
+
+        if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
+
+        state.posts[action.postIndex] = {
+            ...state.posts[action.postIndex],
+            pollVoteChanging: false
+        }
+
+        return {...state};
+    }
+
+    if (action.type === 'voteOnPoll') {
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to voteOnPoll action of usePostReducer')
+        if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
+
+        state.posts[action.postIndex] = {
+            ...state.posts[action.postIndex],
+            votedFor: action.optionSelected
+        }
+
+        return {...state}
+    }
+
+    if (action.type === 'removeVoteOnPoll') {
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to removeVoteOnPoll action of usePostReducer')
+        if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
+
+        state.posts[action.postIndex] = {
+            ...state.posts[action.postIndex],
+            votedFor: 'None'
+        }
+
+        return {...state}
+    }
+
     throw new Error('Wrong action type was passed to usePostReducer')
 }
 
