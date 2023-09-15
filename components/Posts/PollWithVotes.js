@@ -39,28 +39,28 @@ class PollWithVotes extends PollClass {
         super(props);
     }
 
-    openOptionOne() {
-        alert('Coming soon')
+    openOptionOne = () => {
+        this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "One", postIndex: this.props.index})
     }
 
-    openOptionTwo() {
-        alert('Coming soon')
+    openOptionTwo = () => {
+        this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Two", postIndex: this.props.index})
     }
 
-    openOptionThree() {
-        alert('Coming soon')
+    openOptionThree = () => {
+        this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Three", postIndex: this.props.index})
     }
 
-    openOptionFour() {
-        alert('Coming soon')
+    openOptionFour = () => {
+        this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Four", postIndex: this.props.index})
     }
 
-    openOptionFive() {
-        alert('Coming soon')
+    openOptionFive = () => {
+        this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Five", postIndex: this.props.index})
     }
 
-    openOptionSix() {
-        alert('Coming soon')
+    openOptionSix = () => {
+        this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Six", postIndex: this.props.index})
     }
 
     optionOneInfoState = false; //Temporary
@@ -121,10 +121,11 @@ class PollWithVotes extends PollClass {
         const deletingIsSame = nextProps.post.deleting === this.props.post.deleting;
         const profilePictureIsSame = nextProps.post.pfpB64 === this.props.post.pfpB64;
         const changingPollVoteIsSame = nextProps.post.pollVoteChanging === this.props.post.pollVoteChanging;
-        const votedForIsSame = nextProps.post.votedFor === this.props.post.votedFor
+        const votedForIsSame = nextProps.post.votedFor === this.props.post.votedFor;
+        const openPollVoteMenuSame = nextProps.post.openPollVoteMenu === this.props.post.openPollVoteMenu;
 
 
-        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && changingPollVoteIsSame && votedForIsSame) return false;
+        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && changingPollVoteIsSame && votedForIsSame && openPollVoteMenuSame) return false;
 
         return true;
     }
@@ -209,7 +210,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewOne>
                     </PollPostHorizontalView>
                     
-                    <PollPostHorizontalView visible={this.optionOneInfoState}>
+                    <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "One"}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -243,7 +244,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewTwo>
                     </PollPostHorizontalView>
                     
-                    <PollPostHorizontalView visible={this.optionTwoInfoState}>
+                    <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Two"}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -275,7 +276,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewThree>
                     </PollPostHorizontalView>
                     
-                    <PollPostHorizontalView visible={this.optionThreeInfoState}>
+                    <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Three"}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -307,7 +308,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewFour>
                     </PollPostHorizontalView>
 
-                    <PollPostHorizontalView visible={this.optionFourInfoState}>
+                    <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Four"}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -339,7 +340,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewFive>
                     </PollPostHorizontalView>
 
-                    <PollPostHorizontalView visible={this.optionFiveInfoState}>
+                    <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Five"}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
@@ -371,7 +372,7 @@ class PollWithVotes extends PollClass {
                         </PollKeyViewSix>
                     </PollPostHorizontalView>
 
-                    <PollPostHorizontalView visible={this.optionSixInfoState}>
+                    <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Six"}>
                         <PollHorizontalViewItem>
                             <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                             <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>

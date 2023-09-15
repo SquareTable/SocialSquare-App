@@ -290,7 +290,19 @@ const reducer = (state, action) => {
         return {...state}
     }
 
-    throw new Error('Wrong action type was passed to usePostReducer')
+    if (action.type === 'openPollVoteMenu') {
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to openPollVoteMenu action of usePostReducer')
+        if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
+
+        state.posts[action.postIndex] = {
+            ...state.posts[action.postIndex],
+            openPollVoteMenu: state.posts[action.postIndex].openPollVoteMenu === action.openPollVoteMenu ? "None" : action.openPollVoteMenu
+        }
+
+        return {...state}
+    }
+
+    throw new Error(`Wrong action type was passed to usePostReducer: ${action.type}`)
 }
 
 const initialState = {
