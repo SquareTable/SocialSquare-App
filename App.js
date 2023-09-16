@@ -310,42 +310,48 @@ const App = () => {
                   navigationRef.navigate("NotificationsScreen", response)
                 });
             } else {
-                registerForPushNotificationsAsync().then(token => {
-                    const url = serverUrl + "/tempRoute/sendnotificationkey";
-                    axios.post(url, {keySent: token}).then((response) => {
-                        const result = response.data;
-                        const {message, status, data} = result;
+                registerForPushNotificationsAsync().then(async token => {
+                    try {
+                      const refreshTokenId = await SecureStore.getItemAsync(storedCredentials._id + '-auth-refresh-token-id');
+                      const url = serverUrl + "/tempRoute/sendnotificationkey";
 
-                        if (status !== 'SUCCESS') {
-                            console.log(`${status}: ${message}`)
-                        } else {
-                            setExpoPushToken(token)
-                            AsyncStorage.setItem(`deviceNotificationKey-${storedCredentials._id}`, token)
-                            .then(() => {
-                                setExpoPushToken(token);
-                                console.log('deviceNotificationKey: ' + token);
-                                // This listener is fired whenever a notification is received while the app is foregrounded
-                                notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-                                  console.log("Notification recieved while in app.")
-                                  console.log(notification)
-                                  setNotification(notification);
-                                });
+                      axios.post(url, {keySent: token, refreshTokenId}).then((response) => {
+                          const result = response.data;
+                          const {message, status, data} = result;
 
-                                // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-                                responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-                                  console.log("Notification recieved and interacted with.")
-                                  console.log(response);
-                                  navigationRef.navigate("NotificationsScreen", response)
-                                });
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                                console.log('Error Setting Notification Key');
-                            })
-                        }
-                    }).catch(error => {
-                        console.log(`Error while sending push notif key ${error}`);
-                    })
+                          if (status !== 'SUCCESS') {
+                              console.log(`${status}: ${message}`)
+                          } else {
+                              setExpoPushToken(token)
+                              AsyncStorage.setItem(`deviceNotificationKey-${storedCredentials._id}`, token)
+                              .then(() => {
+                                  setExpoPushToken(token);
+                                  console.log('deviceNotificationKey: ' + token);
+                                  // This listener is fired whenever a notification is received while the app is foregrounded
+                                  notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+                                    console.log("Notification recieved while in app.")
+                                    console.log(notification)
+                                    setNotification(notification);
+                                  });
+
+                                  // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+                                  responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+                                    console.log("Notification recieved and interacted with.")
+                                    console.log(response);
+                                    navigationRef.navigate("NotificationsScreen", response)
+                                  });
+                              })
+                              .catch((error) => {
+                                  console.log(error);
+                                  console.log('Error Setting Notification Key');
+                              })
+                          }
+                      }).catch(error => {
+                          console.log('Error while sending push notif key ', error);
+                      })
+                    } catch (error) {
+                      console.error('An error occurred while getting auth-refresh-token-id for user:', error)
+                    }
                 });
             }
       }).catch((error) => console.log(error));
