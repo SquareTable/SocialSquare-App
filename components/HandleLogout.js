@@ -23,7 +23,8 @@ export function Logout(storedCredentials, setStoredCredentials, allCredentialsSt
             Promise.all([
                 SecureStore.deleteItemAsync(storedCredentials._id + '-auth-web-token'),
                 SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token'),
-                SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token-id')
+                SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token-id'),
+                AsyncStorage.removeItem(`deviceNotificationKey-${storedCredentials._id}`)
             ]).then(() => {
                 navigation.reset({
                     index: 0,
@@ -47,7 +48,8 @@ export function Logout(storedCredentials, setStoredCredentials, allCredentialsSt
             Promise.all([
                 SecureStore.deleteItemAsync(storedCredentials._id + '-auth-web-token'),
                 SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token'),
-                SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token-id')
+                SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token-id'),
+                AsyncStorage.removeItem(`deviceNotificationKey-${storedCredentials._id}`)
             ]).then(() => {
                 navigation.reset({
                     index: 0,
@@ -69,7 +71,8 @@ export function Logout(storedCredentials, setStoredCredentials, allCredentialsSt
         Promise.all([
             SecureStore.deleteItemAsync(storedCredentials._id + '-auth-web-token'),
             SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token'),
-            SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token-id')
+            SecureStore.deleteItemAsync(storedCredentials._id + '-auth-refresh-token-id'),
+            AsyncStorage.removeItem(`deviceNotificationKey-${storedCredentials._id}`)
         ]).then(() => {
             navigation.reset({
                 index: 0,
