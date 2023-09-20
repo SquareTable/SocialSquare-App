@@ -2,64 +2,14 @@ import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
-    InnerContainer,
-    PageTitle,
     SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
     Avatar,
-    Colors,
     StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    ProfileSelectMediaTypeItem,
-    ProfileSelectMediaTypeHorizontalView,
-    ProfileSelectMediaTypeIcons,
-    ProfileSelectMediaTypeIconsBorder,
-    PollPostFrame,
     PollPostTitle,
     PollPostSubTitle,
-    PollBarOutline,
-    PollBarItem,
-    PollKeyViewOne,
-    PollKeyViewTwo,
-    PollKeyViewThree,
-    PollKeyViewFour,
-    PollKeyViewFive,
-    PollKeyViewSix,
-    PollKeysCircle,
-    PollPostHorizontalView,
-    PollPostIcons,
-    AboveBarPollPostHorizontalView,
-    BottomPollPostHorizontalView,
-    LikesView,
-    CommentsView,
-    PollBottomItem,
-    MultiMediaPostFrame,
-    ImagePostFrame,
-    PostCreatorIcon,
-    PostsHorizontalView,
-    PostsVerticalView,
-    PostHorizontalView,
-    PostsIcons,
-    PostsIconFrame,
     MsgBox,
-    ImagePostTextFrame,
-    CategoriesTopBtns,
     ViewScreenPollPostCommentsFrame,
     CommentsHorizontalView,
     CommentsVerticalView,
@@ -76,9 +26,6 @@ import {
     Navigator_BackButton,
     TestText
 } from './screenStylings/styling';
-
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterPrimary, descTextColor, darkest, red} = Colors;
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -706,39 +653,39 @@ const ThreadViewPage = ({navigation, route}) => {
                     <TouchableOpacity>
                         {upVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialUpVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+1}</VoteText>
                             )}
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+2}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+2}</VoteText>
                             )}
                         </View>)}
                         {neitherVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialUpVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-1}</VoteText>
                             )}
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+1}</VoteText>
                             )}
                         </View>)}
                         {downVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-1}</VoteText>
                             )}
                             {initialUpVotes.includes(commentId)&& (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-2}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-2}</VoteText>
                             )}
                         </View>)}
                         {changingVotedComments.includes(commentId) && (<View>
-                            <ActivityIndicator size="small" color={brand} />                
+                            <ActivityIndicator size="small" color={colors.brand} />                
                         </View>)}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>{DownVoteComment(commentId)}}>
@@ -775,7 +722,7 @@ const ThreadViewPage = ({navigation, route}) => {
                         {datePosted}
                     </VoteText>
                     <TouchableOpacity onPress={()=>{navigation.navigate("CommentViewPage", {commentId: commentId, threadId: threadId, postFormat: "Thread"})}}>
-                        <VoteText style={{color: brand}}>
+                        <VoteText style={{color: colors.brand}}>
                             {commentReplies} replies
                         </VoteText>
                     </TouchableOpacity>
@@ -852,7 +799,7 @@ const ThreadViewPage = ({navigation, route}) => {
                                             <CommentsVerticalView>
                                                 <UserTextInput
                                                     placeholder="Post a comment"
-                                                    placeholderTextColor={darkLight}
+                                                    placeholderTextColor={colors.darkLight}
                                                     onChangeText={handleChange('comment')}
                                                     onBlur={handleBlur('comment')}
                                                     value={values.comment}
@@ -883,7 +830,7 @@ const ThreadViewPage = ({navigation, route}) => {
                             renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
                         />
                         {loadingMoreComments == true && (
-                            <ActivityIndicator size="small" color={brand} />  
+                            <ActivityIndicator size="small" color={colors.brand} />  
                         )}
                     </ViewScreenPollPostCommentsFrame>
                 :
