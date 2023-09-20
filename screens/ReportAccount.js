@@ -14,6 +14,7 @@ import { useTheme } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import { ServerUrlContext } from '../components/ServerUrlContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ReportAccount = ({navigation, route: routeData}) => {
     const { colors } = useTheme();
