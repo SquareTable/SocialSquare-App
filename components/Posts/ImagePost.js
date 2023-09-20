@@ -60,7 +60,17 @@ class ImagePost extends Component {
         })
     }
 
-    upvote = () => {
+    runIfAuthenticated = (func) => {
+        return () => {
+            if (this.props.userId === 'SSGUEST' || !this.props.userId) {
+                this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+            } else {
+                func()
+            }
+        }
+    }
+
+    upvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
             const url = this.props.serverUrl + '/tempRoute/upvoteimage';
@@ -92,9 +102,9 @@ class ImagePost extends Component {
                 console.error(error)
             })
         }
-    }
+    })
 
-    downvote = () => {
+    downvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
             const url = this.props.serverUrl + '/tempRoute/downvoteimage';
@@ -124,7 +134,7 @@ class ImagePost extends Component {
                 console.error(error)
             })
         }
-    }
+    })
 
     navigateToFullscreen = () => {
         this.props.navigation.navigate("ViewImagePostPage", {
@@ -133,7 +143,7 @@ class ImagePost extends Component {
         })
     }
 
-    openThreeDotsMenu = () => {
+    openThreeDotsMenu = this.runIfAuthenticated(() => {
         if (this.props.post.isOwner !== true && this.props.post.isOwner !== false) {
             alert("isOwner is not true or false. An error has occured.")
             return
@@ -147,7 +157,7 @@ class ImagePost extends Component {
             postIndex: this.props.index,
             onDeleteCallback: this.props.onDeleteCallback
         })
-    }
+    })
 
     render() {
         return (
