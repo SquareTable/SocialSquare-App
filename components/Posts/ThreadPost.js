@@ -139,7 +139,7 @@ class Thread extends Component {
     })
 
     navigateToFullScreen = () => {
-        this.props.navigation.navigate("ThreadViewPage", { threadId: this.props.post._id })
+        this.props.navigation.navigate("ThreadViewPage", { threadId: this.props.post._id, creatorPfpB64: this.props.post.creatorImageB64 })
     }
 
     openThreeDotsMenu = this.runIfAuthenticated(() => {

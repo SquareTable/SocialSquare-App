@@ -2,64 +2,14 @@ import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
-    InnerContainer,
-    PageTitle,
     SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
     Avatar,
-    Colors,
     StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    ProfileSelectMediaTypeItem,
-    ProfileSelectMediaTypeHorizontalView,
-    ProfileSelectMediaTypeIcons,
-    ProfileSelectMediaTypeIconsBorder,
-    PollPostFrame,
     PollPostTitle,
     PollPostSubTitle,
-    PollBarOutline,
-    PollBarItem,
-    PollKeyViewOne,
-    PollKeyViewTwo,
-    PollKeyViewThree,
-    PollKeyViewFour,
-    PollKeyViewFive,
-    PollKeyViewSix,
-    PollKeysCircle,
-    PollPostHorizontalView,
-    PollPostIcons,
-    AboveBarPollPostHorizontalView,
-    BottomPollPostHorizontalView,
-    LikesView,
-    CommentsView,
-    PollBottomItem,
-    MultiMediaPostFrame,
-    ImagePostFrame,
-    PostCreatorIcon,
-    PostsHorizontalView,
-    PostsVerticalView,
-    PostHorizontalView,
-    PostsIcons,
-    PostsIconFrame,
     MsgBox,
-    ImagePostTextFrame,
-    CategoriesTopBtns,
     ViewScreenPollPostCommentsFrame,
     CommentsHorizontalView,
     CommentsVerticalView,
@@ -76,9 +26,6 @@ import {
     Navigator_BackButton,
     TestText
 } from './screenStylings/styling';
-
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterPrimary, descTextColor, darkest, red} = Colors;
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -99,23 +46,16 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
+import usePostReducer from '../hooks/usePostReducer';
+import ThreadPost from '../components/Posts/ThreadPost';
 
 const ThreadViewPage = ({navigation, route}) => {
-    const {colors, dark} = useTheme()
+    const [postReducer, dispatch] = usePostReducer();
+    const {colors, dark, colorsIndexNum} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {name} = storedCredentials} else {var {name} = {name: 'SSGUEST'}}
     const {threadId, creatorPfpB64} = route.params;
-    const [AvatarImg, setAvatarImage] = useState(null)
-    const [gridViewState, setGridViewState] = useState("flex")
-    const [featuredViewState, setFeaturedViewState] = useState("none")
-    const [selectedPostFormat, setSelectedPostFormat] = useState("One")
-    const [selectedPostFormatName, setSelectedPostFormatName] = useState("No thread posts yet, Be the first!")
-    const [useStatePollData, setUseStatePollData] = useState()
-    const [loadingPosts, setLoadingPosts] = useState(false)
-    const [getCategoryItems, setGetCategoryItems] = useState(false)
-    const [getImagesOnLoad, setGetImagesOnLoad] = useState(false)
-    const [imageInThreadB64, setImageInThreadB64] = useState(null)
     
     //ServerStuff
     const [message, setMessage] = useState();
@@ -131,20 +71,7 @@ const ThreadViewPage = ({navigation, route}) => {
     const [loadingMoreComments, setLoadingMoreComments] = useState(false)
     //change stuff
     const [limitRefresh, setLimitRefresh] = useState(false)
-    const [threadUpOrDownVoted, setThreadUpOrDownVoted] = useState("Finding")
-    const [initialThreadUpOrDownVoted, setInitialThreadUpOrDownVoted] = useState("Finding")
-    const [threadType, setThreadType] = useState("Finding")
-    const [threadUpVotes, setThreadUpVotes] = useState("Finding")
-    const [threadTitle, setThreadTitle] = useState("Finding")
-    const [threadSubtitle, setThreadSubtitle] = useState("Finding")
-    const [threadTags, setThreadTags] = useState("Finding")
     const [threadCategory, setThreadCategory] = useState("Finding")
-    const [threadBody, setThreadBody] = useState("Finding")
-    const [threadImageKey, setThreadImageKey] = useState("Finding")
-    const [threadImageDescription, setThreadImageDescription] = useState("Finding")
-    const [threadNSFW, setThreadNSFW] = useState("Finding")
-    const [threadNSFL, setThreadNSFL] = useState("Finding")
-    const [datePosted, setDatePosted] = useState("Finding")
     const [creatorDisplayName, setCreatorDisplayName] = useState("Finding")
     const [creatorName, setCreatorName] = useState("Finding")
     const [creatorImageB64, setCreatorImageB64] = useState("Finding")
@@ -206,58 +133,27 @@ const ThreadViewPage = ({navigation, route}) => {
     //Refresh All Values
     const refreshAllValues = () => {
         const changeValues = async (data) => {
-            //set values
-            const threadData = data.data[0]
-            //Change text based values
-            if (threadData.threadUpVoted == true) {
-                setThreadUpOrDownVoted("UpVoted")
-                setInitialThreadUpOrDownVoted("UpVoted")
-            } else if (threadData.threadDownVoted == true) {
-                setThreadUpOrDownVoted("DownVoted")
-                setInitialThreadUpOrDownVoted("DownVoted")
-            } else {
-                setThreadUpOrDownVoted("Neither")
-                setInitialThreadUpOrDownVoted("Neither")
+            let imageB64Var = null
+            if (data.threadImageKey !== "") {
+                console.log(data.threadImageKey)
+                imageB64Var = await getImageWithKey(data.threadImageKey)
             }
-            setThreadType(threadData.threadType)
-            setThreadUpVotes(threadData.threadUpVotes)
-            setThreadTitle(threadData.threadTitle)
-            setThreadSubtitle(threadData.threadSubtitle)
-            setThreadTags(threadData.threadTags)
-            setThreadCategory(threadData.threadCategory)
-            setThreadBody(threadData.threadBody)
-            setThreadImageKey(threadData.threadImageKey)
-            setThreadImageDescription(threadData.threadImageDescription)
-            setThreadNSFW(threadData.threadNSFW)
-            setThreadNSFL(threadData.threadNSFL)
-            setDatePosted(threadData.datePosted)
-            setCreatorDisplayName(threadData.creatorDisplayName)
-            setCreatorName(threadData.creatorName)
-            //Get images
-            var creatorB64Var = null
-            if (threadData.creatorImageKey !== "") {
-                console.log(threadData.creatorImageKey)
-                creatorB64Var = await getImageWithKey(threadData.creatorImageKey)
-            } else {
-                creatorB64Var = null
-            }
-            var imageB64Var = null
-            if (threadData.threadImageKey !== "") {
-                console.log(threadData.threadImageKey)
-                imageB64Var = await getImageWithKey(threadData.threadImageKey)
-            } else {
-                imageB64Var = null
-            }
-            var categoryB64Var = null
-            if (threadData.categoryImageKey !== "") {
-                console.log(threadData.categoryImageKey)
-                categoryB64Var = await getImageWithKey(threadData.categoryImageKey)
-            } else {
-                categoryB64Var = null
-            }
-            setCreatorImageB64(creatorB64Var)
-            setImageInThreadB64(imageB64Var)
+
+            data.creatorImageB64 = creatorPfpB64
+            data.imageInThreadB64 = imageB64Var
+
+            dispatch({type: 'addPosts', posts: [data]})
+            setCreatorDisplayName(data.creatorDisplayName)
+            setCreatorName(data.creatorName)
+
+            //Get category image
+            let categoryB64Var = null
+            if (data.categoryImageKey !== "") {
+                console.log(data.categoryImageKey)
+                categoryB64Var = await getImageWithKey(data.categoryImageKey)
+            } 
             setCategoryImageB64(categoryB64Var)
+            setThreadCategory(data.threadCategory)
         }
         const url = `${serverUrl}/tempRoute/getthreadbyid`;
         const toSend = {
@@ -273,7 +169,7 @@ const ThreadViewPage = ({navigation, route}) => {
                 handleMessage(message, status);
             } else {
                 console.log("SUCCESS getting thread by ID")
-                changeValues({data});
+                changeValues(data);
             }
             //setSubmitting(false);
         }).catch(error => {
@@ -757,39 +653,39 @@ const ThreadViewPage = ({navigation, route}) => {
                     <TouchableOpacity>
                         {upVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialUpVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+1}</VoteText>
                             )}
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+2}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+2}</VoteText>
                             )}
                         </View>)}
                         {neitherVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialUpVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-1}</VoteText>
                             )}
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+1}</VoteText>
                             )}
                         </View>)}
                         {downVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-1}</VoteText>
                             )}
                             {initialUpVotes.includes(commentId)&& (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-2}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-2}</VoteText>
                             )}
                         </View>)}
                         {changingVotedComments.includes(commentId) && (<View>
-                            <ActivityIndicator size="small" color={brand} />                
+                            <ActivityIndicator size="small" color={colors.brand} />                
                         </View>)}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>{DownVoteComment(commentId)}}>
@@ -826,7 +722,7 @@ const ThreadViewPage = ({navigation, route}) => {
                         {datePosted}
                     </VoteText>
                     <TouchableOpacity onPress={()=>{navigation.navigate("CommentViewPage", {commentId: commentId, threadId: threadId, postFormat: "Thread"})}}>
-                        <VoteText style={{color: brand}}>
+                        <VoteText style={{color: colors.brand}}>
                             {commentReplies} replies
                         </VoteText>
                     </TouchableOpacity>
@@ -839,92 +735,6 @@ const ThreadViewPage = ({navigation, route}) => {
             </CommentsHorizontalView>
         </CommentsContainer>
     );
-
-    const UpVoteThread = (threadId) => {
-        if (storedCredentials) {
-            //Change to loading circle
-            const beforeChange = threadUpOrDownVoted
-            setThreadUpOrDownVoted("Changing")
-            //Do rest
-            handleMessage(null, null, null);
-            const url = serverUrl + "/tempRoute/upvotethread";
-
-            var toSend = {threadId: threadId}
-
-            console.log(toSend)
-
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-            
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                    setThreadUpOrDownVoted(beforeChange)
-                } else {
-                    handleMessage(message, status);
-                    if (message == "Thread UpVoted") {
-                        handleMessage(message, status);
-                        setThreadUpOrDownVoted("UpVoted")
-                    } else {
-                        handleMessage(message, status);
-                        setThreadUpOrDownVoted("Neither")
-                    }
-                    //loadAndGetValues()
-                    //persistLogin({...data[0]}, message, status);
-                }
-            }).catch(error => {
-                console.error(error);
-                setThreadUpOrDownVoted("UpVoted");
-                handleMessage(ParseErrorMessage(error), 'FAILED');
-            })
-        } else {
-            navigation.navigate('ModalLoginScreen', {modal: true});
-        }
-    }
-
-    const DownVoteThread = (threadId) => {
-        if (storedCredentials) {
-            //Change to loading circle
-            const beforeChange = threadUpOrDownVoted
-            setThreadUpOrDownVoted("Changing")
-            //Do rest
-            handleMessage(null, null, null);
-            const url = serverUrl + "/tempRoute/downvotethread";
-
-            var toSend = {threadId: threadId}
-
-            console.log(toSend)
-
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-            
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                    setThreadUpOrDownVoted(beforeChange)
-                } else {
-                    handleMessage(message, status);
-                    if (message == "Thread DownVoted") {
-                        handleMessage(message, status);
-                        setThreadUpOrDownVoted("DownVoted")
-                    } else {
-                        handleMessage(message, status);
-                        setThreadUpOrDownVoted("Neither")
-                    }
-                    //loadAndGetValues()
-                    //persistLogin({...data[0]}, message, status);
-                }
-            }).catch(error => {
-                console.error(error);
-                setThreadUpOrDownVoted("UpVoted")
-                handleMessage(ParseErrorMessage(error), 'FAILED');
-            })
-        } else {
-            navigation.navigate('ModalLoginScreen', {modal: true});
-        }
-    }
-
-    console.log('Creator pfp: ' + creatorPfpB64)
 
     return(
         <>    
@@ -945,225 +755,95 @@ const ThreadViewPage = ({navigation, route}) => {
                         <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: categoryImageB64 == null || categoryImageB64 == "Finding" ? SocialSquareLogo_B64_png : categoryImageB64}}/>
                     <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
                 </StyledContainer>
-                    <View style={{backgroundColor: dark ? darkest : greyish}}>
-                        <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.primary, borderRadius: 30, width: '100%', borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
-                            {threadNSFW === true && (
-                                <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
-                            )}
-                            {threadNSFL === true && (
-                                <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
-                            )}
-                            <PostsHorizontalView style={{marginLeft: '5%', borderColor: colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
-                                <TouchableOpacity style={{width: '100%'}}>
-                                    <PostsHorizontalView>
-                                        <PostsVerticalView>
-                                            <PostCreatorIcon source={{uri: creatorPfpB64}}/>
-                                        </PostsVerticalView>
-                                        <PostsVerticalView style={{marginTop: 9}}>
-                                            <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{creatorDisplayName}</SubTitle>
-                                            <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{creatorName}</SubTitle>
-                                        </PostsVerticalView>
-                                    </PostsHorizontalView>
-                                </TouchableOpacity>
-                            </PostsHorizontalView>
-                            <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
-                                <TouchableOpacity>
-                                    <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
-                                </TouchableOpacity>
-                                <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{threadTitle}</SubTitle>
-                                {threadSubtitle !== "" && (
-                                    <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadSubtitle}</SubTitle>
-                                )}
-                                {threadTags !== "" && (
-                                    <TouchableOpacity>
-                                        <SubTitle style={{fontSize: 10, color: brand, marginBottom: 10}}>{threadTags}</SubTitle>
-                                    </TouchableOpacity>
-                                )}
-                                {threadType == "Text" && (
-                                    <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadBody}</SubTitle>
-                                )}
-                            </ImagePostTextFrame>
-                            <View style={{textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%'}}>
-                                {threadType == "Images" && (
+                {postReducer.posts.length > 0 ?
+                    <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0}/>
+                :
+                    <>
+                        <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Loading thread... (At some point we should put a loading animation here)</Text>
+                        <ActivityIndicator color={colors.brand} size="large"/>
+                    </>
+                }
+                {storedCredentials ?
+                    <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
+                        <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
+                        <CommentsHorizontalView writeCommentArea={true}>
+                            <Formik
+                                initialValues={{comment: '', userName: name, threadId: threadId}}
+                                onSubmit={(values, {setSubmitting}) => {
+                                    if (values.comment == "") {
+                                        handleMessage('You cant post and empty comment');
+                                        setSubmitting(false);
+                                    } else {
+                                        handleCommentPost(values, setSubmitting);
+                                        values.comment = ""
+                                    }
+                                }}
+                            >
+                                {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
                                     <View>
-                                        {imageInThreadB64 !== null && (
-                                            <View style={{height: 200, width: 200}}>
-                                                <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: imageInThreadB64}}/>
-                                            </View>
-                                        )}
-                                        {imageInThreadB64 == null && (
-                                            /*<Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: SocialSquareLogo_B64_png}}/>*/
-                                            <View style={{height: 200, width: 200, justifyContent: 'center', alignItems: 'center'}}>
-                                                <ActivityIndicator size="large" color={colors.brand}/>
-                                            </View>
-                                        )}
-                                        <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadImageDescription}</SubTitle>
+                                        <CommentsHorizontalView>
+                                            <CommentsHorizontalViewItem>
+                                                <CommenterName>Img/GIF</CommenterName>
+                                            </CommentsHorizontalViewItem>
+                                            <CommentsHorizontalViewItem>
+                                                <CommenterName>Text</CommenterName>
+                                            </CommentsHorizontalViewItem>
+                                            <CommentsHorizontalViewItem>
+                                                <CommenterName>Short Video</CommenterName>
+                                            </CommentsHorizontalViewItem>
+                                        </CommentsHorizontalView>
+                                        <CommentsHorizontalView writeCommentArea={true}>
+                                            <CommentsVerticalView alongLeft={true}>
+                                                <CommenterIcon source={{uri: profilePictureUri}}/>
+                                            </CommentsVerticalView>
+                                            <CommentsVerticalView>
+                                                <UserTextInput
+                                                    placeholder="Post a comment"
+                                                    placeholderTextColor={colors.darkLight}
+                                                    onChangeText={handleChange('comment')}
+                                                    onBlur={handleBlur('comment')}
+                                                    value={values.comment}
+                                                    multiline={true}
+                                                    style={{color: colors.tertiary, backgroundColor: colors.primary, borderColor: colors.borderColor}}
+                                                />
+                                            </CommentsVerticalView>
+                                        </CommentsHorizontalView>
+                                        <CommentsHorizontalView belowWriteCommentArea={true}>
+                                            <CommentsVerticalView postComment={true}>
+                                                {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
+                                                    <ButtonText postComment={true}> Post </ButtonText>
+                                                </StyledButton>)}
+                                                <MsgBox type={messageType}>{message}</MsgBox>
+                                                {isSubmitting && (<StyledButton disabled={true}>
+                                                    <ActivityIndicator size="large" color={colors.primary} />
+                                                </StyledButton>)}
+                                            </CommentsVerticalView>
+                                        </CommentsHorizontalView>
                                     </View>
-                                )}
-                            </View>
-                            <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
-                                
-                                {threadUpOrDownVoted == "UpVoted" && (<PostsIconFrame onPress={() => {UpVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {UpVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "DownVoted" && (<PostsIconFrame onPress={() => {UpVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "Changing" && (<PostsIconFrame></PostsIconFrame>)}
-                                
-
-                                {threadUpOrDownVoted == "UpVoted" && (<PostsIconFrame>
-                                    {initialThreadUpOrDownVoted == "UpVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
                                     )}
-                                    {initialThreadUpOrDownVoted == "Neither" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
-                                    )}
-                                    {initialThreadUpOrDownVoted == "DownVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+2}</SubTitle>
-                                    )}
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "Neither" && (<PostsIconFrame>
-                                    {initialThreadUpOrDownVoted == "Neither" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                                    )}
-                                    {initialThreadUpOrDownVoted == "UpVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
-                                    )}
-                                    {initialThreadUpOrDownVoted == "DownVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
-                                    )}
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "DownVoted" && (<PostsIconFrame>
-                                    {initialThreadUpOrDownVoted == "DownVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                                    )}
-                                    {initialThreadUpOrDownVoted == "Neither" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
-                                    )}
-                                    {initialThreadUpOrDownVoted == "UpVoted" && (
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-2}</SubTitle>
-                                    )}
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "Changing" && (<PostsIconFrame>
-                                    <ActivityIndicator size="small" color={colors.brand} />                
-                                </PostsIconFrame>)}
-
-                                {threadUpOrDownVoted == "DownVoted" && (<PostsIconFrame onPress={() => {DownVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {DownVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "UpVoted" && (<PostsIconFrame onPress={() => {DownVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                                </PostsIconFrame>)}
-                                {threadUpOrDownVoted == "Changing" && (<PostsIconFrame></PostsIconFrame>)}
-                                <PostsIconFrame>
-                                </PostsIconFrame>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
-                                </PostsIconFrame>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
-                                </PostsIconFrame>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
-                                </PostsIconFrame>
-                            </PostHorizontalView>
-                            {typeof message === 'string' || message instanceof String && (
-                                <MsgBox type={messageType}>{message}</MsgBox>
-                            )}
-                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
-                        </View>  
+                            </Formik>
+                        </CommentsHorizontalView>
+                        <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
+                        <SectionList
+                            sections={changeSections}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
+                        />
+                        {loadingMoreComments == true && (
+                            <ActivityIndicator size="small" color={colors.brand} />  
+                        )}
+                    </ViewScreenPollPostCommentsFrame>
+                :
+                    <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
+                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to comment on this thread</Text>
+                        <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                            <ButtonText> Login </ButtonText>
+                        </StyledButton>
+                        <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true})}>
+                                <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                        </StyledButton>
                     </View>
-                    <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.primary, borderBottomLeftRadius: 30, borderBottomRightRadius: 30, height: 30, width: '100%'}}>
-                        <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
-                    </View>
-                    {storedCredentials ?
-                        <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
-                            <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
-                            <CommentsHorizontalView writeCommentArea={true}>
-                                <Formik
-                                    initialValues={{comment: '', userName: name, threadId: threadId}}
-                                    onSubmit={(values, {setSubmitting}) => {
-                                        if (values.comment == "") {
-                                            handleMessage('You cant post and empty comment');
-                                            setSubmitting(false);
-                                        } else {
-                                            handleCommentPost(values, setSubmitting);
-                                            values.comment = ""
-                                        }
-                                    }}
-                                >
-                                    {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-                                        <View>
-                                            <CommentsHorizontalView>
-                                                <CommentsHorizontalViewItem>
-                                                    <CommenterName>Img/GIF</CommenterName>
-                                                </CommentsHorizontalViewItem>
-                                                <CommentsHorizontalViewItem>
-                                                    <CommenterName>Text</CommenterName>
-                                                </CommentsHorizontalViewItem>
-                                                <CommentsHorizontalViewItem>
-                                                    <CommenterName>Short Video</CommenterName>
-                                                </CommentsHorizontalViewItem>
-                                            </CommentsHorizontalView>
-                                            <CommentsHorizontalView writeCommentArea={true}>
-                                                <CommentsVerticalView alongLeft={true}>
-                                                    <CommenterIcon source={{uri: profilePictureUri}}/>
-                                                </CommentsVerticalView>
-                                                <CommentsVerticalView>
-                                                    <UserTextInput
-                                                        placeholder="Post a comment"
-                                                        placeholderTextColor={darkLight}
-                                                        onChangeText={handleChange('comment')}
-                                                        onBlur={handleBlur('comment')}
-                                                        value={values.comment}
-                                                        multiline={true}
-                                                        style={{color: colors.tertiary, backgroundColor: colors.primary, borderColor: colors.borderColor}}
-                                                    />
-                                                </CommentsVerticalView>
-                                            </CommentsHorizontalView>
-                                            <CommentsHorizontalView belowWriteCommentArea={true}>
-                                                <CommentsVerticalView postComment={true}>
-                                                    {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
-                                                        <ButtonText postComment={true}> Post </ButtonText>
-                                                    </StyledButton>)}
-                                                    <MsgBox type={messageType}>{message}</MsgBox>
-                                                    {isSubmitting && (<StyledButton disabled={true}>
-                                                        <ActivityIndicator size="large" color={colors.primary} />
-                                                    </StyledButton>)}
-                                                </CommentsVerticalView>
-                                            </CommentsHorizontalView>
-                                        </View>
-                                        )}
-                                </Formik>
-                            </CommentsHorizontalView>
-                            <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
-                            <SectionList
-                                sections={changeSections}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
-                            />
-                            {loadingMoreComments == true && (
-                                <ActivityIndicator size="small" color={brand} />  
-                            )}
-                        </ViewScreenPollPostCommentsFrame>
-                    :
-                        <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
-                            <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to comment on this thread</Text>
-                            <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
-                                <ButtonText> Login </ButtonText>
-                            </StyledButton>
-                            <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true})}>
-                                    <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
-                            </StyledButton>
-                        </View>
-                    }
+                }
             </ScrollView>
         </>
     );
