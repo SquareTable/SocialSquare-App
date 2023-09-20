@@ -58,7 +58,17 @@ class Thread extends Component {
         })
     }
 
-    upvote = () => {
+    runIfAuthenticated = (func) => {
+        return () => {
+            if (this.props.userId === 'SSGUEST' || !this.props.userId) {
+                this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+            } else {
+                func()
+            }
+        }
+    }
+
+    upvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
 
@@ -91,9 +101,9 @@ class Thread extends Component {
                 console.error('An error occured while upvoting thread post:', error)
             })
         }
-    }
+    })
 
-    downvote = () => {
+    downvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
 
@@ -126,13 +136,13 @@ class Thread extends Component {
                 console.error('An error occured while downvoting thread post:', error)
             })
         }
-    }
+    })
 
     navigateToFullScreen = () => {
         this.props.navigation.navigate("ThreadViewPage", { threadId: this.props.post._id })
     }
 
-    openThreeDotsMenu = () => {
+    openThreeDotsMenu = this.runIfAuthenticated(() => {
         if (this.props.post.isOwner !== true && this.props.post.isOwner !== false) {
             alert("isOwner is not true or false. An error has occured.")
             return
@@ -145,7 +155,7 @@ class Thread extends Component {
             isOwner: this.props.post.isOwner,
             postIndex: this.props.index
         })
-    }
+    })
 
     render() {
         return (
