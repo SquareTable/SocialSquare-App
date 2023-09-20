@@ -30,7 +30,9 @@ const ReportAccount = ({navigation, route: routeData}) => {
 
     const submitReportOfAccount = (reportType) => {
         if (storedCredentials) {
-            setLastReportType(reportType)
+            if (reportType !== lastReportType) {
+                setLastReportType(reportType)
+            }
             setSendingReport(true)
             setError(null)
             axios.post(serverUrl + '/tempRoute/reportUser', {reportType: reportType || lastReportType, reporteePubId: reportedAccountPubId}).then(response => {
@@ -50,7 +52,7 @@ const ReportAccount = ({navigation, route: routeData}) => {
     
             }).catch(error => {
                 console.log("An error occured while reporting user.")
-                console.log(error)
+                console.error(error)
                 setSendingReport(false)
                 setError(ParseErrorMessage(error))
             })
@@ -90,7 +92,7 @@ const ReportAccount = ({navigation, route: routeData}) => {
                 : error ?
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>{error}</Text>
-                        <TouchableOpacity onPress={submitReportOfAccount}>
+                        <TouchableOpacity onPress={() => submitReportOfAccount(lastReportType)}>
                             <Ionicons name="reload" size={50} color={colors.errorColor} />
                         </TouchableOpacity>
                     </View>
