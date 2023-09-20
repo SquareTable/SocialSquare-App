@@ -104,6 +104,9 @@ export async function LogoutOfAllAccounts(allCredentialsStoredList, setStoredCre
             }),
             ...allCredentialsStoredList.map(credentials => {
                 return SecureStore.deleteItemAsync(credentials._id + '-auth-refresh-token-id')
+            }),
+            ...allCredentialsStoredList.map(credentials => {
+                return AsyncStorage.removeItem(`deviceNotificationKey-${credentials._id}`)
             })
         ]
 
