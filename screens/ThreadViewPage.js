@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -38,7 +38,7 @@ import axios from 'axios';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useIsFocused, useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
@@ -50,6 +50,7 @@ import ThreadPost from '../components/Posts/ThreadPost';
 
 const ThreadViewPage = ({navigation, route}) => {
     const [postReducer, dispatch] = usePostReducer();
+    const [deleted, setDeleted] = useState(false);
     const {colors, dark, colorsIndexNum} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -735,6 +736,20 @@ const ThreadViewPage = ({navigation, route}) => {
         </CommentsContainer>
     );
 
+    const isFocused = useIsFocused();
+
+    const onDeleteCallback = () => {
+        if (isFocused) {
+            navigation.goBack();
+        } else {
+            setDeleted(true)
+        }
+    }
+
+    useEffect(() => {
+        if (isFocused && deleted) navigation.goBack();
+    }, [isFocused])
+
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
@@ -755,7 +770,7 @@ const ThreadViewPage = ({navigation, route}) => {
                     <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
                 </StyledContainer>
                 {postReducer.posts.length > 0 ?
-                    <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0}/>
+                    <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0} onDeleteCallback={onDeleteCallback}/>
                 :
                     <>
                         <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Loading thread... (At some point we should put a loading animation here)</Text>
