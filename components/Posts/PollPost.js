@@ -140,39 +140,8 @@ class Poll extends Component {
 
     navigateToFullScreen = () => {
         this.props.navigation.navigate("ViewPollPostPage", {
-            pollTitle: this.props.post.pollTitle,
-            pollSubTitle: this.props.post.pollSubTitle,
-            optionOne: this.props.post.optionOne,
-            optionOnesColor: this.props.post.optionOnesColor,
-            optionOnesVotes: this.props.post.optionOnesVotes,
-            optionOnesBarLength: this.props.post.optionOnesBarLength,
-            optionTwo: this.props.post.optionTwo,
-            optionTwosColor: this.props.post.optionTwosColor,
-            optionTwosVotes: this.props.post.optionTwosCotes,
-            optionTwosBarLength: this.props.post.optionTwosBarLength,
-            optionThree: this.props.post.optionThree,
-            optionThreesColor: this.props.post.optionThreesColor,
-            optionThreesVotes: this.props.post.optionThreesVotes,
-            optionThreesBarLength: this.props.post.optionThreesBarLength,
-            optionFour: this.props.post.optionFour,
-            optionFoursColor: this.props.post.optionFoursColor,
-            optionFoursVotes: this.props.post.optionFoursVotes,
-            optionFoursBarLength: this.props.post.optionFoursBarLength,
-            optionFive: this.props.post.optionFive,
-            optionFivesColor: this.props.post.optionFivesColor,
-            optionFivesVotes: this.props.post.optionFivesVotes,
-            optionFivesBarLength: this.props.post.optionFivesBarLength,
-            optionSix: this.props.post.optionSix,
-            optionSixesColor: this.props.post.optionSixesColor,
-            optionSixesVotes: this.props.post.optionSixesVotes,
-            optionSixesBarLength: this.props.post.optionSixesBarLength,
-            totalNumberOfOptions: this.props.post.totalNumberOfOptions,
-            pollId: this.props.post.pollId,
-            creatorPfpB64: this.props.post.pfpB64,
-            creatorName: this.props.post.creatorName,
-            creatorDisplayName: this.props.post.creatorDisplayName,
-            datePosted: this.props.post.datePosted,
-            votedFor: this.props.post.votedFor
+            post: this.props.post,
+            isOwner: this.props.post.isOwner
         })
     }
 
@@ -342,6 +311,8 @@ class Poll extends Component {
         )
     }
 }
+
+export const PollClass = Poll;
 
 export default function(props) {
     const navigation = useNavigation();
