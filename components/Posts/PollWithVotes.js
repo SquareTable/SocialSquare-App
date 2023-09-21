@@ -64,13 +64,6 @@ class PollWithVotes extends PollClass {
         this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Six", postIndex: this.props.index})
     }
 
-    optionOneInfoState = false; //Temporary
-    optionTwoInfoState = false; //Temporary
-    optionThreeInfoState = false; //Temporary
-    optionFourInfoState = false; //Temporary
-    optionFiveInfoState = false; //Temporary
-    optionSixInfoState = false; //Temporary
-
     handleVoteOnPoll = (optionSelected, voteNumber) => {
         if (this.props.storedCredentials) {
             this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
