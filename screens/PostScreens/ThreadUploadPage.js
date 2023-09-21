@@ -33,11 +33,9 @@ import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView,
 
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
-import CategoryCreationPage from '../CategoryCreationPage';
 import { useTheme } from '@react-navigation/native';
 import { UseUploadContext } from '../../components/UseUploadContext.js';
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import KeyboardAvoidingScrollView from '../../components/KeyboardAvoidingScrollView.js';
 
 const UserTextInput = ({label, icon, body, ...props}) => {
     const {colors, dark} = useTheme();
@@ -230,7 +228,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     }, [allowScreenShots])
 
     return(
-        <KeyboardAwareScrollView>
+        <KeyboardAvoidingScrollView>
             <StyledContainer style={{backgroundColor: colors.primary}}>
                     <StatusBar style={dark ? 'light' : 'dark'}/>
                     <InnerContainer style={{backgroundColor: colors.primary}}>
@@ -432,7 +430,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                     </InnerContainer>
 
             </StyledContainer>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingScrollView>
     );
 }
 

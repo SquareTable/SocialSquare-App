@@ -76,7 +76,7 @@ import { getTimeFromUTCMS } from '../libraries/Time';
 import PollWithVotes from '../components/Posts/PollWithVotes';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -300,7 +300,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{(post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) || 'ERROR'}'s poll</TestText>
             </ChatScreen_Title>
-            <KeyboardAwareScrollView style={{backgroundColor: colors.primary}} contentContainerStyle={{alignItems: 'center'}} enableOnAndroid keyboardOpeningTime={0}>
+            <KeyboardAvoidingScrollView>
                 {postReducer.posts.length > 0 ? <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/> : null}
                 {storedCredentials ?
                     <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
@@ -383,7 +383,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                         </StyledButton>
                     </View>
                 }
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingScrollView>
         </>
     );
 }

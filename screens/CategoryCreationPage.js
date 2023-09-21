@@ -51,8 +51,7 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 import { ServerUrlContext } from '../components/ServerUrlContext';
 import { UseUploadContext } from '../components/UseUploadContext';
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
 
 const CategoryCreationPage = ({navigation, route}) => {
     const { uploadPost } = useContext(UseUploadContext);
@@ -141,7 +140,7 @@ const CategoryCreationPage = ({navigation, route}) => {
                     }
                 }}
             />
-            <KeyboardAwareScrollView>
+            <KeyboardAvoidingScrollView>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                         <StatusBar style={colors.StatusBarColor}/>
                         <InnerContainer>
@@ -284,7 +283,7 @@ const CategoryCreationPage = ({navigation, route}) => {
                         </InnerContainer>
 
                 </StyledContainer>
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingScrollView>
         </>
     );
 }

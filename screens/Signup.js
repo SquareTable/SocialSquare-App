@@ -57,9 +57,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 import {storeJWT} from './../jwtHandler'
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView.js';
 
 
 const Signup = ({navigation, route}) => {
@@ -217,7 +216,7 @@ const Signup = ({navigation, route}) => {
         }
     }, 500);
     return(
-        <KeyboardAwareScrollView>
+        <KeyboardAvoidingScrollView>
             <StyledContainer style={{backgroundColor: colors.primary}}>
                 <StatusBar style={colors.StatusBarColor}/>
                 <InnerContainer style={{backgroundColor: colors.primary}}>
@@ -348,7 +347,7 @@ const Signup = ({navigation, route}) => {
                     </Formik>
                 </InnerContainer>
             </StyledContainer>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingScrollView>
     );
 }
 
