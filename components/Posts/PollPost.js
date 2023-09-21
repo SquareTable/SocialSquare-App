@@ -28,6 +28,7 @@ import {
 import { ServerUrlContext } from '../ServerUrlContext.js';
 import axios from 'axios';
 import { getTimeFromUTCMS } from '../../libraries/Time';
+import { CredentialsContext } from '../CredentialsContext';
 
 class Poll extends Component {
     constructor(props) {
@@ -327,6 +328,7 @@ export const PollClass = Poll;
 export default function(props) {
     const navigation = useNavigation();
     const {serverUrl} = useContext(ServerUrlContext);
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext)
 
     const postProps = {
         navigation,
@@ -336,7 +338,8 @@ export default function(props) {
         dispatch: props.dispatch,
         serverUrl,
         index: props.index,
-        useRawImages: props.useRawImages
+        useRawImages: props.useRawImages,
+        userId: storedCredentials?._id || 'SSGUEST',
     }
 
     return <Poll {...postProps}/>
