@@ -15,6 +15,7 @@ import {
 import axios from 'axios';
 import { ServerUrlContext } from '../ServerUrlContext';
 import { getTimeFromUTCMS } from '../../libraries/Time';
+import { CredentialsContext } from '../CredentialsContext';
 
 class Thread extends Component {
     constructor(props) {
@@ -272,6 +273,7 @@ class Thread extends Component {
 export default function(props) {
     const navigation = useNavigation()
     const {serverUrl} = useContext(ServerUrlContext)
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext)
 
     const postProps = {
         navigation,
@@ -281,7 +283,8 @@ export default function(props) {
         dispatch: props.dispatch,
         index: props.index,
         serverUrl,
-        useRawImages: props.useRawImages
+        useRawImages: props.useRawImages,
+        userId: storedCredentials?._id || 'SSGUEST',
     }
 
     return <Thread {...postProps}/>
