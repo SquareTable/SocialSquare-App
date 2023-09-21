@@ -49,8 +49,7 @@ import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView,
 import { useTheme } from '@react-navigation/native';
 import KeyboardAvoidingWrapper_NoScrollview from '../../components/KeyboardAvoidingWrapper_NoScrollview.js';
 import { UseUploadContext } from '../../components/UseUploadContext.js';
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import KeyboardAvoidingScrollView from '../../components/KeyboardAvoidingScrollView.js';
 
 const UserTextInput = ({
     label, 
@@ -198,7 +197,7 @@ const PollUploadPage = ({navigation}) => {
 
     return(
         <KeyboardAvoidingWrapper_NoScrollview style={{backgroundColor: colors.primary}}>
-            <KeyboardAwareScrollView style={{backgroundColor: colors.primary}}>
+            <KeyboardAvoidingScrollView>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                         <StatusBar style={dark ? 'light' : 'dark'}/>
                         <InnerContainer style={{backgroundColor: colors.primary}}>
@@ -814,7 +813,7 @@ const PollUploadPage = ({navigation}) => {
                         </InnerContainer>
 
                 </StyledContainer>
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingScrollView>
         </KeyboardAvoidingWrapper_NoScrollview>
     );
 }

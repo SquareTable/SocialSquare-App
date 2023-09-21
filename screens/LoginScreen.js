@@ -59,8 +59,8 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 import {storeJWT} from './../jwtHandler'
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView.js';
 
 const LoginScreen = ({navigation, route}) => {
     const { colors, dark } = useTheme();
@@ -266,7 +266,7 @@ const LoginScreen = ({navigation, route}) => {
         navigation.goBack()
     }
     return(
-        <KeyboardAwareScrollView>
+        <KeyboardAvoidingScrollView>
             <>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                     <StatusBar style={colors.StatusBarColor}/>
@@ -355,7 +355,7 @@ const LoginScreen = ({navigation, route}) => {
                     </InnerContainer>
                 </StyledContainer>
             </>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingScrollView>
     );
 }
 

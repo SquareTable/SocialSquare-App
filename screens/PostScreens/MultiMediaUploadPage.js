@@ -26,8 +26,7 @@ import {Image, View, TouchableOpacity, Text} from 'react-native';
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '@react-navigation/native';
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import KeyboardAvoidingScrollView from '../../components/KeyboardAvoidingScrollView.js';
 
 const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
     const {colors} = useTheme();
@@ -101,7 +100,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
     return(
         <>    
             <StatusBar style={dark ? 'light' : 'dark'}/>
-            <KeyboardAwareScrollView style={{backgroundColor: colors.primary}}>
+            <KeyboardAvoidingScrollView>
                 <MultiMediaPostFrame style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor}} TitleView={true}>
                     <PageTitle>MultiMedia Post Screen</PageTitle>
                     <SubTitle style={{color: colors.darkestBlue}}>Format: Image</SubTitle>
@@ -183,7 +182,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
                             </StyledFormArea>)}
                     </Formik>
                 </InnerContainer>
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingScrollView>
 
         </>
     );

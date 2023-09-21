@@ -48,7 +48,7 @@ import usePostReducer from '../hooks/usePostReducer';
 import ImagePost from '../components/Posts/ImagePost';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import ParseErrorMessage from '../components/ParseErrorMessage';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
 
 
 const ViewImagePostPage = ({route, navigation}) => {
@@ -285,7 +285,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{post.creatorDisplayName ? post.creatorDisplayName : post.creatorName}'s post</TestText>
             </ChatScreen_Title>
-            <KeyboardAwareScrollView style={{height: '100%', backgroundColor: colors.primary}} enableOnAndroid keyboardOpeningTime={0}>
+            <KeyboardAvoidingScrollView>
                 {postState.posts.length > 0 ? <ImagePost post={postState.posts[0]} index={0} isOwner={isOwner} colors={colors} dispatch={dispatchPost} colorsIndexNum={indexNum} onDeleteCallback={onDeleteCallback}/> : null}
                 {storedCredentials ?
                     <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
@@ -369,7 +369,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                         </StyledButton>
                     </View>
                 }
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingScrollView>
         </>
     );
 }
