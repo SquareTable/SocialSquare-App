@@ -124,21 +124,6 @@ class PollWithVotes extends PollClass {
         return true;
     }
 
-    openThreeDotsMenu = () => {
-        if (this.props.post.isOwner !== true && this.props.post.isOwner !== false) {
-            alert("isOwner is not true or false. An error has occured.")
-            return
-        }
-
-        this.props.dispatch({
-            type: 'showMenu',
-            postId: this.props.post._id,
-            postFormat: 'Poll',
-            isOwner: this.props.post.isOwner,
-            postIndex: this.props.index
-        })
-    }
-
     render() {
         return (
             <>
