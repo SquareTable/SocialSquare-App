@@ -27,8 +27,7 @@ import {
     TestText
 } from './screenStylings/styling';
 
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 // formik
 import {Formik} from 'formik';
@@ -750,7 +749,7 @@ const ThreadViewPage = ({navigation, route}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{creatorDisplayName ? creatorDisplayName : creatorName}'s thread</TestText>
             </ChatScreen_Title>
-            <ScrollView style={{backgroundColor: colors.primary}}>
+            <KeyboardAwareScrollView style={{backgroundColor: colors.primary}} enableOnAndroid extraScrollHeight={50} keyboardOpeningTime={0}>
                 <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2, paddingTop: 0}}>
                         <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: categoryImageB64 == null || categoryImageB64 == "Finding" ? SocialSquareLogo_B64_png : categoryImageB64}}/>
                     <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
@@ -805,6 +804,7 @@ const ThreadViewPage = ({navigation, route}) => {
                                                     value={values.comment}
                                                     multiline={true}
                                                     style={{color: colors.tertiary, backgroundColor: colors.primary, borderColor: colors.borderColor}}
+                                                    scrollEnabled={false}
                                                 />
                                             </CommentsVerticalView>
                                         </CommentsHorizontalView>
@@ -844,7 +844,7 @@ const ThreadViewPage = ({navigation, route}) => {
                         </StyledButton>
                     </View>
                 }
-            </ScrollView>
+            </KeyboardAwareScrollView>
         </>
     );
 }
