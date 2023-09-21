@@ -76,6 +76,7 @@ import { getTimeFromUTCMS } from '../libraries/Time';
 import PollWithVotes from '../components/Posts/PollWithVotes';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -299,93 +300,90 @@ const ViewPollPostPage = ({route, navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{(post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) || 'ERROR'}'s poll</TestText>
             </ChatScreen_Title>
-            <ScrollView style={{backgroundColor: colors.primary}}>
-                <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
-                    <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
-                        {postReducer.posts.length > 0 ? <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/> : null}
-                        {storedCredentials ?
-                            <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
-                                <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
-                                <CommentsHorizontalView writeCommentArea={true}>
-                                    <Formik
-                                        initialValues={{comment: '', userName: name, pollId: post._id}}
-                                        onSubmit={(values, {setSubmitting}) => {
-                                            if (values.comment == "") {
-                                                handleMessage('You cant post and empty comment');
-                                                setSubmitting(false);
-                                            } else {
-                                                handleCommentPost(values, setSubmitting);
-                                            }
-                                        }}
-                                    >
-                                        {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-                                            <View>
-                                                <CommentsHorizontalView>
-                                                    <CommentsHorizontalViewItem>
-                                                        <CommenterName>Img/GIF</CommenterName>
-                                                    </CommentsHorizontalViewItem>
-                                                    <CommentsHorizontalViewItem>
-                                                        <CommenterName>Text</CommenterName>
-                                                    </CommentsHorizontalViewItem>
-                                                    <CommentsHorizontalViewItem>
-                                                        <CommenterName>Short Video</CommenterName>
-                                                    </CommentsHorizontalViewItem>
-                                                </CommentsHorizontalView>
-                                                <CommentsHorizontalView writeCommentArea={true}>
-                                                    <CommentsVerticalView alongLeft={true}>
-                                                        <CommenterIcon source={{uri: profilePictureUri}}/>
-                                                    </CommentsVerticalView>
-                                                    <CommentsVerticalView>
-                                                        <UserTextInput
-                                                            placeholder="Post a comment"
-                                                            placeholderTextColor={colors.darkLight}
-                                                            onChangeText={handleChange('comment')}
-                                                            onBlur={handleBlur('comment')}
-                                                            value={values.comment}
-                                                            multiline={true}
-                                                            style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}}
-                                                        />
-                                                    </CommentsVerticalView>
-                                                </CommentsHorizontalView>
-                                                <CommentsHorizontalView belowWriteCommentArea={true}>
-                                                    <CommentsVerticalView postComment={true}>
-                                                        {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
-                                                            <ButtonText postComment={true}> Post </ButtonText>
-                                                        </StyledButton>)}
-                                                        <MsgBox type={messageType}>{message}</MsgBox>
-                                                        {isSubmitting && (<StyledButton disabled={true}>
-                                                            <ActivityIndicator size="large" color={colors.primary} />
-                                                        </StyledButton>)}
-                                                    </CommentsVerticalView>
-                                                </CommentsHorizontalView>
-                                            </View>
-                                            )}
-                                    </Formik>
-                                </CommentsHorizontalView>
-                                <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
-                                <SectionList
-                                    sections={changeSections}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
-                                />
-                                {loadingMoreComments == true && (
-                                    <ActivityIndicator size="small" color={colors.brand} />  
-                                )}
-                            </ViewScreenPollPostCommentsFrame>
-                        :
-                            <View style={{flex: 1, justifyContent: 'center', marginTop: 20}}>
-                                <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to comment on this poll</Text>
-                                <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
-                                    <ButtonText> Login </ButtonText>
-                                </StyledButton>
-                                <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true})}>
-                                        <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
-                                </StyledButton>
-                            </View>
-                        }
-                    </WelcomeContainer>
-                </WelcomeContainer>
-            </ScrollView>
+            <KeyboardAwareScrollView style={{backgroundColor: colors.primary}} contentContainerStyle={{alignItems: 'center'}} enableOnAndroid keyboardOpeningTime={0}>
+                {postReducer.posts.length > 0 ? <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/> : null}
+                {storedCredentials ?
+                    <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
+                        <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
+                        <CommentsHorizontalView writeCommentArea={true}>
+                            <Formik
+                                initialValues={{comment: '', userName: name, pollId: post._id}}
+                                onSubmit={(values, {setSubmitting}) => {
+                                    if (values.comment == "") {
+                                        handleMessage('You cant post and empty comment');
+                                        setSubmitting(false);
+                                    } else {
+                                        handleCommentPost(values, setSubmitting);
+                                    }
+                                }}
+                            >
+                                {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                                    <View>
+                                        <CommentsHorizontalView>
+                                            <CommentsHorizontalViewItem>
+                                                <CommenterName>Img/GIF</CommenterName>
+                                            </CommentsHorizontalViewItem>
+                                            <CommentsHorizontalViewItem>
+                                                <CommenterName>Text</CommenterName>
+                                            </CommentsHorizontalViewItem>
+                                            <CommentsHorizontalViewItem>
+                                                <CommenterName>Short Video</CommenterName>
+                                            </CommentsHorizontalViewItem>
+                                        </CommentsHorizontalView>
+                                        <CommentsHorizontalView writeCommentArea={true}>
+                                            <CommentsVerticalView alongLeft={true}>
+                                                <CommenterIcon source={{uri: profilePictureUri}}/>
+                                            </CommentsVerticalView>
+                                            <CommentsVerticalView>
+                                                <UserTextInput
+                                                    placeholder="Post a comment"
+                                                    placeholderTextColor={colors.darkLight}
+                                                    onChangeText={handleChange('comment')}
+                                                    onBlur={handleBlur('comment')}
+                                                    value={values.comment}
+                                                    multiline={true}
+                                                    style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}}
+                                                    scrollEnabled={false}
+                                                />
+                                            </CommentsVerticalView>
+                                        </CommentsHorizontalView>
+                                        <CommentsHorizontalView belowWriteCommentArea={true}>
+                                            <CommentsVerticalView postComment={true}>
+                                                {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
+                                                    <ButtonText postComment={true}> Post </ButtonText>
+                                                </StyledButton>)}
+                                                <MsgBox type={messageType}>{message}</MsgBox>
+                                                {isSubmitting && (<StyledButton disabled={true}>
+                                                    <ActivityIndicator size="large" color={colors.primary} />
+                                                </StyledButton>)}
+                                            </CommentsVerticalView>
+                                        </CommentsHorizontalView>
+                                    </View>
+                                    )}
+                            </Formik>
+                        </CommentsHorizontalView>
+                        <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
+                        <SectionList
+                            sections={changeSections}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
+                        />
+                        {loadingMoreComments == true && (
+                            <ActivityIndicator size="small" color={colors.brand} />  
+                        )}
+                    </ViewScreenPollPostCommentsFrame>
+                :
+                    <View style={{flex: 1, justifyContent: 'center', marginTop: 20}}>
+                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to comment on this poll</Text>
+                        <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                            <ButtonText> Login </ButtonText>
+                        </StyledButton>
+                        <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true})}>
+                                <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                        </StyledButton>
+                    </View>
+                }
+            </KeyboardAwareScrollView>
         </>
     );
 }
