@@ -52,7 +52,17 @@ class Poll extends Component {
         })
     }
 
-    upvote = () => {
+    runIfAuthenticated = (func) => {
+        return () => {
+            if (this.props.userId === 'SSGUEST' || !this.props.userId) {
+                this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+            } else {
+                func()
+            }
+        }
+    }
+
+    upvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
 
@@ -86,9 +96,9 @@ class Poll extends Component {
                 console.error('An error occured while upvoting poll post:', error)
             })
         }
-    }
+    })
 
-    downvote = () => {
+    downvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange();
 
@@ -121,7 +131,7 @@ class Poll extends Component {
                 console.error('An error occured while downvoting poll post:', error)
             })
         }
-    }
+    })
 
     shouldComponentUpdate(nextProps, nextState) {
         const upvoteIsSame = nextProps.post.upvoted === this.props.post.upvoted;
@@ -145,7 +155,7 @@ class Poll extends Component {
         })
     }
 
-    openThreeDotsMenu = () => {
+    openThreeDotsMenu = this.runIfAuthenticated(() => {
         if (this.props.post.isOwner !== true && this.props.post.isOwner !== false) {
             alert("isOwner is not true or false. An error has occured.")
             return
@@ -158,7 +168,7 @@ class Poll extends Component {
             isOwner: this.props.post.isOwner,
             postIndex: this.props.index
         })
-    }
+    })
 
     render() {
         return (
