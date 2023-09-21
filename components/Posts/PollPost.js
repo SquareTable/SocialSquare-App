@@ -167,7 +167,8 @@ class Poll extends Component {
             postId: this.props.post._id,
             postFormat: 'Poll',
             isOwner: this.props.post.isOwner,
-            postIndex: this.props.index
+            postIndex: this.props.index,
+            onDeleteCallback: this.props.onDeleteCallback
         })
     })
 
@@ -340,6 +341,7 @@ export default function(props) {
         index: props.index,
         useRawImages: props.useRawImages,
         userId: storedCredentials?._id || 'SSGUEST',
+        onDeleteCallback: props.onDeleteCallback || function() {}
     }
 
     return <Poll {...postProps}/>
