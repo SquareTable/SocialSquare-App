@@ -64,13 +64,6 @@ class PollWithVotes extends PollClass {
         this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Six", postIndex: this.props.index})
     }
 
-    optionOneInfoState = false; //Temporary
-    optionTwoInfoState = false; //Temporary
-    optionThreeInfoState = false; //Temporary
-    optionFourInfoState = false; //Temporary
-    optionFiveInfoState = false; //Temporary
-    optionSixInfoState = false; //Temporary
-
     handleVoteOnPoll = (optionSelected, voteNumber) => {
         if (this.props.storedCredentials) {
             this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
@@ -129,21 +122,6 @@ class PollWithVotes extends PollClass {
         if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && changingPollVoteIsSame && votedForIsSame && openPollVoteMenuSame) return false;
 
         return true;
-    }
-
-    openThreeDotsMenu = () => {
-        if (this.props.post.isOwner !== true && this.props.post.isOwner !== false) {
-            alert("isOwner is not true or false. An error has occured.")
-            return
-        }
-
-        this.props.dispatch({
-            type: 'showMenu',
-            postId: this.props.post._id,
-            postFormat: 'Poll',
-            isOwner: this.props.post.isOwner,
-            postIndex: this.props.index
-        })
     }
 
     render() {
