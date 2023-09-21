@@ -154,7 +154,8 @@ class Thread extends Component {
             postId: this.props.post._id,
             postFormat: 'Thread',
             isOwner: this.props.post.isOwner,
-            postIndex: this.props.index
+            postIndex: this.props.index,
+            onDeleteCallback: this.props.onDeleteCallback
         })
     })
 
@@ -285,6 +286,7 @@ export default function(props) {
         serverUrl,
         useRawImages: props.useRawImages,
         userId: storedCredentials?._id || 'SSGUEST',
+        onDeleteCallback: props.onDeleteCallback || function() {}
     }
 
     return <Thread {...postProps}/>
