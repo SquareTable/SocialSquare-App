@@ -2,64 +2,12 @@ import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
-    InnerContainer,
-    PageTitle,
-    SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
     WelcomeContainer,
-    WelcomeImage,
-    Avatar,
-    Colors,
-    StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    ProfileSelectMediaTypeItem,
-    ProfileSelectMediaTypeHorizontalView,
-    ProfileSelectMediaTypeIcons,
-    ProfileSelectMediaTypeIconsBorder,
-    PollPostFrame,
     PollPostTitle,
     PollPostSubTitle,
-    PollBarOutline,
-    PollBarItem,
-    PollKeyViewOne,
-    PollKeyViewTwo,
-    PollKeyViewThree,
-    PollKeyViewFour,
-    PollKeyViewFive,
-    PollKeyViewSix,
-    PollKeysCircle,
-    PollPostHorizontalView,
-    PollPostIcons,
-    AboveBarPollPostHorizontalView,
-    BottomPollPostHorizontalView,
-    LikesView,
-    CommentsView,
-    PollBottomItem,
-    MultiMediaPostFrame,
-    ImagePostFrame,
-    PostCreatorIcon,
-    PostsHorizontalView,
-    PostsVerticalView,
-    PostHorizontalView,
-    PostsIcons,
-    PostsIconFrame,
     MsgBox,
-    ImagePostTextFrame,
-    CategoriesTopBtns,
     ViewScreenPollPostCommentsFrame,
     CommentsHorizontalView,
     CommentsVerticalView,
@@ -74,12 +22,6 @@ import {
     VoteText
 } from './screenStylings/styling';
 
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterPrimary, descTextColor, darkest, red} = Colors;
-
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 // formik
 import {Formik} from 'formik';
 
@@ -88,7 +30,7 @@ import axios from 'axios';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
@@ -834,7 +776,7 @@ const CommentViewPage = ({route, navigation}) => {
                                                 <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes+1}</VoteText>
                                             )}
                                             {initialCommentUpOrDownVoted == "DownVoted" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes+2}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes+2}</VoteText>
                                             )}
                                         </View>)}
                                         {commentUpOrDownVoted == "Neither" && (<View style={{textAlign: 'center'}}>
@@ -950,7 +892,7 @@ const CommentViewPage = ({route, navigation}) => {
                                                     <CommentsVerticalView>
                                                         <UserTextInput
                                                             placeholder="Post a reply"
-                                                            placeholderTextColor={darkLight}
+                                                            placeholderTextColor={colors.darkLight}
                                                             onChangeText={handleChange('comment')}
                                                             onBlur={handleBlur('comment')}
                                                             value={values.comment}
