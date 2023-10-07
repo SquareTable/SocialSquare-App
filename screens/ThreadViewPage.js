@@ -46,6 +46,7 @@ import ParseErrorMessage from '../components/ParseErrorMessage';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreadPost from '../components/Posts/ThreadPost';
 import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
+import Comments from '../components/Comments/Comments';
 
 const ThreadViewPage = ({navigation, route}) => {
     const [postReducer, dispatch] = usePostReducer();
@@ -769,7 +770,10 @@ const ThreadViewPage = ({navigation, route}) => {
                     <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
                 </StyledContainer>
                 {postReducer.posts.length > 0 ?
-                    <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0} onDeleteCallback={onDeleteCallback}/>
+                    <>
+                        <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0} onDeleteCallback={onDeleteCallback}/>
+                        <Comments postId={postReducer.posts[0]._id} postFormat="Thread"/>
+                    </>
                 :
                     <>
                         <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Loading thread... (At some point we should put a loading animation here)</Text>
@@ -777,6 +781,7 @@ const ThreadViewPage = ({navigation, route}) => {
                     </>
                 }
                 {storedCredentials ?
+                    ////This dedicated thread post comment specific code will stay here until the dedicated Comments component is further in it's development stage
                     <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
                         <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                         <CommentsHorizontalView writeCommentArea={true}>

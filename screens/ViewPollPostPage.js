@@ -77,6 +77,7 @@ import PollWithVotes from '../components/Posts/PollWithVotes';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
+import Comments from '../components/Comments/Comments';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -301,8 +302,14 @@ const ViewPollPostPage = ({route, navigation}) => {
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{(post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) || 'ERROR'}'s poll</TestText>
             </ChatScreen_Title>
             <KeyboardAvoidingScrollView>
-                {postReducer.posts.length > 0 ? <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/> : null}
+                {postReducer.posts.length > 0 ? 
+                    <>
+                        <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/>
+                        <Comments postId={postReducer.posts[0]._id} postFormat="Poll"/>
+                    </>
+                : null}
                 {storedCredentials ?
+                    //This dedicated poll post comment specific code will stay here until the dedicated Comments component is further in it's development stage
                     <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
                         <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                         <CommentsHorizontalView writeCommentArea={true}>

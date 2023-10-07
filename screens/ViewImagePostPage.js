@@ -49,6 +49,7 @@ import ImagePost from '../components/Posts/ImagePost';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import ParseErrorMessage from '../components/ParseErrorMessage';
 import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
+import Comments from '../components/Comments/Comments';
 
 
 const ViewImagePostPage = ({route, navigation}) => {
@@ -286,8 +287,14 @@ const ViewImagePostPage = ({route, navigation}) => {
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{post.creatorDisplayName ? post.creatorDisplayName : post.creatorName}'s post</TestText>
             </ChatScreen_Title>
             <KeyboardAvoidingScrollView>
-                {postState.posts.length > 0 ? <ImagePost post={postState.posts[0]} index={0} isOwner={isOwner} colors={colors} dispatch={dispatchPost} colorsIndexNum={indexNum} onDeleteCallback={onDeleteCallback}/> : null}
+                {postState.posts.length > 0 ? 
+                    <>
+                        <ImagePost post={postState.posts[0]} index={0} isOwner={isOwner} colors={colors} dispatch={dispatchPost} colorsIndexNum={indexNum} onDeleteCallback={onDeleteCallback}/>
+                        <Comments postFormat="Image" postId={postState.posts[0]._id}/>
+                    </>
+                : null}
                 {storedCredentials ?
+                    //This code will be left here until a later point in time when the dedicated Comments component is more complete
                     <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
                         <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                         <CommentsHorizontalView writeCommentArea={true}>
