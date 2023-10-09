@@ -109,15 +109,15 @@ const reducer = (state, action) => {
         console.warn('Adding comments')
         if (action.comments) {
             console.log('HELLO')
-            const newPosts = action.posts.map(post => {
-                post.initialVotes = post.upvoted ? post.votes - 1 : post.downvoted ? post.votes + 1 : post.votes;
-                post.changingVote = false;
-                post.deleting = false;
+            const newPosts = action.comments.map(comment => {
+                comment.initialVotes = comment.upvoted ? comment.votes - 1 : comment.downvoted ? comment.votes + 1 : comment.votes;
+                comment.changingVote = false;
+                comment.deleting = false;
                 return post;
             })
             return {
                 ...state,
-                posts: state.posts.concat(newPosts),
+                posts: state.comments.concat(newPosts),
                 loadingFeed: false,
                 reloadingFeed: false,
                 error: null

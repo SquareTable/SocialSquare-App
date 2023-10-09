@@ -46,7 +46,9 @@ export default function Comments({postId, postFormat}) {
         const toSend = {postId}
 
         axios.post(url, toSend).then(response => {
-            const {data} = response;
+            const result = response.data;
+            const {data} = result;
+            
 
             Promise.allSettled(
                 data.map(item => {
