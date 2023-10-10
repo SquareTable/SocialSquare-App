@@ -109,15 +109,41 @@ const reducer = (state, action) => {
         console.warn('Adding comments')
         if (action.comments) {
             console.log('HELLO')
-            const newPosts = action.comments.map(comment => {
-                comment.initialVotes = comment.upvoted ? comment.votes - 1 : comment.downvoted ? comment.votes + 1 : comment.votes;
+            const newComments = action.comments.map(comment => {
+                comment.initialVotes = comment.commentUpVoted ? comment.commentUpVotes - 1 : comment.commentDownVoted ? comment.commentUpVotes + 1 : comment.commentUpVotes;
                 comment.changingVote = false;
                 comment.deleting = false;
                 return comment;
             })
             return {
                 ...state,
-                posts: state.comments.concat(newPosts),
+                comments: state.comments.concat(newComments),
+                loadingFeed: false,
+                reloadingFeed: false,
+                error: null
+            }
+        } else {
+            console.error('No comments were given to reducer')
+            return {
+                ...state,
+                loadingFeed: false,
+                reloadingFeed: false,
+                error: null
+            };
+        }
+    }
+
+    if (action.type === 'addCommentsToStart') {
+        if (action.comments) {
+            const newComments = action.comments.map(comment => {
+                comment.initialVotes = comment.commentUpVoted ? comment.commentUpVotes - 1 : comment.commentDownVoted ? comment.commentUpVotes + 1 : comment.commentUpVotes;
+                comment.changingVote = false;
+                comment.deleting = false;
+                return comment;
+            })
+            return {
+                ...state,
+                comments: newComments.concat(state.comments),
                 loadingFeed: false,
                 reloadingFeed: false,
                 error: null

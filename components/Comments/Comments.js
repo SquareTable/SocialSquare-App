@@ -1,5 +1,5 @@
-import { View, Text, ActivityIndicator, SectionList, TouchableOpacity } from "react-native";
-import { useContext, useEffect } from "react";
+import { View, Text, ActivityIndicator, FlatList, TouchableOpacity } from "react-native";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import useCommentReducer from "../../hooks/useCommentReducer";
 import { ServerUrlContext } from "../ServerUrlContext";
@@ -17,20 +17,23 @@ import {
     StyledInputLabel,
     PollPostSubTitle,
     ViewScreenPollPostCommentsFrame,
-    PollPostTitle
+    PollPostTitle,
+    MsgBox
 } from "../../screens/screenStylings/styling";
 import { useTheme } from "@react-navigation/native";
 import { CredentialsContext } from "../CredentialsContext";
 import { ProfilePictureURIContext } from "../ProfilePictureURIContext";
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Comment from "./CommentItem";
 
 export default function Comments({postId, postFormat}) {
     const {colors} = useTheme();
     const [reducer, dispatch] = useCommentReducer()
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext)
-    const {name} = storedCredentials;
+    const {name, displayName} = storedCredentials;
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
+    const [commentPostError, setCommentPostError] = useState(null)
 
     const loadComments = () => {
         dispatch({type: 'startLoad'})
@@ -107,6 +110,41 @@ export default function Comments({postId, postFormat}) {
         return null
     }
 
+    const handleCommentPost = (commentProperties, setSubmitting) => {
+        const urls = {
+            'Image': 'imagepostcomment',
+            'Poll': 'pollpostcomment',
+            'Thread': 'threadpostcomment'
+        }
+
+        if (!Object.keys(urls).includes(postFormat)) throw new Error('Comments component received invalid postFormat: ' + postFormat)
+
+        setCommentPostError(null);
+        const url = serverUrl + "/tempRoute/" + urls[postFormat];
+
+        axios.post(url, commentProperties).then((response) => {
+            const result = response.data;
+            const {data} = result;
+
+            data.commentUpVotes = 0;
+            data.commentUpVoted = false;
+            data.commentDownVoted = false;
+            data.commenterImageB64 = profilePictureUri;
+            data.commenterName = name;
+            data.commenterDisplayName = displayName;
+            data.commentReplies = 0;
+
+            dispatch({type: 'addCommentsToStart', comments: [{status: "fulfilled", value: data}]})
+            commentProperties.comment = ""
+            setSubmitting(false);
+
+        }).catch(error => {
+            console.error(error);
+            setSubmitting(false);
+            setCommentPostError(ParseErrorMessage(error));
+        })
+    }
+
     return (
         <View>
             <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
@@ -116,11 +154,10 @@ export default function Comments({postId, postFormat}) {
                         initialValues={{comment: '', userName: name, postId}}
                         onSubmit={(values, {setSubmitting}) => {
                             if (values.comment == "") {
-                                handleMessage('You cant post and empty comment');
+                                setCommentPostError("You can't post an empty comment.");
                                 setSubmitting(false);
                             } else {
                                 handleCommentPost(values, setSubmitting);
-                                values.comment = ""
                             }
                         }}
                     >
@@ -156,9 +193,14 @@ export default function Comments({postId, postFormat}) {
                                 </CommentsHorizontalView>
                                 <CommentsHorizontalView belowWriteCommentArea={true}>
                                     <CommentsVerticalView postComment={true}>
-                                        {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
-                                            <ButtonText postComment={true}> Post </ButtonText>
-                                        </StyledButton>)}
+                                        {!isSubmitting && (
+                                            <>
+                                                <StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
+                                                    <ButtonText postComment={true}> Post </ButtonText>
+                                                </StyledButton>
+                                                {commentPostError ? <MsgBox style={{color: colors.errorColor}}>{commentPostError}</MsgBox> : null}
+                                            </>
+                                        )}
                                         {isSubmitting && (<StyledButton disabled={true}>
                                             <ActivityIndicator size="large" color={colors.primary} />
                                         </StyledButton>)}
@@ -169,10 +211,10 @@ export default function Comments({postId, postFormat}) {
                     </Formik>
                 </CommentsHorizontalView>
                 <PollPostSubTitle style={{color: colors.tertiary}}>{reducer.loadingFeed ? 'Loading...' : reducer.error ? 'Error Occurred' : reducer.comments.length === 0 ? 'No Comments' : 'Comments:'}</PollPostSubTitle>
-                <SectionList
-                    sections={reducer.comments}
+                <FlatList
+                    data={reducer.comments}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item }) => {/*Coming soon-<Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>*/}}
+                    renderItem={({ item }) => <Comment comment={item.value} postId={postId} postFormat={postFormat} failed={item.status !== 'fulfilled'}/>}
                     ListFooterComponent={ListFooter}
                 />
             </ViewScreenPollPostCommentsFrame>
