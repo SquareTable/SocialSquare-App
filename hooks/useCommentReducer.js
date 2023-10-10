@@ -113,7 +113,7 @@ const reducer = (state, action) => {
                 comment.initialVotes = comment.upvoted ? comment.votes - 1 : comment.downvoted ? comment.votes + 1 : comment.votes;
                 comment.changingVote = false;
                 comment.deleting = false;
-                return post;
+                return comment;
             })
             return {
                 ...state,
