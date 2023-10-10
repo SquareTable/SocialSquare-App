@@ -263,7 +263,7 @@ class Thread extends Component {
                     </PostHorizontalView>
                     <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{getTimeFromUTCMS(this.props.post.datePosted)}</SubTitle>
                     <TouchableOpacity onPress={this.navigateToFullScreen}>
-                        <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.comments?.length} {this.props.post.comments?.length === 1 ? "comment" : "comments"}</SubTitle>
+                        <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.comments} {this.props.post.comments === 1 ? "comment" : "comments"}</SubTitle>
                     </TouchableOpacity>
                 </View>
             </>
