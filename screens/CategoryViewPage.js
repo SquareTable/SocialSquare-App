@@ -308,7 +308,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     const data = {
                         postNum: index,
                         threadId: threadData[index].threadId,
-                        threadComments: threadData[index].comments,
+                        comments: threadData[index].comments,
                         threadType: threadData[index].threadType,
                         votes: threadData[index].votes,
                         threadTitle: threadData[index].threadTitle,
