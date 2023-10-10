@@ -168,7 +168,7 @@ export default function Comments({postId, postFormat}) {
                             )}
                     </Formik>
                 </CommentsHorizontalView>
-                <PollPostSubTitle>{reducer.loadingFeed ? 'Loading...' : reducer.error ? 'Error Occurred' : reducer.comments.length === 0 ? 'No Comments' : 'Comments:'}</PollPostSubTitle>
+                <PollPostSubTitle style={{color: colors.tertiary}}>{reducer.loadingFeed ? 'Loading...' : reducer.error ? 'Error Occurred' : reducer.comments.length === 0 ? 'No Comments' : 'Comments:'}</PollPostSubTitle>
                 <SectionList
                     sections={reducer.comments}
                     keyExtractor={(item, index) => item + index}
@@ -176,7 +176,7 @@ export default function Comments({postId, postFormat}) {
                     ListFooterComponent={ListFooter}
                 />
             </ViewScreenPollPostCommentsFrame>
-            <Text style={{color: 'white', fontSize: 24}}>postId is {postId} and postFormat is {postFormat}</Text>
+            <Text style={{color: colors.tertiary, fontSize: 24}}>Temporary data display: postId is {postId} and postFormat is {postFormat}</Text>
         </View>
     )
 }
