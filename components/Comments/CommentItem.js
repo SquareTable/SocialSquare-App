@@ -39,7 +39,7 @@ class CommentClass extends Component {
                             <CommenterIcon source={{uri: this.props.comment.commenterImageB64}}/>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <CommentIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                            <CommentIcons style={{tintColor: this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         </TouchableOpacity>
                         <TouchableOpacity>
                             <VoteText style={{color: this.props.colors.tertiary}}>
@@ -47,7 +47,7 @@ class CommentClass extends Component {
                             </VoteText>
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <CommentIcons downVoteButton={true} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                            <CommentIcons style={{tintColor: this.props.colors.tertiary}} downVoteButton={true} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         </TouchableOpacity>
                     </CommentsVerticalView>
                     <CommentsVerticalView>
@@ -61,7 +61,7 @@ class CommentClass extends Component {
                 <CommentsHorizontalView bottomIcons={true}>
                     <CommentsVerticalView alongLeft={true}>
                         <TouchableOpacity>
-                            <CommentIcons source={require('../../assets/img/ThreeDots.png')}/>
+                            <CommentIcons style={{tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
                         </TouchableOpacity>
                     </CommentsVerticalView>
                     <CommentsVerticalView datePosted={true}>
@@ -76,7 +76,7 @@ class CommentClass extends Component {
                     </CommentsVerticalView>
                     <CommentsVerticalView alongLeft={true}>
                         <TouchableOpacity>
-                            <CommentIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/107-reply.png')}/>
+                            <CommentIcons style={{tintColor: this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/107-reply.png')}/>
                         </TouchableOpacity>
                     </CommentsVerticalView>
                 </CommentsHorizontalView>
