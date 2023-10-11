@@ -18,6 +18,18 @@ class CommentClass extends Component {
         super(props)
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        const colorsAreSame = nextProps.colorsIndexNum === this.props.colorsIndexNum;
+        const upvotesAreSame = nextProps.comment.commentUpVotes === this.props.comment.commentUpVotes;
+        const changingVoteIsSame = nextProps.comment.changingVote === this.props.comment.changingVote;
+        const deletingIsSame = nextProps.comment.deleting === this.props.comment.deleting;
+        const commentIdIsSame = nextProps.comment.commentId === this.props.comment.commentId;
+
+        if (colorsAreSame && upvotesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame) return true;
+
+        return false;
+    }
+
     render() {
         return (
             <CommentsContainer>
