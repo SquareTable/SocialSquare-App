@@ -11,7 +11,7 @@ import {
     CommentText
 } from '../../screens/screenStylings/styling.js'
 import { getTimeFromUTCMS } from '../../libraries/Time.js'
-import { useTheme } from '@react-navigation/native'
+import { useNavigation, useTheme } from '@react-navigation/native'
 
 class CommentClass extends Component {
     constructor(props) {
@@ -56,7 +56,7 @@ class CommentClass extends Component {
                         <VoteText style={{color: this.props.colors.tertiary}}>
                             {getTimeFromUTCMS(this.props.comment.datePosted)}
                         </VoteText>
-                        <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: this.props.comment.commentId, postId: this.props.postId, postFormat: this.props.postFormat})}}>
+                        <TouchableOpacity onPress={() => {this.props.navigation.navigate("CommentViewPage", {commentId: this.props.comment.commentId, postId: this.props.postId, postFormat: this.props.postFormat})}}>
                             <VoteText style={{color: this.props.colors.brand}}>
                                 {this.props.comment.commentReplies} replies
                             </VoteText>
@@ -74,14 +74,16 @@ class CommentClass extends Component {
 }
 
 const Comment = (props) => {
-    const {colors, colorsIndexNum} = useTheme()
+    const {colors, colorsIndexNum} = useTheme();
+    const navigation = useNavigation();
 
     const commentProps = {
         comment: props.comment,
         postId: props.postId,
         postFormat: props.postFormat,
         colors,
-        colorsIndexNum
+        colorsIndexNum,
+        navigation
     }
 
     return <CommentClass {...commentProps}/>
