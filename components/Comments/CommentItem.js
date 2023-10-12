@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component, useContext } from 'react'
 import { TouchableOpacity } from 'react-native'
 import {
     CommentsContainer,
@@ -12,6 +12,7 @@ import {
 } from '../../screens/screenStylings/styling.js'
 import { getTimeFromUTCMS } from '../../libraries/Time.js'
 import { useNavigation, useTheme } from '@react-navigation/native'
+import { CredentialsContext } from '../CredentialsContext.js'
 
 class CommentClass extends Component {
     constructor(props) {
@@ -24,11 +25,38 @@ class CommentClass extends Component {
         const changingVoteIsSame = nextProps.comment.changingVote === this.props.comment.changingVote;
         const deletingIsSame = nextProps.comment.deleting === this.props.comment.deleting;
         const commentIdIsSame = nextProps.comment.commentId === this.props.comment.commentId;
+        const userIdIsSame = nextProps.userId === this.props.userId;
 
-        if (colorsAreSame && upvotesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame) return true;
+        if (colorsAreSame && upvotesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame && userIdIsSame) return true;
 
         return false;
     }
+
+    runIfAuthenticated = (func) => {
+        return () => {
+            if (this.props.userId === 'SSGUEST' || !this.props.userId) {
+                this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+            } else {
+                func()
+            }
+        }
+    }
+
+    openThreeDotsMenu = this.runIfAuthenticated(() => {
+        if (this.props.comment.isOwner !== true && this.props.comment.isOwner !== false) {
+            alert("isOwner is not true or false. An error has occured.")
+            return
+        }
+
+        this.props.dispatch({
+            type: 'showMenu',
+            postId: this.props.comment._id,
+            postFormat: 'Comment',
+            isOwner: this.props.comment.isOwner,
+            postIndex: this.props.index,
+            onDeleteCallback: this.props.onDeleteCallback
+        })
+    })
 
     render() {
         return (
@@ -60,7 +88,7 @@ class CommentClass extends Component {
                 </CommentsHorizontalView>
                 <CommentsHorizontalView bottomIcons={true}>
                     <CommentsVerticalView alongLeft={true}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.openThreeDotsMenu}>
                             <CommentIcons style={{tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
                         </TouchableOpacity>
                     </CommentsVerticalView>
@@ -88,6 +116,8 @@ class CommentClass extends Component {
 const Comment = (props) => {
     const {colors, colorsIndexNum} = useTheme();
     const navigation = useNavigation();
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {_id} = storedCredentials;
 
     const commentProps = {
         comment: props.comment,
@@ -95,7 +125,10 @@ const Comment = (props) => {
         postFormat: props.postFormat,
         colors,
         colorsIndexNum,
-        navigation
+        navigation,
+        index: props.index,
+        onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback : () => {},
+        userId: _id
     }
 
     return <CommentClass {...commentProps}/>

@@ -216,7 +216,7 @@ export default function Comments({postId, postFormat}) {
                 <FlatList
                     data={reducer.comments}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item }) => <Comment comment={item.value} postId={postId} postFormat={postFormat} failed={item.status !== 'fulfilled'}/>}
+                    renderItem={({ item, index }) => <Comment comment={item.value} index={index} postId={postId} postFormat={postFormat} failed={item.status !== 'fulfilled'}/>}
                     ListFooterComponent={ListFooter}
                 />
             </ViewScreenPollPostCommentsFrame>
