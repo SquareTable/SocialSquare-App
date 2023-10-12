@@ -142,9 +142,10 @@ class Poll extends Component {
         const pollIdIsSame = nextProps.post.pollId === this.props.post.pollId;
         const deletingIsSame = nextProps.post.deleting === this.props.post.deleting;
         const profilePictureIsSame = nextProps.post.pfpB64 === this.props.post.pfpB64;
+        const userIdIsSame = nextProps.userId === this.props.userId;
 
 
-        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame) return false;
+        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && userIdIsSame) return false;
 
         return true;
     }

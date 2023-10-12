@@ -38,9 +38,10 @@ class Thread extends Component {
         const threadIdIsSame = nextProps.post.threadId === this.props.post.threadId;
         const deletingIsSame = nextProps.post.deleting === this.props.post.deleting;
         const profilePictureIsSame = nextProps.post.creatorImageB64 === this.props.post.creatorImageB64;
+        const userIdIsSame = nextProps.userId === this.props.userId;
 
 
-        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && threadIdIsSame && deletingIsSame && profilePictureIsSame) return false;
+        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && threadIdIsSame && deletingIsSame && profilePictureIsSame && userIdIsSame) return false;
 
         return true;
     }
