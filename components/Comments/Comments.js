@@ -25,6 +25,7 @@ import { CredentialsContext } from "../CredentialsContext";
 import { ProfilePictureURIContext } from "../ProfilePictureURIContext";
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Comment from "./CommentItem";
+import ThreeDotMenuActionSheet from '../Posts/ThreeDotMenuActionSheet';
 
 export default function Comments({postId, postFormat}) {
     const {colors} = useTheme();
@@ -146,7 +147,8 @@ export default function Comments({postId, postFormat}) {
     }
 
     return (
-        <View>
+        <>
+            <ThreeDotMenuActionSheet dispatch={dispatch} threeDotsMenu={reducer.threeDotsMenu}/>
             <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
                 <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                 <CommentsHorizontalView writeCommentArea={true}>
@@ -219,7 +221,7 @@ export default function Comments({postId, postFormat}) {
                 />
             </ViewScreenPollPostCommentsFrame>
             <Text style={{color: colors.tertiary, fontSize: 24}}>Temporary data display: postId is {postId} and postFormat is {postFormat}</Text>
-        </View>
+        </>
     )
 }
 
