@@ -272,7 +272,8 @@ const reducer = (state, action) => {
 
         state.posts[action.postIndex] = {
             ...state.posts[action.postIndex],
-            votedFor: action.optionSelected
+            votedFor: action.vote,
+            pollVoteChanging: false
         }
 
         return {...state}
@@ -284,7 +285,8 @@ const reducer = (state, action) => {
 
         state.posts[action.postIndex] = {
             ...state.posts[action.postIndex],
-            votedFor: 'None'
+            votedFor: 'None',
+            pollVoteChanging: false
         }
 
         return {...state}
