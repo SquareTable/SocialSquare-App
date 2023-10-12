@@ -339,7 +339,7 @@ export default function(props) {
         index: props.index,
         useRawImages: props.useRawImages,
         userId: storedCredentials?._id || 'SSGUEST',
-        onDeleteCallback: props.onDeleteCallback || function() {}
+        onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback :  function() {},
     }
 
     return <Poll {...postProps}/>
