@@ -27,9 +27,9 @@ class CommentClass extends Component {
         const commentIdIsSame = nextProps.comment.commentId === this.props.comment.commentId;
         const userIdIsSame = nextProps.userId === this.props.userId;
 
-        if (colorsAreSame && upvotesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame && userIdIsSame) return true;
+        if (colorsAreSame && upvotesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame && userIdIsSame) return false;
 
-        return false;
+        return true;
     }
 
     runIfAuthenticated = (func) => {
