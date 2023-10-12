@@ -117,9 +117,10 @@ class PollWithVotes extends PollClass {
         const changingPollVoteIsSame = nextProps.post.pollVoteChanging === this.props.post.pollVoteChanging;
         const votedForIsSame = nextProps.post.votedFor === this.props.post.votedFor;
         const openPollVoteMenuSame = nextProps.post.openPollVoteMenu === this.props.post.openPollVoteMenu;
+        const userIdIsSame = nextProps.userId === this.props.userId;
 
 
-        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && changingPollVoteIsSame && votedForIsSame && openPollVoteMenuSame) return false;
+        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && changingPollVoteIsSame && votedForIsSame && openPollVoteMenuSame && userIdIsSame) return false;
 
         return true;
     }
