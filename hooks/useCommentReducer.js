@@ -4,7 +4,7 @@ import { useReducer } from "react";
 //
 //
 //
-// THIS FILE'S CONTENTS HAS BEEN COPIED FROM USEPOSTREDUCER
+// THIS FILE'S CONTENTS HAS BEEN COPIED FROM usePostReducer
 // THE CONTENTS OF THIS FILE HAS MOSTLY BEEN UNCHANGED FROM THE ORIGINAL
 // THIS FILE WILL EVENTUALLY ONLY HAVE COMMENT-RELATED FUNCTIONALITY AND ALL POST FUNCTIONALITY WILL BE REMOVED
 //
@@ -30,7 +30,7 @@ const reducer = (state, action) => {
                 throw new Error(`Item at state.posts[${action.postIndex}] has a typeof ${typeof state.posts[action.postIndex]}. Expected object.`)
             }
         } else {
-            throw new Error('postIndex was not provided to upVote image in usePostReducer')
+            throw new Error('postIndex was not provided to upVote image in useCommentReducer')
         }
     }
 
@@ -52,7 +52,7 @@ const reducer = (state, action) => {
                 throw new Error(`Item at state.posts[${action.postIndex}] has a typeof ${typeof state.posts[action.postIndex]}. Expected object.`)
             }
         } else {
-            throw new Error('postIndex was not provided to downVote image in usePostReducer')
+            throw new Error('postIndex was not provided to downVote image in useCommentReducer')
         }
     }
 
@@ -72,7 +72,7 @@ const reducer = (state, action) => {
                 throw new Error(`Item at state.posts[${action.postIndex}] has a typeof ${typeof state.posts[action.postIndex]}. Expected object.`)
             }
         } else {
-            throw new Error('postIndex was not provided to neutralVote image in usePostReducer')
+            throw new Error('postIndex was not provided to neutralVote image in useCommentReducer')
         }
     }
 
@@ -87,7 +87,7 @@ const reducer = (state, action) => {
             return {...state};
         }
 
-        throw new Error('Post index provided to startChangingVote in usePostReducer is not a number')
+        throw new Error('Post index provided to startChangingVote in useCommentReducer is not a number')
     }
 
     if (action.type === 'stopChangingVote') {
@@ -101,7 +101,7 @@ const reducer = (state, action) => {
             return {...state}
         }
 
-        throw new Error('Post index provided to stopChangingVote in usePostReducer is not a number')
+        throw new Error('Post index provided to stopChangingVote in useCommentReducer is not a number')
     }
 
 
@@ -213,10 +213,10 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'showMenu') {
-        if (action.postId == undefined) throw new Error('PostId was not provided to usePostReducer')
-        if (action.isOwner == undefined && action.menuToShow == undefined) throw new Error('Neither isOwner nor menuToShow was provided to usePostReducer')
-        if (action.postIndex == undefined) throw new Error('Post index was not provided to usePostReducer')
-        if (action.postFormat == undefined) throw new Error('postFormat was not provided to usePostReducer')
+        if (action.postId == undefined) throw new Error('PostId was not provided to useCommentReducer')
+        if (action.isOwner == undefined && action.menuToShow == undefined) throw new Error('Neither isOwner nor menuToShow was provided to useCommentReducer')
+        if (action.postIndex == undefined) throw new Error('Post index was not provided to useCommentReducer')
+        if (action.postFormat == undefined) throw new Error('postFormat was not provided to useCommentReducer')
 
         return {
             ...state,
@@ -231,7 +231,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'startDeletePost') {
-        if (action.postIndex == undefined) throw new Error('PostIndex was not provided to usePostReducer')
+        if (action.postIndex == undefined) throw new Error('PostIndex was not provided to useCommentReducer')
 
         state.posts[action.postIndex] = {
             ...state.posts[action.postIndex],
@@ -245,7 +245,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'stopDeletePost') {
-        if (action.postIndex == undefined) throw new Error('PostIndex was not provided to usePostReducer')
+        if (action.postIndex == undefined) throw new Error('PostIndex was not provided to useCommentReducer')
 
         state.posts[action.postIndex] = {
             ...state.posts[action.postIndex],
@@ -256,7 +256,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'deletePost') {
-        if (action.postIndex == undefined) throw new Error('PostIndex was not provided to usePostReducer')
+        if (action.postIndex == undefined) throw new Error('PostIndex was not provided to useCommentReducer')
 
         const tempPosts = [...state.posts]
         tempPosts.splice(action.postIndex, 1)
@@ -268,7 +268,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'error') {
-        if (action.error == undefined) throw new Error('error was dispatched to usePostReducer but no error was provided.')
+        if (action.error == undefined) throw new Error('error was dispatched to useCommentReducer but no error was provided.')
 
         return {
             ...state,
@@ -279,7 +279,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'startPollVoteChange') {
-        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to startPollVoteChange action of usePostReducer')
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to startPollVoteChange action of useCommentReducer')
 
         if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
 
@@ -292,7 +292,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'stopPollVoteChange') {
-        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to stopPollVoteChange action of usePostReducer')
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to stopPollVoteChange action of useCommentReducer')
 
         if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
 
@@ -305,7 +305,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'voteOnPoll') {
-        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to voteOnPoll action of usePostReducer')
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to voteOnPoll action of useCommentReducer')
         if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
 
         state.posts[action.postIndex] = {
@@ -317,7 +317,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'removeVoteOnPoll') {
-        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to removeVoteOnPoll action of usePostReducer')
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to removeVoteOnPoll action of useCommentReducer')
         if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
 
         state.posts[action.postIndex] = {
@@ -329,7 +329,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'openPollVoteMenu') {
-        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to openPollVoteMenu action of usePostReducer')
+        if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to openPollVoteMenu action of useCommentReducer')
         if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
 
         state.posts[action.postIndex] = {
@@ -340,7 +340,7 @@ const reducer = (state, action) => {
         return {...state}
     }
 
-    throw new Error(`Wrong action type was passed to usePostReducer: ${action.type}`)
+    throw new Error(`Wrong action type was passed to useCommentReducer: ${action.type}`)
 }
 
 const initialState = {

@@ -74,7 +74,8 @@ export default function Comments({postId, postFormat}) {
                             commentUpVotes: item.commentUpVotes,
                             commentReplies: item.commentReplies,
                             datePosted: item.datePosted,
-                            commenterImageB64: pfpB64
+                            commenterImageB64: pfpB64,
+                            isOwner: item.isOwner
                         })
                     })
                 })
@@ -216,7 +217,7 @@ export default function Comments({postId, postFormat}) {
                 <FlatList
                     data={reducer.comments}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item, index }) => <Comment comment={item.value} index={index} postId={postId} postFormat={postFormat} failed={item.status !== 'fulfilled'}/>}
+                    renderItem={({ item, index }) => <Comment comment={item.value} index={index} postId={postId} postFormat={postFormat} failed={item.status !== 'fulfilled'} dispatch={dispatch}/>}
                     ListFooterComponent={ListFooter}
                 />
             </ViewScreenPollPostCommentsFrame>
