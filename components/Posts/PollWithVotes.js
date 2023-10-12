@@ -454,7 +454,8 @@ export default function(props) {
         serverUrl,
         index: props.index,
         //No useRawImages support yet - Might want to add that in the future
-        storedCredentials
+        storedCredentials,
+        onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback :  function() {},
     }
 
     return <PollWithVotes {...postProps}/>

@@ -286,7 +286,7 @@ export default function(props) {
         serverUrl,
         useRawImages: props.useRawImages,
         userId: storedCredentials?._id || 'SSGUEST',
-        onDeleteCallback: props.onDeleteCallback || function() {}
+        onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback :  function() {},
     }
 
     return <Thread {...postProps}/>

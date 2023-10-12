@@ -245,7 +245,7 @@ export default function(props) {
         index: props.index,
         serverUrl,
         userId: storedCredentials?._id || 'SSGUEST',
-        onDeleteCallback: props.onDeleteCallback || function() {},
+        onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback :  function() {},
         useRawImages: props.useRawImages
     }
 
