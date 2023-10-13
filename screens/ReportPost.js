@@ -31,6 +31,7 @@ const ReportPost = ({navigation, route}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [reportSent, setReportSent] = useState(false)
     const [previousReason, setPreviousReason] = useState(null)
+    const [otherReasonShowing, setOtherReasonShowing] = useState(false);
 
     const keyboardVisible = useIsKeyboardVisible();
 
@@ -83,8 +84,6 @@ const ReportPost = ({navigation, route}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Report Post</TestText>
             </ChatScreen_Title>
-            {/* <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>postId: {postId}</Text>
-            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>postFormat: {postFormat}</Text> */}
 
             {reportSent ?
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -108,18 +107,22 @@ const ReportPost = ({navigation, route}) => {
                         }}
                     >
                         {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-                            <StyledFormArea style={keyboardVisible ? {alignSelf: 'center'} : {position: 'absolute', top: 3000, zIndex: -3}}>
+                            <StyledFormArea style={otherReasonShowing ? {alignSelf: 'center'} : {position: 'absolute', top: 3000, zIndex: -3}}>
                                 <UserTextInput
                                     icon="comment-discussion"
                                     placeholder="Reason for report goes here"
                                     placeholderTextColor={colors.tertiary}
                                     onChangeText={handleChange('reason')}
-                                    onBlur={handleBlur('reason')}
+                                    onBlur={(props) => {
+                                        handleBlur('reason')(props);
+                                        setOtherReasonShowing(false)
+                                    }}
                                     value={values.reason}
                                     style={{backgroundColor: colors.primary, color: colors.tertiary, height: 100}}
                                     multiline
                                     ref={otherReasonRef}
                                     colors={colors}
+                                    onFocus={() => setOtherReasonShowing(true)}
                                 />
 
                                 <StyledButton onPress={handleSubmit}>
@@ -149,7 +152,7 @@ const ReportPost = ({navigation, route}) => {
                             <ActivityIndicator color={colors.brand} size="large"/>
                         </>
                     :
-                        !keyboardVisible ?
+                        !otherReasonShowing ?
                             <>
                                 <ReportButton>Scam or fraud</ReportButton>
                                 <ReportButton>Hate speech or symbols</ReportButton>
