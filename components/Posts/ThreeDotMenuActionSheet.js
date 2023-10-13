@@ -58,7 +58,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert('An error occurred while deleting image post:', ParseErrorMessage(error))
+            alert('An error occurred while deleting image post:' + ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }
@@ -76,10 +76,11 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
                 dispatch({type: 'stopDeletePost', postIndex})
             } else {
                 dispatch({type: 'deletePost', postIndex})
+                onDeleteCallback()
             }
         }).catch(error => {
             console.error(error)
-            alert('An error occurred while deleting poll post:', ParseErrorMessage(error))
+            alert('An error occurred while deleting poll post: ' + ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }
@@ -97,10 +98,11 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
                 dispatch({type: 'stopDeletePost', postIndex})
             } else {
                 dispatch({type: 'deletePost', postIndex})
+                onDeleteCallback()
             }
         }).catch(error => {
             console.error(error)
-            alert('An error occurred while deleting thread post:', ParseErrorMessage(error))
+            alert('An error occurred while deleting thread post: ' + ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }
