@@ -1,5 +1,7 @@
 import { useReducer } from "react";
 
+const allowedVoteOnPollVoteValues = ['One', 'Two', 'Three', 'Four', 'Five', 'Six']
+
 const reducer = (state, action) => {
     console.log('Action Type:', action.type, ' | Post Index:', action.postIndex)
     if (action.type === 'upVote') {
@@ -269,11 +271,19 @@ const reducer = (state, action) => {
     if (action.type === 'voteOnPoll') {
         if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to voteOnPoll action of usePostReducer')
         if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
+        if (!allowedVoteOnPollVoteValues.includes(action.vote)) throw new Error(`vote must be one of these values: ${allowedVoteOnPollVoteValues.join(', ')}. Value provided: ${action.vote}`)
+
+        const post = state.posts[action.postIndex];
+        const vote = post.votedFor;
+        const removeVoteArrayName = `option${vote}${vote === 'Six' ? 'es' : 's'}Votes`;
+        const votesArrayName = `option${action.vote}${action.vote === 'Six' ? 'es' : 's'}Votes`
 
         state.posts[action.postIndex] = {
-            ...state.posts[action.postIndex],
+            ...post,
             votedFor: action.vote,
-            pollVoteChanging: false
+            pollVoteChanging: false,
+            [removeVoteArrayName]: --post[removeVoteArrayName],
+            [votesArrayName]: ++post[votesArrayName]
         }
 
         return {...state}
@@ -283,10 +293,15 @@ const reducer = (state, action) => {
         if (typeof action.postIndex !== 'number') throw new Error('postIndex was not provided to removeVoteOnPoll action of usePostReducer')
         if (typeof state.posts[action.postIndex] !== 'object' || Array.isArray(state.posts[action.postIndex]) || state.posts[action.postIndex] === null) throw new Error(`Post at index ${action.postIndex} is not an object`)
 
+        const post = state.posts[action.postIndex];
+        const vote = post.votedFor;
+        const votesArrayName = `option${vote}${vote === 'Six' ? 'es' : 's'}Votes`
+
         state.posts[action.postIndex] = {
-            ...state.posts[action.postIndex],
+            ...post,
             votedFor: 'None',
-            pollVoteChanging: false
+            pollVoteChanging: false,
+            [votesArrayName]: --post[votesArrayName]
         }
 
         return {...state}
