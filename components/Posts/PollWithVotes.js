@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { PollClass } from './PollPost';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Text } from 'react-native';
 import { 
     PostsIconFrame,
     ViewScreenPollPostFrame,
@@ -64,46 +64,64 @@ class PollWithVotes extends PollClass {
         this.props.dispatch({type: 'openPollVoteMenu', openPollVoteMenu: "Six", postIndex: this.props.index})
     }
 
-    handleVoteOnPoll = (voteNumber) => {
-        if (this.props.storedCredentials) {
-            this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
-            const url = this.props.serverUrl + "/tempRoute/voteonpoll";
-
-            const toSend = {optionSelected: voteNumber, pollId: this.props.post._id}
-
-            console.log(toSend)
-
-            axios.post(url, toSend).then(() => {
-                this.props.dispatch({type: 'voteOnPoll', vote: voteNumber, postIndex: this.props.index})
-            }).catch(error => {
-                this.props.dispatch({type: 'stopPollVoteChange', postIndex: this.props.index})
-                console.error(error);
-                alert(ParseErrorMessage(error));
-            })
-        } else {
-            this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+    runIfAuthenticated = (func) => {
+        return () => {
+            if (this.props.userId === 'SSGUEST' || !this.props.userId) {
+                this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+            } else {
+                func()
+            }
         }
     }
 
-    handleRemoveVoteOnPoll = () => {
-        if (this.props.storedCredentials) {
-            this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
-            const url = this.props.serverUrl + "/tempRoute/removevoteonpoll"
-            const toSend = {pollId: this.props.post._id}
+    handleVoteOnPoll = this.runIfAuthenticated((voteNumber) => {
+        this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
+        const url = this.props.serverUrl + "/tempRoute/voteonpoll";
 
-            console.log(toSend)
+        const toSend = {optionSelected: voteNumber, pollId: this.props.post._id}
 
-            axios.post(url, toSend).then(() => {
-                this.props.dispatch({type: 'removeVoteOnPoll', postIndex: this.props.index})
-            }).catch(error => {
-                this.props.dispatch({type: 'stopPollVoteChange', postIndex: this.props.index})
-                console.error(error)
-                alert(ParseErrorMessage(error))
-            })
-        } else {
-            this.props.navigation.navigate('ModalLoginScreen', {modal: true})
+        console.log(toSend)
+
+        axios.post(url, toSend).then(() => {
+            this.props.dispatch({type: 'voteOnPoll', vote: voteNumber, postIndex: this.props.index})
+        }).catch(error => {
+            this.props.dispatch({type: 'stopPollVoteChange', postIndex: this.props.index})
+            console.error(error);
+            alert(ParseErrorMessage(error));
+        })
+    })
+
+    handleRemoveVoteOnPoll = this.runIfAuthenticated(() => {
+        this.props.dispatch({type: 'startPollVoteChange', postIndex: this.props.index})
+        const url = this.props.serverUrl + "/tempRoute/removevoteonpoll"
+        const toSend = {pollId: this.props.post._id}
+
+        console.log(toSend)
+
+        axios.post(url, toSend).then(() => {
+            this.props.dispatch({type: 'removeVoteOnPoll', postIndex: this.props.index})
+        }).catch(error => {
+            this.props.dispatch({type: 'stopPollVoteChange', postIndex: this.props.index})
+            console.error(error)
+            alert(ParseErrorMessage(error))
+        })
+    })
+
+    openThreeDotsMenu = this.runIfAuthenticated(() => {
+        if (this.props.post.isOwner !== true && this.props.post.isOwner !== false) {
+            alert("isOwner is not true or false. An error has occured.")
+            return
         }
-    }
+
+        this.props.dispatch({
+            type: 'showMenu',
+            postId: this.props.post._id,
+            postFormat: 'Poll',
+            isOwner: this.props.post.isOwner,
+            postIndex: this.props.index,
+            onDeleteCallback: this.props.onDeleteCallback
+        })
+    })
 
     shouldComponentUpdate(nextProps, nextState) {
         const upvoteIsSame = nextProps.post.upvoted === this.props.post.upvoted;
@@ -460,6 +478,7 @@ export default function(props) {
     const navigation = useNavigation();
     const {serverUrl} = useContext(ServerUrlContext)
     const {storedCredentials} = useContext(CredentialsContext)
+    const {_id} = storedCredentials
 
     const postProps = {
         navigation,
@@ -470,7 +489,7 @@ export default function(props) {
         serverUrl,
         index: props.index,
         //No useRawImages support yet - Might want to add that in the future
-        storedCredentials,
+        userId: _id,
         onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback :  function() {},
     }
 
