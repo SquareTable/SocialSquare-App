@@ -47,7 +47,7 @@ export default function Comments({postId, postFormat}) {
             const {data} = result;
             
 
-            Promise.allSettled(
+            Promise.all(
                 data.map(item => {
                     return new Promise(async (resolve, reject) => {
                         let pfpB64 = null;
@@ -56,7 +56,7 @@ export default function Comments({postId, postFormat}) {
                                 pfpB64 = 'data:image/jpeg;base64,' + (await axios.get(`${serverUrl}/getImageOnServer/${item.profileImageKey}`)).data
                             }
                         } catch (error) {
-                            reject(error)
+                            pfpB64 = null;
                         }
 
                         resolve({...item, commenterImageB64: pfpB64})
@@ -96,30 +96,16 @@ export default function Comments({postId, postFormat}) {
     }
 
     const handleCommentPost = (commentProperties, setSubmitting) => {
-        const urls = {
-            'Image': 'imagepostcomment',
-            'Poll': 'pollpostcomment',
-            'Thread': 'threadpostcomment'
-        }
-
-        if (!Object.keys(urls).includes(postFormat)) throw new Error('Comments component received invalid postFormat: ' + postFormat)
-
         setCommentPostError(null);
-        const url = serverUrl + "/tempRoute/" + urls[postFormat];
+        const url = serverUrl + "/tempRoute/postcomment";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
             const {data} = result;
 
-            data.commentUpVotes = 0;
-            data.commentUpVoted = false;
-            data.commentDownVoted = false;
             data.commenterImageB64 = profilePictureUri;
-            data.commenterName = name;
-            data.commenterDisplayName = displayName;
-            data.commentReplies = 0;
 
-            dispatch({type: 'addCommentsToStart', comments: [{status: "fulfilled", value: data}]})
+            dispatch({type: 'addCommentsToStart', comments: [data]})
             commentProperties.comment = ""
             setSubmitting(false);
 
@@ -137,7 +123,7 @@ export default function Comments({postId, postFormat}) {
                 <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                 <CommentsHorizontalView writeCommentArea={true}>
                     <Formik
-                        initialValues={{comment: '', userName: name, postId}}
+                        initialValues={{comment: '', userName: name, postId, postFormat}}
                         onSubmit={(values, {setSubmitting}) => {
                             if (values.comment == "") {
                                 setCommentPostError("You can't post an empty comment.");
@@ -200,7 +186,7 @@ export default function Comments({postId, postFormat}) {
                 <FlatList
                     data={reducer.comments}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item, index }) => <Comment comment={item.value} index={index} postId={postId} postFormat={postFormat} failed={item.status !== 'fulfilled'} dispatch={dispatch}/>}
+                    renderItem={({ item, index }) => <Comment comment={item} index={index} postId={postId} postFormat={postFormat} dispatch={dispatch}/>}
                     ListFooterComponent={ListFooter}
                 />
             </ViewScreenPollPostCommentsFrame>

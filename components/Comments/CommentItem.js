@@ -21,13 +21,13 @@ class CommentClass extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const colorsAreSame = nextProps.colorsIndexNum === this.props.colorsIndexNum;
-        const upvotesAreSame = nextProps.comment.commentUpVotes === this.props.comment.commentUpVotes;
+        const votesAreSame = nextProps.comment.votes === this.props.comment.votes;
         const changingVoteIsSame = nextProps.comment.changingVote === this.props.comment.changingVote;
         const deletingIsSame = nextProps.comment.deleting === this.props.comment.deleting;
-        const commentIdIsSame = nextProps.comment.commentId === this.props.comment.commentId;
+        const commentIdIsSame = nextProps.comment._id === this.props.comment._id;
         const userIdIsSame = nextProps.userId === this.props.userId;
 
-        if (colorsAreSame && upvotesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame && userIdIsSame) return false;
+        if (colorsAreSame && votesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame && userIdIsSame) return false;
 
         return true;
     }
@@ -50,7 +50,7 @@ class CommentClass extends Component {
 
         this.props.dispatch({
             type: 'showMenu',
-            postId: this.props.comment.commentId,
+            postId: this.props.comment._id,
             postFormat: 'Comment',
             isOwner: this.props.comment.isOwner,
             postIndex: this.props.index,
@@ -103,7 +103,7 @@ class CommentClass extends Component {
                             <VoteText style={{color: this.props.colors.tertiary}}>
                                 {getTimeFromUTCMS(this.props.comment.datePosted)}
                             </VoteText>
-                            <TouchableOpacity onPress={() => {this.props.navigation.navigate("CommentViewPage", {commentId: this.props.comment.commentId, postId: this.props.postId, postFormat: this.props.postFormat})}}>
+                            <TouchableOpacity onPress={() => {this.props.navigation.navigate("CommentViewPage", {commentId: this.props.comment._id, postId: this.props.postId, postFormat: this.props.postFormat})}}>
                                 <VoteText style={{color: this.props.colors.brand}}>
                                     {this.props.comment.replies} replies
                                 </VoteText>

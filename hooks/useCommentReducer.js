@@ -110,11 +110,12 @@ const reducer = (state, action) => {
         if (action.comments) {
             console.log('HELLO')
             const newComments = action.comments.map(comment => {
-                comment.initialVotes = comment.commentUpVoted ? comment.commentUpVotes - 1 : comment.commentDownVoted ? comment.commentUpVotes + 1 : comment.commentUpVotes;
+                comment.initialVotes = comment.upvoted ? comment.votes - 1 : comment.downvoted ? comment.votes + 1 : comment.votes;
                 comment.changingVote = false;
                 comment.deleting = false;
                 return comment;
             })
+            
             return {
                 ...state,
                 comments: state.comments.concat(newComments),
@@ -136,11 +137,12 @@ const reducer = (state, action) => {
     if (action.type === 'addCommentsToStart') {
         if (action.comments) {
             const newComments = action.comments.map(comment => {
-                comment.initialVotes = comment.commentUpVoted ? comment.commentUpVotes - 1 : comment.commentDownVoted ? comment.commentUpVotes + 1 : comment.commentUpVotes;
+                comment.initialVotes = comment.upvoted ? comment.votes - 1 : comment.downvoted ? comment.votes + 1 : comment.votes;
                 comment.changingVote = false;
                 comment.deleting = false;
                 return comment;
             })
+
             return {
                 ...state,
                 comments: newComments.concat(state.comments),
