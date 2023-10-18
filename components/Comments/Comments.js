@@ -38,16 +38,9 @@ export default function Comments({postId, postFormat}) {
 
     const loadComments = () => {
         dispatch({type: 'startLoad'})
-        const urls = {
-            'Image': 'getimagepostcomments',
-            'Poll': 'searchforpollcomments',
-            'Thread': 'searchforthreadcomments'
-        }
 
-        if (!Object.keys(urls).includes(postFormat)) throw new Error('Comments component received invalid postFormat: ' + postFormat)
-
-        const url = serverUrl + '/tempRoute/' + urls[postFormat]
-        const toSend = {postId}
+        const url = serverUrl + '/tempRoute/searchforpostcomments'
+        const toSend = {postId, postFormat}
 
         axios.post(url, toSend).then(response => {
             const result = response.data;
@@ -221,7 +214,6 @@ export default function Comments({postId, postFormat}) {
                     ListFooterComponent={ListFooter}
                 />
             </ViewScreenPollPostCommentsFrame>
-            <Text style={{color: colors.tertiary, fontSize: 24}}>Temporary data display: postId is {postId} and postFormat is {postFormat}</Text>
         </>
     )
 }
