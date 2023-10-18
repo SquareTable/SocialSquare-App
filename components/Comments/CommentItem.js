@@ -78,7 +78,7 @@ class CommentClass extends Component {
                             </TouchableOpacity>
                             <TouchableOpacity>
                                 <VoteText style={{color: this.props.colors.tertiary}}>
-                                    {this.props.comment.commentUpVotes}
+                                    {this.props.comment.votes}
                                 </VoteText>
                             </TouchableOpacity>
                             <TouchableOpacity>
@@ -90,7 +90,7 @@ class CommentClass extends Component {
                                 <CommenterName style={{color: this.props.colors.tertiary}} displayName={true}>{this.props.comment.commenterDisplayName}</CommenterName>
                                 <CommenterName>@{this.props.comment.commenterName}</CommenterName>
                             </TouchableOpacity>
-                            <CommentText style={{color: this.props.colors.tertiary}}>{this.props.comment.commentsText}</CommentText>
+                            <CommentText style={{color: this.props.colors.tertiary}}>{this.props.comment.text}</CommentText>
                         </CommentsVerticalView>
                     </CommentsHorizontalView>
                     <CommentsHorizontalView bottomIcons={true}>
@@ -105,7 +105,7 @@ class CommentClass extends Component {
                             </VoteText>
                             <TouchableOpacity onPress={() => {this.props.navigation.navigate("CommentViewPage", {commentId: this.props.comment.commentId, postId: this.props.postId, postFormat: this.props.postFormat})}}>
                                 <VoteText style={{color: this.props.colors.brand}}>
-                                    {this.props.comment.commentReplies} replies
+                                    {this.props.comment.replies} replies
                                 </VoteText>
                             </TouchableOpacity>
                         </CommentsVerticalView>

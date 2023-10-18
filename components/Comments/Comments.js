@@ -59,17 +59,7 @@ export default function Comments({postId, postFormat}) {
                             reject(error)
                         }
 
-                        resolve({
-                            commentId: item.commentId,
-                            commenterName: item.commenterName,
-                            commenterDisplayName: item.commenterDisplayName || item.commenterName,
-                            commentsText: item.commentText,
-                            commentUpVotes: item.commentUpVotes,
-                            commentReplies: item.commentReplies,
-                            datePosted: item.datePosted,
-                            commenterImageB64: pfpB64,
-                            isOwner: item.isOwner
-                        })
+                        resolve({...item, commenterImageB64: pfpB64})
                     })
                 })
             ).then(items => {
