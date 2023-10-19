@@ -53,7 +53,7 @@ class CommentClass extends Component {
             postId: this.props.comment._id,
             postFormat: 'Comment',
             isOwner: this.props.comment.isOwner,
-            postIndex: this.props.index,
+            commentIndex: this.props.index,
             onDeleteCallback: this.props.onDeleteCallback
         })
     })

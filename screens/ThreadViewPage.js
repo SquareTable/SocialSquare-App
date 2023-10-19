@@ -26,6 +26,7 @@ import ParseErrorMessage from '../components/ParseErrorMessage';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreadPost from '../components/Posts/ThreadPost';
 import Comments from '../components/Comments/Comments';
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
 
 const ThreadViewPage = ({navigation, route}) => {
     const [postReducer, dispatch] = usePostReducer();
@@ -145,10 +146,10 @@ const ThreadViewPage = ({navigation, route}) => {
                 <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
             </View>
             {postReducer.posts.length > 0 ?
-                <ScrollView>
+                <KeyboardAvoidingScrollView>
                     <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0} onDeleteCallback={onDeleteCallback}/>
                     <Comments postId={postReducer.posts[0]._id} postFormat="Thread"/>
-                </ScrollView>
+                </KeyboardAvoidingScrollView>
             :
                 <ScrollView>
                     <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Loading thread... (At some point we should put a loading animation here)</Text>

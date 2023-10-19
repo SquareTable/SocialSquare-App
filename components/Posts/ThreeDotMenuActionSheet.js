@@ -58,7 +58,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert('An error occurred while deleting image post:', ParseErrorMessage(error))
+            alert('An error occurred while deleting image post: ' + ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }
@@ -79,7 +79,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert('An error occurred while deleting poll post:', ParseErrorMessage(error))
+            alert('An error occurred while deleting poll post: ' + ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
         })
     }
@@ -100,8 +100,22 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             }
         }).catch(error => {
             console.error(error)
-            alert('An error occurred while deleting thread post:', ParseErrorMessage(error))
+            alert('An error occurred while deleting thread post: ' + ParseErrorMessage(error))
             dispatch({type: 'stopDeletePost', postIndex})
+        })
+    }
+
+    const deleteComment = () => {
+        dispatch({type: 'startDeleteComment', commentIndex: postIndex})
+        const url = serverUrl + '/tempRoute/deletecomment';
+        const toSend = {commentId: postId}
+        console.log(toSend)
+        axios.post(url, toSend).then(() => { 
+            dispatch({type: 'deleteComment', commentIndex: postIndex})
+        }).catch(error => {
+            console.error(error)
+            alert('An error occurred while deleting comment: ' + ParseErrorMessage(error))
+            dispatch({type: 'stopDeleteComment', commentIndex: postIndex})
         })
     }
 
@@ -112,6 +126,8 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
             deletePoll()
         } else if (postFormat == 'Thread') {
             deleteThread()
+        } else if (postFormat === "Comment") {
+            deleteComment()
         } else {
             throw new Error(`${postFormat} is not a supported post format to delete for ThreeDotMenuActionSheet`)
         }

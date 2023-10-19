@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, ActivityIndicator, FlatList, TouchableOpacity, Keyboard } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import useCommentReducer from "../../hooks/useCommentReducer";
@@ -98,6 +98,7 @@ export default function Comments({postId, postFormat}) {
     const handleCommentPost = (commentProperties, setSubmitting) => {
         setCommentPostError(null);
         const url = serverUrl + "/tempRoute/postcomment";
+        Keyboard.dismiss();
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;

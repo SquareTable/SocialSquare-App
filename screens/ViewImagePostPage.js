@@ -5,13 +5,14 @@ import {
     Navigator_BackButton,
     TestText
 } from './screenStylings/styling';
-import { Image, ScrollView } from 'react-native';
+import { Image } from 'react-native';
 import { useIsFocused, useTheme } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import usePostReducer from '../hooks/usePostReducer';
 import ImagePost from '../components/Posts/ImagePost';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import Comments from '../components/Comments/Comments';
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
 
 
 const ViewImagePostPage = ({route, navigation}) => {
@@ -56,10 +57,10 @@ const ViewImagePostPage = ({route, navigation}) => {
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{post.creatorDisplayName ? post.creatorDisplayName : post.creatorName}'s post</TestText>
             </ChatScreen_Title>
             {postState.posts.length > 0 ? 
-                <ScrollView>
+                <KeyboardAvoidingScrollView>
                     <ImagePost post={postState.posts[0]} index={0} isOwner={isOwner} colors={colors} dispatch={dispatchPost} colorsIndexNum={indexNum} onDeleteCallback={onDeleteCallback}/>
                     <Comments postFormat="Image" postId={postState.posts[0]._id}/>
-                </ScrollView>
+                </KeyboardAvoidingScrollView>
             : null}
         </>
     );

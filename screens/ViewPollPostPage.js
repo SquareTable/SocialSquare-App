@@ -5,13 +5,14 @@ import {
     Navigator_BackButton,
     TestText
 } from './screenStylings/styling';
-import { Image, ScrollView } from 'react-native';
+import { Image } from 'react-native';
 import { useIsFocused, useTheme } from '@react-navigation/native';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import PollWithVotes from '../components/Posts/PollWithVotes';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import Comments from '../components/Comments/Comments';
+import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -55,10 +56,10 @@ const ViewPollPostPage = ({route, navigation}) => {
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{(post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) || 'ERROR'}'s poll</TestText>
             </ChatScreen_Title>
             {postReducer.posts.length > 0 ? 
-                <ScrollView>
+                <KeyboardAvoidingScrollView>
                     <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/>
                     <Comments postId={postReducer.posts[0]._id} postFormat="Poll"/>
-                </ScrollView>
+                </KeyboardAvoidingScrollView>
             : null}
         </>
     );
