@@ -13,6 +13,9 @@ import {
 import { getTimeFromUTCMS } from '../../libraries/Time.js'
 import { useNavigation, useTheme } from '@react-navigation/native'
 import { CredentialsContext } from '../CredentialsContext.js'
+import { ServerUrlContext } from '../ServerUrlContext.js'
+import ParseErrorMessage from '../ParseErrorMessage.js'
+import axios from 'axios'
 
 class CommentClass extends Component {
     constructor(props) {
@@ -58,6 +61,68 @@ class CommentClass extends Component {
         })
     })
 
+    neutralVote = this.runIfAuthenticated(() => {
+        if (!this.props.comment.changingVote) {
+            this.props.dispatch({type: 'startChangingVote', commentIndex: this.props.index})
+
+            const voteToRemove = this.props.comment.upvoted ? 'Up' : 'Down';
+
+            const url = `${this.props.serverUrl}/tempRoute/removevoteoncomment`
+            const toSend = {
+                commentId: this.props.comment._id,
+                voteType: voteToRemove
+            }
+
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({type: 'neutralVote', commentIndex: this.props.index})
+            }).catch(error => {
+                console.error(error)
+                this.props.dispatch({type: 'stopChangingVote', commentIndex: this.props.index})
+                alert('An error occurred while removing vote: ' + ParseErrorMessage(error))
+            })
+        }
+    })
+
+    upvote = this.runIfAuthenticated(() => {
+        if (!this.props.comment.changingVote) {
+            this.props.dispatch({type: 'startChangingVote', commentIndex: this.props.index})
+
+            const url = `${this.props.serverUrl}/tempRoute/voteoncomment`
+            const toSend = {
+                commentId: this.props.comment._id,
+                voteType: "Up"
+            }
+
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({type: 'upVote', commentIndex: this.props.index})
+            }).catch(error => {
+                console.error(error)
+                this.props.dispatch({type: 'stopChangingVote', commentIndex: this.props.index})
+                alert('An error occurred while upvoting comment: ' + ParseErrorMessage(error))
+            })
+        }
+    })
+
+    downvote = this.runIfAuthenticated(() => {
+        if (!this.props.comment.changingVote) {
+            this.props.dispatch({type: 'startChangingVote', commentIndex: this.props.index})
+
+            const url = `${this.props.serverUrl}/tempRoute/voteoncomment`
+            const toSend = {
+                commentId: this.props.comment._id,
+                voteType: "Down"
+            }
+
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({type: 'downVote', commentIndex: this.props.index})
+            }).catch(error => {
+                console.error(error)
+                this.props.dispatch({type: 'stopChangingVote', commentIndex: this.props.index})
+                alert('An error occurred while downvoting comment: ' + ParseErrorMessage(error))
+            })
+        }
+    })
+
     render() {
         return (
             <>
@@ -73,16 +138,18 @@ class CommentClass extends Component {
                             <TouchableOpacity>
                                 <CommenterIcon source={{uri: this.props.comment.commenterImageB64}}/>
                             </TouchableOpacity>
-                            <TouchableOpacity>
-                                <CommentIcons style={{tintColor: this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                            <TouchableOpacity onPress={() => this.props.comment.upvoted ? this.neutralVote() : this.upvote()}>
+                                <CommentIcons style={{tintColor: this.props.comment.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            {this.props.comment.changingVote ?
+                                <ActivityIndicator color={this.props.colors.brand} size="small"/>
+                            :
                                 <VoteText style={{color: this.props.colors.tertiary}}>
                                     {this.props.comment.votes}
                                 </VoteText>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <CommentIcons style={{tintColor: this.props.colors.tertiary}} downVoteButton={true} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                            }
+                            <TouchableOpacity onPress={() => this.props.comment.downvoted ? this.neutralVote() : this.downvote()}>
+                                <CommentIcons style={{tintColor: this.props.comment.downvoted ? this.props.colors.brand : this.props.colors.tertiary}} downVoteButton={true} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                             </TouchableOpacity>
                         </CommentsVerticalView>
                         <CommentsVerticalView>
@@ -126,6 +193,7 @@ const Comment = (props) => {
     const navigation = useNavigation();
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id} = storedCredentials;
+    const {serverUrl} = useContext(ServerUrlContext);
 
     const commentProps = {
         comment: props.comment,
@@ -137,7 +205,8 @@ const Comment = (props) => {
         index: props.index,
         onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback : () => {},
         userId: _id,
-        dispatch: props.dispatch
+        dispatch: props.dispatch,
+        serverUrl
     }
 
     return <CommentClass {...commentProps}/>

@@ -5,7 +5,7 @@ const reducer = (state, action) => {
     if (action.type === 'upVote') {
         if (typeof action.commentIndex === 'number') {
             if (typeof state.comments[action.commentIndex] === 'object') {
-                state.posts[action.commentIndex] = {
+                state.comments[action.commentIndex] = {
                     ...state.comments[action.commentIndex],
                     changingVote: false,
                     upvoted: true,
@@ -15,7 +15,7 @@ const reducer = (state, action) => {
 
                 return {...state};
             } else {
-                throw new Error(`Item at state.comments[${action.commentIndex}] has a typeof ${typeof state.posts[action.commentIndex]}. Expected object.`)
+                throw new Error(`Item at state.comments[${action.commentIndex}] has a typeof ${typeof state.comments[action.commentIndex]}. Expected object.`)
             }
         } else {
             throw new Error('commentIndex was not provided to upVote image in useCommentReducer')
@@ -37,7 +37,7 @@ const reducer = (state, action) => {
 
                 return {...state};
             } else {
-                throw new Error(`Item at state.comments[${action.commentIndex}] has a typeof ${typeof state.posts[action.commentIndex]}. Expected object.`)
+                throw new Error(`Item at state.comments[${action.commentIndex}] has a typeof ${typeof state.comments[action.commentIndex]}. Expected object.`)
             }
         } else {
             throw new Error('commentIndex was not provided to downVote image in useCommentReducer')
@@ -57,7 +57,7 @@ const reducer = (state, action) => {
 
                 return {...state}
             } else {
-                throw new Error(`Item at state.comments[${action.commentIndex}] has a typeof ${typeof state.posts[action.commentIndex]}. Expected object.`)
+                throw new Error(`Item at state.comments[${action.commentIndex}] has a typeof ${typeof state.comments[action.commentIndex]}. Expected object.`)
             }
         } else {
             throw new Error('commentIndex was not provided to neutralVote image in useCommentReducer')
