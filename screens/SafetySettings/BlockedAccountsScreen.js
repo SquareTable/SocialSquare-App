@@ -158,7 +158,9 @@ const Item = ({item, index, dispatch, profilePictures}) => {
             <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey] || SocialSquareLogo_B64_png}} />
             <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
             {item.changingBlockedStatus ?
-                <ActivityIndicator color={colors.brand} size="large"/>
+                <View style={{position: 'absolute', right: 10, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator color={colors.brand} size="large"/>
+                </View>
             :
                 <TouchableOpacity onPress={() => {item.blocked == true ? unblockUser(item.pubId) : blockUser(item.pubId)}} style={{position: 'absolute', right: 10, justifyContent: 'center', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 10, borderColor: colors.borderColor, borderWidth: 3}}>
                     <Text style={{color: colors.tertiary, fontSize: 16, fontWeight: 'bold'}}>{item.blocked == true ? "Unblock" : "Block"}</Text>
