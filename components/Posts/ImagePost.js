@@ -39,9 +39,9 @@ class ImagePost extends Component {
         const imageKeyIsSame = nextProps.post.imageKey === this.props.post.imageKey;
         const deletingIsSame = nextProps.post.deleting === this.props.post.deleting;
         const profilePictureIsSame = nextProps.post.creatorPfpB64 === this.props.post.creatorPfpB64;
+        const userIdIsSame = nextProps.userId === this.props.userId;
 
-
-        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && imageKeyIsSame && deletingIsSame && profilePictureIsSame) return false;
+        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && imageKeyIsSame && deletingIsSame && profilePictureIsSame && userIdIsSame) return false;
 
         return true;
     }
@@ -245,7 +245,7 @@ export default function(props) {
         index: props.index,
         serverUrl,
         userId: storedCredentials?._id || 'SSGUEST',
-        onDeleteCallback: props.onDeleteCallback || function() {},
+        onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback :  function() {},
         useRawImages: props.useRawImages
     }
 

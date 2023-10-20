@@ -142,9 +142,10 @@ class Poll extends Component {
         const pollIdIsSame = nextProps.post.pollId === this.props.post.pollId;
         const deletingIsSame = nextProps.post.deleting === this.props.post.deleting;
         const profilePictureIsSame = nextProps.post.pfpB64 === this.props.post.pfpB64;
+        const userIdIsSame = nextProps.userId === this.props.userId;
 
 
-        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame) return false;
+        if (upvoteIsSame && downvoteIsSame && changingVoteIsSame && colorsAreSame && pollIdIsSame && deletingIsSame && profilePictureIsSame && userIdIsSame) return false;
 
         return true;
     }
@@ -223,12 +224,12 @@ class Poll extends Component {
                         </PollPostSubTitle>
                     </AboveBarPollPostHorizontalView>
                     <PollBarOutline>
-                        <PollBarItem borderChange={this.props.post.optionOnesBarLength} style={{ width: this.props.post.optionOnesBarLength + '%', backgroundColor: this.props.colors.brand }}></PollBarItem>
-                        <PollBarItem borderChange={this.props.post.optionTwosBarLength} style={{ width: this.props.post.optionTwosBarLength + '%', backgroundColor: this.props.colors.brand }}></PollBarItem>
-                        <PollBarItem borderChange={this.props.post.optionThreesBarLength} style={{ width: this.props.post.optionThreesBarLength + '%', backgroundColor: this.props.colors.brand }}></PollBarItem>
-                        <PollBarItem borderChange={this.props.post.optionFoursBarLength} style={{ width: this.props.post.optionFoursBarLength + '%', backgroundColor: this.props.colors.brand }}></PollBarItem>
-                        <PollBarItem borderChange={this.props.post.optionFivesBarLength} style={{ width: this.props.post.optionFivesBarLength + '%', backgroundColor: this.props.colors.brand }}></PollBarItem>
-                        <PollBarItem borderChange={this.props.post.optionSixesBarLength} style={{ width: this.props.post.optionSixesBarLength + '%', backgroundColor: this.props.colors.brand }}></PollBarItem>
+                        <PollBarItem borderChange={this.props.post.optionOnesBarLength} style={{ width: this.props.post.optionOnesBarLength + '%', backgroundColor: this.props.post.optionOnesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionOnesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                        <PollBarItem borderChange={this.props.post.optionTwosBarLength} style={{ width: this.props.post.optionTwosBarLength + '%', backgroundColor: this.props.post.optionTwosColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionTwosColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                        <PollBarItem borderChange={this.props.post.optionThreesBarLength} style={{ width: this.props.post.optionThreesBarLength + '%', backgroundColor: this.props.post.optionThreesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionThreesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                        <PollBarItem borderChange={this.props.post.optionFoursBarLength} style={{ width: this.props.post.optionFoursBarLength + '%', backgroundColor: this.props.post.optionFoursColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionFoursColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                        <PollBarItem borderChange={this.props.post.optionFivesBarLength} style={{ width: this.props.post.optionFivesBarLength + '%', backgroundColor: this.props.post.optionFivesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionFivesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
+                        <PollBarItem borderChange={this.props.post.optionSixesBarLength} style={{ width: this.props.post.optionSixesBarLength + '%', backgroundColor: this.props.post.optionSixesColor == 'Not Specified' ? this.props.colors.brand : this.props.colors[this.props.post.optionSixesColor.toLowerCase()] || this.props.colors.brand }}></PollBarItem>
                     </PollBarOutline>
                     <PollPostHorizontalView>
                         <PollKeyViewOne pollOptions={this.props.post.totalNumberOfOptions} onPress={this.navigateToFullScreen}>
@@ -339,7 +340,7 @@ export default function(props) {
         index: props.index,
         useRawImages: props.useRawImages,
         userId: storedCredentials?._id || 'SSGUEST',
-        onDeleteCallback: props.onDeleteCallback || function() {}
+        onDeleteCallback: typeof props.onDeleteCallback === 'function' ? props.onDeleteCallback :  function() {},
     }
 
     return <Poll {...postProps}/>

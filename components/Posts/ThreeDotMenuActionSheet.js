@@ -76,6 +76,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
                 dispatch({type: 'stopDeletePost', postIndex})
             } else {
                 dispatch({type: 'deletePost', postIndex})
+                onDeleteCallback()
             }
         }).catch(error => {
             console.error(error)
@@ -97,6 +98,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
                 dispatch({type: 'stopDeletePost', postIndex})
             } else {
                 dispatch({type: 'deletePost', postIndex})
+                onDeleteCallback()
             }
         }).catch(error => {
             console.error(error)
