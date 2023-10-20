@@ -1,136 +1,76 @@
-import React, {useContext, useState, useEffect, memo} from 'react';
+import React, {useContext, useEffect, memo} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {useTheme} from "@react-navigation/native";
 
 import {
-    WelcomeContainer,
-    Avatar,
-    SettingsPageItemTouchableOpacity,
-    SettingsItemImage,
-    SettingsItemText,
-    ConfirmLogoutView,
-    ConfirmLogoutText,
-    ConfirmLogoutButtons,
-    ConfirmLogoutButtonText,
-    TextLinkContent,
-    TextLink,
-    SettingsHorizontalView,
     ChatScreen_Title,
     Navigator_BackButton,
-    StyledButton,
-    ButtonText,
     TestText,
     SubTitle
 } from '../screenStylings/styling.js';
 
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 //credentials context
-import { ActivityIndicator, ImageBackground, ScrollView, Settings, FlatList } from 'react-native';
+import { ActivityIndicator, FlatList, Image, View, Text, TouchableOpacity } from 'react-native';
 import { ServerUrlContext } from '../../components/ServerUrlContext.js';
-
-import {Image, View, Text, TouchableOpacity} from 'react-native';
 
 import axios from 'axios';
 
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 import ParseErrorMessage from '../../components/ParseErrorMessage.js';
+
+import SocialSquareLogo_B64_png from '../../assets/SocialSquareLogo_Base64_png.js'
+import useUserReducer from '../../hooks/useUserReducer.js';
 
 
 const BlockedAccountsScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
-    const [blockedAccounts, setBlockedAccounts] = useState(null);
-    const [listItems, setListItems] = useState([])
-    const [errorOccurred, setErrorOccurred] = useState(null);
-    const [noMoreItems, setNoMoreItems] = useState(false);
-    const [loadedForTheFirstTime, setLoadedForTheFirstTime] = useState(false);
-    const userLoadMax = 10;
-    const [updateFlatList, setUpdateFlatList] = useState(false);
     const StatusBarHeight = useContext(StatusBarHeightContext);
+    const [reducer, dispatch] = useUserReducer()
 
     const fetchBlockedAccounts = () => {
-        setErrorOccurred(null)
-        const url = serverUrl + '/tempRoute/getuserblockedaccounts';
-        axios.get(url).then(response => {
-            const result = response.data;
-            const {data} = result;
+        if (!reducer.noMoreUsers) {
+            dispatch({type: 'startLoad'})
 
-            setBlockedAccounts(data);
-        }).catch(error => {
-            console.error(error);
-            setErrorOccurred(ParseErrorMessage(error))
-        })
-    }
+            const url = serverUrl + '/tempRoute/getuserblockedaccounts';
+            const toSend = {skip: reducer.users.length}
+            axios.post(url, toSend).then(response => {
+                const result = response.data;
+                const {data} = result;
 
-    useEffect(fetchBlockedAccounts, [])
+                const {blockedAccounts, noMoreItems} = data || {};
 
-    async function loadItems() {
-        if (noMoreItems == false) {
-            let toAddToList = [];
-            for (let i = 0; i < userLoadMax; i++) {
-                if ((listItems.length + i) < blockedAccounts.length) {
-                    let url = serverUrl + '/tempRoute/getuserbyid';
-                    try {
-                        const response = await axios.post(url, {pubId: blockedAccounts[(listItems.length + i)]});
-                        const result = response.data;
-                        const {message, status, data} = result;
+                const profileImageKeys = blockedAccounts.map(user => user.profileImageKey).filter(key => typeof key === 'string' && key.length > 1)
 
-                        if (status !== 'SUCCESS') {
-                            console.log(message);
-                            toAddToList.push({status: 'FAILED'});
+                const profileImageData = {};
+
+                Promise.allSettled(
+                    profileImageKeys.map(key => {
+                        const url = serverUrl + '/getImageOnServer/' + key
+                        return axios.get(url)
+                    })
+                ).then(results => {
+                    results.forEach((result, index) => {
+                        if (result.reason) {
+                            console.error('An error occurred while finding profile image with key:', profileImageKeys[index], '. The error was:', result.reason)
                         } else {
-                            let dataToUse = data;
-                            dataToUse.isBlocked = true;
-                            console.log(data)
-                            if (data.profileImageKey && data.profileImageKey !== '') {
-                                let getImageUrl = serverUrl + '/getImageOnServer/' + data.profileImageKey
-                                try {
-                                    const imageResponse = await axios.get(getImageUrl);
-
-                                    if (imageResponse.data) {
-                                        dataToUse.profileImageB64 = 'data:image/jpeg;base64,' + imageResponse.data;
-                                    } else {
-                                        console.log(imageMessage);
-                                        dataToUse.profileImageB64 = SocialSquareLogo_B64_png;
-                                    }
-                                } catch (e) {
-                                    console.log(e)
-                                    dataToUse.profileImageB64 = SocialSquareLogo_B64_png
-                                }
-                            } else {
-                                dataToUse.profileImageB64 = SocialSquareLogo_B64_png
-                            }
-                            dataToUse.status = 'SUCCESS';
-                            toAddToList.push(dataToUse);
+                            profileImageData[profileImageKeys[index]] = 'data:image/jpeg;base64,' + result.value.data
                         }
-                    } catch (e) {
-                        console.log(e)
-                        toAddToList.push({status: 'FAILED'});
-                    }
-                    console.log(toAddToList.length)
-                    console.log('Items loaded: ' + (listItems.length + i))
-                } else {
-                    setNoMoreItems(true);
-                    break;
-                }
-            }
-            console.log(toAddToList);
-            setListItems(listItems => [...listItems, ...toAddToList]);
+                    })
+
+                    dispatch({type: 'addUsers', users: blockedAccounts})
+                    dispatch({type: 'addProfilePictures', profilePictures: profileImageData})
+                    if (noMoreItems) dispatch({type: 'noMoreUsers'})
+                })
+            }).catch(error => {
+                console.error(error);
+                dispatch({type: 'error', error: ParseErrorMessage(error)})
+            })
         }
     }
 
-    useEffect(() => {
-        if (loadedForTheFirstTime == false && blockedAccounts != null) {
-            loadItems()
-            setLoadedForTheFirstTime(true);
-        }
-    }, [blockedAccounts])
-
-    const MemoizedItem = memo(Item);
+    useEffect(() => fetchBlockedAccounts(), [])
     
     return(
         <> 
@@ -146,134 +86,91 @@ const BlockedAccountsScreen = ({navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Blocked Accounts</TestText>
             </ChatScreen_Title>
-            {errorOccurred ?
+            {reducer.error ?
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{color: colors.tertiary, fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>An error occured.</Text>
-                    <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center'}}>{errorOccurred}</Text>
+                    <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center'}}>{reducer.error}</Text>
                     <TouchableOpacity onPress={fetchBlockedAccounts}>
                         <Ionicons name="reload" size={50} color={colors.errorColor} />
                     </TouchableOpacity>
                 </View>
-            : blockedAccounts == null ?
+            : reducer.loadingFeed === true ?
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <ActivityIndicator size="large" color={colors.brand} />
                 </View>
-            : blockedAccounts.length == 0 ?
+            : reducer.users.length == 0 ?
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold'}}>You have not blocked anyone.</Text>
                 </View>
             :
                 <FlatList
-                    data={listItems}
-                    keyExtractor={(item, index) => 'key'+index}
-                    renderItem={({ item, index }) => <MemoizedItem item={item} index={index} setUpdateFlatList={setUpdateFlatList} setListItems={setListItems}/>}
+                    data={reducer.users}
+                    keyExtractor={(item) => item.pubId}
+                    renderItem={({ item, index }) => <MemoizedItem item={item} index={index} dispatch={dispatch} profilePictures={reducer.profilePictures}/>}
                     getItemLayout={(data, index) => (
                         {length: 70, offset: 70 * index, index}
                     )}
-                    onEndReached={() => {noMoreItems == false ? loadItems() : null}}
+                    onEndReached={() => {reducer.noMoreUsers === false ? loadItems() : null}}
                     onEndReachedThreshold={0.2}
                     ListFooterComponent={
-                        noMoreItems == true ? <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 15, marginBottom: 30}}>No more users to show</Text> : <ActivityIndicator size="large" color={colors.brand} style={{marginTop: 10, marginBottom: 20}}/>
+                        reducer.noMoreUsers === true ? <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 15, marginBottom: 30}}>No more users to show</Text> : reducer.loadingFeed ? <ActivityIndicator size="large" color={colors.brand} style={{marginTop: 10, marginBottom: 20}}/> : null
                     }
-                    extraData={updateFlatList}
                 />
             }
         </>
     );
 }
 
-const Item = ({item, index, setUpdateFlatList, setListItems}) => {
-    const [changingUserIsBlocked, setChangingUserIsBlocked] = useState(false);
+const Item = ({item, index, dispatch, profilePictures}) => {
     const {colors, dark} = useTheme();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     const blockUser = async (userPubIdToBlock) => {
-        if (userPubIdToBlock == null) {
-            alert('An error occured.')
-            return
-        }
-        setChangingUserIsBlocked(true);
-        console.log('Blocking user: ' + userPubIdToBlock)
-
+        dispatch({type: 'startChangingBlockedStatus', userIndex: index})
         const url = serverUrl + '/tempRoute/blockaccount';
         const toSend = {userToBlockPubId: userPubIdToBlock};
-        try {
-            const response = await axios.post(url, toSend);
-            const result = response.data;
-            const {message, status} = result;
 
-            if (status !== 'SUCCESS') {
-                console.log(message);
-                alert('An error occured. Please try again.')
-                setChangingUserIsBlocked(false);
-            } else {
-                console.log('Successfully blocked user')
-                setChangingUserIsBlocked(false);
-                setListItems(listItems => {
-                    listItems[listItems.findIndex(item => item.pubId == userPubIdToBlock)].isBlocked = true
-                    return listItems;
-                });
-                setUpdateFlatList(updateFlatList => !updateFlatList)
-            }
-        } catch (e) {
-            console.log(e)
-            alert('An error occured. Please try again.')
-            setChangingUserIsBlocked(false);
-        }
+        axios.post(url, toSend).then(() => {
+            dispatch({type: 'blockUser', userIndex: index})
+        }).catch(error => {
+            console.error(error)
+            alert('An error occurred while blocking user: ' + ParseErrorMessage(error))
+            dispatch({type: 'stopChangingBlockedStatus', userIndex: index})
+        })
     }
 
     const unblockUser = async (userPubIdToUnblock) => {
-        if (userPubIdToUnblock == null) {
-            alert('An error occured.')
-            return
-        }
-        setChangingUserIsBlocked(true);
-        console.log('Unblocking user: ' + userPubIdToUnblock)
-
+        dispatch({type: 'startChangingBlockedStatus', userIndex: index})
         const url = serverUrl + '/tempRoute/unblockaccount';
         const toSend = {userToUnblockPubId: userPubIdToUnblock};
-        try {
-            const response = await axios.post(url, toSend);
-            const result = response.data;
-            const {message, status} = result;
-
-            if (status !== 'SUCCESS') {
-                console.log(message);
-                alert('An error occured. Please try again.')
-                setChangingUserIsBlocked(false);
-            } else {
-                console.log('Successfully unblocked user')
-                setChangingUserIsBlocked(false);
-                setListItems(listItems => {
-                    listItems[listItems.findIndex(item => item.pubId == userPubIdToUnblock)].isBlocked = false
-                    return listItems;
-                });
-                setUpdateFlatList(updateFlatList => !updateFlatList)
-            }
-        } catch (e) {
-            console.log(e)
-            alert('An error occured. Please try again.')
-            setChangingUserIsBlocked(false);
-        }
+        
+        axios.post(url, toSend).then(() => {
+            dispatch({type: 'unblockUser', userIndex: index})
+        }).catch(error => {
+            console.error(error)
+            alert('An error occurred while blocking user: ' + ParseErrorMessage(error))
+            dispatch({type: 'stopChangingBlockedStatus', userIndex: index})
+        })
     }
-    if (item.status === 'FAILED') {
-        return (
-            <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
-                <AntDesign name="exclamationcircleo" size={50} color={colors.errorColor} style={{marginTop: 5, marginBottom: 5}}/>
-                <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>Error loading user</SubTitle>
-            </View>
-        )
-    } else {
-        return (
-            <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
-                <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: item.profileImageB64}} />
-                <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
-                <TouchableOpacity onPress={() => {item.isBlocked == true ? unblockUser(item.pubId) : blockUser(item.pubId)}} style={{position: 'absolute', right: 10, justifyContent: 'center', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 10, borderColor: colors.borderColor, borderWidth: 3}}>
-                    <Text style={{color: colors.tertiary, fontSize: 16, fontWeight: 'bold'}}>{item.isBlocked == true ? "Unblock" : "Block"}</Text>
+    
+    return (
+        <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
+            <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey] || SocialSquareLogo_B64_png}} />
+            <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
+            {item.changingBlockedStatus ?
+                <View style={{position: 'absolute', right: 10, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator color={colors.brand} size="large"/>
+                </View>
+            :
+                <TouchableOpacity onPress={() => {item.blocked == true ? unblockUser(item.pubId) : blockUser(item.pubId)}} style={{position: 'absolute', right: 10, justifyContent: 'center', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 10, borderRadius: 10, borderColor: colors.borderColor, borderWidth: 3}}>
+                    <Text style={{color: colors.tertiary, fontSize: 16, fontWeight: 'bold'}}>{item.blocked == true ? "Unblock" : "Block"}</Text>
                 </TouchableOpacity>
-            </View>
-        )
-    }
+            
+            }
+        </View>
+    )
 }
+
+const MemoizedItem = memo(Item);
 
 export default BlockedAccountsScreen;
