@@ -75,7 +75,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === 'error') {
-        if (action.error == undefined) throw new Error('error was dispatched to useCategoryReducer but no error was provided.')
+        if (action.error == undefined) throw new Error('error was dispatched to useUserReducer but no error was provided.')
 
         return {
             ...state,
@@ -85,7 +85,65 @@ const reducer = (state, action) => {
         }
     }
 
-    throw new Error('Wrong action type was passed to useCategoryReducer. Action passed:' + action.type)
+    if (action.type === 'addProfilePictures') {
+        if (typeof action.profilePictures !== 'object' || Array.isArray(action.profilePictures) || action.profilePictures === null) throw new Error('action.profilePictures must be an object')
+
+        return {
+            ...state,
+            profilePictures: {
+                ...state.profilePictures,
+                ...action.profilePictures
+            }
+        }
+    }
+
+    if (action.type === 'startChangingBlockedStatus') {
+        if (typeof action.userIndex !== 'number') throw new Error('action.userIndex must be a number for startChangingBlockedStatus in useUserReducer')
+
+        state.users[action.userIndex] = {
+            ...state.users[action.userIndex],
+            changingBlockedStatus: true
+        }
+
+        return {...state}
+    }
+
+    if (action.type === 'stopChangingBlockedStatus') {
+        if (typeof action.userIndex !== 'number') throw new Error('action.userIndex must be a number for stopChangingBlockedStatus in useUserReducer')
+
+        state.users[action.userIndex] = {
+            ...state.users[action.userIndex],
+            changingBlockedStatus: false
+        }
+
+        return {...state}
+    }
+
+    if (action.type === 'blockUser') {
+        if (typeof action.userIndex !== 'number') throw new Error('action.userIndex must be a number for blockUser in useUserReducer')
+
+        state.users[action.userIndex] = {
+            ...state.users[action.userIndex],
+            changingBlockedStatus: false,
+            blocked: true
+        }
+
+        return {...state}
+    }
+
+    if (action.type === 'unblockUser') {
+        if (typeof action.userIndex !== 'number') throw new Error('action.userIndex must be a number for unblockUser in useUserReducer')
+
+        state.users[action.userIndex] = {
+            ...state.users[action.userIndex],
+            changingBlockedStatus: false,
+            blocked: false
+        }
+
+        return {...state}
+    }
+
+    throw new Error('Wrong action type was passed to useUserReducer. Action passed:' + action.type)
 }
 
 const initialState = {
@@ -93,7 +151,8 @@ const initialState = {
     error: null,
     loadingFeed: false,
     reloadingFeed: false,
-    noMoreUsers: false
+    noMoreUsers: false,
+    profilePictures: {}
 }
 
 const useUserReducer = () => {
