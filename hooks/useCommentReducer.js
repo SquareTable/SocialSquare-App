@@ -268,6 +268,30 @@ const reducer = (state, action) => {
         }
     }
 
+    if (action.type === 'changeReplyCount') {
+        //Currently unused but will be in the future
+        if (typeof action.changeCount !== 'number') throw new Error(`changeReplyCount is expecting action.changeCount to be a number. Received: ${typeof action.changeCount}.`)
+        if (typeof action.commentIndex !== 'number') throw new Error(`changeReplyCount is expecting action.commentIndex to be a number. Received: ${typeof action.commentIndex}.`)
+
+        state.comments[action.commentIndex] = {
+            ...state.comments[action.commentIndex],
+            replies: state.comments[action.commentIndex].replies + action.changeCount
+        }
+
+        return {...state}
+    }
+
+    if (action.type === 'softDeleteComment') {
+        if (typeof action.commentIndex !== 'number') throw new Error(`softDeleteComment is expecting action.commentIndex to be a number. Received: ${typeof action.commentIndex}.`)
+
+        state.comments[action.commentIndex] = {
+            ...state.comments[action.commentIndex],
+            deleted: true
+        }
+
+        return {...state}
+    }
+
     throw new Error(`Wrong action type was passed to useCommentReducer: ${action.type}`)
 }
 

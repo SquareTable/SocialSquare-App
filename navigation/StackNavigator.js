@@ -111,7 +111,6 @@ const RootStack = () => {
     >
       <Stack.Screen name="Welcome" component={ProfileScreen}/>
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-      <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       <Stack.Screen name="CategoryHome" component={CategoryHome}/>
       <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
       <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
@@ -137,6 +136,7 @@ const RootStack = () => {
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
         <Stack.Screen name="EditProfile" component={EditProfile}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+        <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -172,11 +172,10 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+        <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       </Stack.Group>
       <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}/>
-      <Stack.Screen name="CommentviewPage" component={CommentViewPage}/>
       <Stack.Screen name="ThreadUploadPage_FromCategory_FindStack" component={ThreadUploadPage}/>
-      <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
     </Stack.Navigator>
   );

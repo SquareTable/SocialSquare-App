@@ -27,7 +27,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Comment from "./CommentItem";
 import ThreeDotMenuActionSheet from '../Posts/ThreeDotMenuActionSheet';
 
-export default function Comments({postId, postFormat}) {
+export default function Comments({postId, postFormat, onDeleteCallback = () => {}}) {
     const {colors} = useTheme();
     const [reducer, dispatch] = useCommentReducer()
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
@@ -39,8 +39,8 @@ export default function Comments({postId, postFormat}) {
     const loadComments = () => {
         dispatch({type: 'startLoad'})
 
-        const url = serverUrl + '/tempRoute/searchforpostcomments'
-        const toSend = {postId, postFormat}
+        const url = serverUrl + '/tempRoute/' + (postFormat === 'Comment' ? 'getcommentreplies' : 'searchforpostcomments')
+        const toSend = postFormat === "Comment" ? {commentId: postId} : {postId, postFormat}
 
         axios.post(url, toSend).then(response => {
             const result = response.data;
@@ -52,7 +52,7 @@ export default function Comments({postId, postFormat}) {
                     return new Promise(async (resolve, reject) => {
                         let pfpB64 = null;
                         try {
-                            if (item.profileImageKey !== "") {
+                            if (item.profileImageKey !== "" && item.profileImageKey !== undefined) {
                                 pfpB64 = 'data:image/jpeg;base64,' + (await axios.get(`${serverUrl}/getImageOnServer/${item.profileImageKey}`)).data
                             }
                         } catch (error) {
@@ -97,7 +97,7 @@ export default function Comments({postId, postFormat}) {
 
     const handleCommentPost = (commentProperties, setSubmitting) => {
         setCommentPostError(null);
-        const url = serverUrl + "/tempRoute/postcomment";
+        const url = serverUrl + "/tempRoute/" + (postFormat === "Comment" ? 'replytocomment' : 'postcomment');
         Keyboard.dismiss();
 
         axios.post(url, commentProperties).then((response) => {
@@ -121,10 +121,10 @@ export default function Comments({postId, postFormat}) {
         <>
             <ThreeDotMenuActionSheet dispatch={dispatch} threeDotsMenu={reducer.threeDotsMenu}/>
             <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
-                <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
+                <PollPostTitle commentsTitle={true}>{postFormat === "Comment" ? "Comment Replies" : "Comments"}</PollPostTitle>
                 <CommentsHorizontalView writeCommentArea={true}>
                     <Formik
-                        initialValues={{comment: '', userName: name, postId, postFormat}}
+                        initialValues={postFormat === "Comment" ? {comment: "", commentId: postId} : {comment: '', postId, postFormat}}
                         onSubmit={(values, {setSubmitting}) => {
                             if (values.comment == "") {
                                 setCommentPostError("You can't post an empty comment.");
@@ -153,7 +153,7 @@ export default function Comments({postId, postFormat}) {
                                     </CommentsVerticalView>
                                     <CommentsVerticalView>
                                         <UserTextInput
-                                            placeholder="Post a comment"
+                                            placeholder={postFormat === "Comment" ? "Post a comment reply" : "Post a comment"}
                                             placeholderTextColor={colors.darkLight}
                                             onChangeText={handleChange('comment')}
                                             onBlur={handleBlur('comment')}
@@ -183,11 +183,11 @@ export default function Comments({postId, postFormat}) {
                             )}
                     </Formik>
                 </CommentsHorizontalView>
-                <PollPostSubTitle style={{color: colors.tertiary}}>{reducer.loadingFeed ? 'Loading...' : reducer.error ? 'Error Occurred' : reducer.comments.length === 0 ? 'No Comments' : 'Comments:'}</PollPostSubTitle>
+                <PollPostSubTitle style={{color: colors.tertiary}}>{reducer.loadingFeed ? 'Loading...' : reducer.error ? 'Error Occurred' : reducer.comments.length === 0 ? (postFormat === 'Comment' ? 'No Comment Replies' : 'No Comments') : 'Comments:'}</PollPostSubTitle>
                 <FlatList
                     data={reducer.comments}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item, index }) => <Comment comment={item} index={index} postId={postId} postFormat={postFormat} dispatch={dispatch}/>}
+                    renderItem={({ item, index }) => <Comment comment={item} index={index} dispatch={dispatch} onDeleteCallback={onDeleteCallback}/>}
                     ListFooterComponent={ListFooter}
                 />
             </ViewScreenPollPostCommentsFrame>

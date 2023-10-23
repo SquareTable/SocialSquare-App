@@ -112,8 +112,14 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
         const url = serverUrl + '/tempRoute/deletecomment';
         const toSend = {commentId: postId}
         console.log(toSend)
-        axios.post(url, toSend).then(() => { 
-            dispatch({type: 'deleteComment', commentIndex: postIndex})
+        axios.post(url, toSend).then((response) => { 
+            const result = response.data;
+            const data = result.data;
+
+            if (data.softDelete) dispatch({type: 'softDeleteComment', commentIndex: postIndex})
+            else dispatch({type: 'deleteComment', commentIndex: postIndex})
+
+            onDeleteCallback(data)
         }).catch(error => {
             console.error(error)
             alert('An error occurred while deleting comment: ' + ParseErrorMessage(error))
