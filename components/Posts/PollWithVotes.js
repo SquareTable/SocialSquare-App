@@ -439,13 +439,13 @@ class PollWithVotes extends PollClass {
                             </View>
                         :
                             <>
-                                <PostsIconFrame onPress={this.upvote}>
+                                <PostsIconFrame onPress={() => this.props.post.upvoted ? this.removeVote("Up") : this.upvote()}>
                                     <PostsIcons style={{flex: 1, tintColor: this.props.post.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                                 </PostsIconFrame>
                                 <PostsIconFrame>
                                     <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.votes}</SubTitle>
                                 </PostsIconFrame>
-                                <PostsIconFrame onPress={this.downvote}>
+                                <PostsIconFrame onPress={() => this.props.post.downvoted ? this.removeVote("Down") : this.downvote()}>
                                     <PostsIcons style={{flex: 1, tintColor: this.props.post.downvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                                 </PostsIconFrame>
                             </>

@@ -61,11 +61,11 @@ class Thread extends Component {
     }
 
     runIfAuthenticated = (func) => {
-        return () => {
+        return (...args) => {
             if (this.props.userId === 'SSGUEST' || !this.props.userId) {
                 this.props.navigation.navigate('ModalLoginScreen', {modal: true})
             } else {
-                func()
+                func(...args)
             }
         }
     }
@@ -74,30 +74,15 @@ class Thread extends Component {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
 
-            const url = this.props.serverUrl + '/tempRoute/upvotethread';
+            const url = this.props.serverUrl + '/tempRoute/voteonpost';
 
-            var toSend = {threadId: this.props.post._id}
+            var toSend = {postId: this.props.post._id, postFormat: "Thread", voteType: "Up"}
 
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-            
-                if (status !== 'SUCCESS') {
-                    this.handleStopVoteChange()
-                    console.error('Error upvoting thread. Message:', message, '   |   Status:', status)
-                } else {
-                    if (message == "Thread UpVoted") {
-                        this.props.dispatch({
-                            type: 'upVote',
-                            postIndex: this.props.index
-                        })
-                    } else {
-                        this.props.dispatch({
-                            type: 'neutralVote',
-                            postIndex: this.props.index
-                        })
-                    }
-                }
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({
+                    type: 'upVote',
+                    postIndex: this.props.index
+                })
             }).catch(error => {
                 this.handleStopVoteChange()
                 console.error('An error occured while upvoting thread post:', error)
@@ -109,33 +94,36 @@ class Thread extends Component {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
 
-            const url = this.props.serverUrl + '/tempRoute/downvotethread';
+            const url = this.props.serverUrl + '/tempRoute/voteonpost';
 
-            var toSend = {threadId: this.props.post._id}
+            var toSend = {postId: this.props.post._id, postFormat: "Thread", voteType: "Down"}
 
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-            
-                if (status !== 'SUCCESS') {
-                    this.handleStopVoteChange()
-                    console.error('Error downvoting thread. Message:', message, '   |   Status:', status)
-                } else {
-                    if (message == "Thread DownVoted") {
-                        this.props.dispatch({
-                            type: 'downVote',
-                            postIndex: this.props.index
-                        })
-                    } else {
-                        this.props.dispatch({
-                            type: 'neutralVote',
-                            postIndex: this.props.index
-                        })
-                    }
-                }
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({
+                    type: 'downVote',
+                    postIndex: this.props.index
+                })
             }).catch(error => {
                 this.handleStopVoteChange()
                 console.error('An error occured while downvoting thread post:', error)
+            })
+        }
+    })
+
+    removeVote = this.runIfAuthenticated((voteType) => {
+        if (!this.props.post.changingVote) {
+            this.handleStartVoteChange();
+            const url = this.props.serverUrl + '/tempRoute/removevoteonpost';
+            const toSend = {postId: this.props.post._id, postFormat: "Thread", voteType}
+
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({
+                    type: 'neutralVote',
+                    postIndex: this.props.index
+                })
+            }).catch(error => {
+                this.handleStopVoteChange()
+                console.error(error)
             })
         }
     })
@@ -235,7 +223,7 @@ class Thread extends Component {
                         {this.props.post.changingVote == false && (
                             <View style={{flexDirection: 'row', flex: 3}}>
 
-                                <PostsIconFrame onPress={this.upvote}>
+                                <PostsIconFrame onPress={() => this.props.post.upvoted ? this.removeVote("Up") : this.upvote()}>
                                     <PostsIcons style={{ flex: 1, tintColor: this.props.post.upvoted ? this.props.colors.brand : this.props.colors.tertiary }} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                                 </PostsIconFrame>
 
@@ -243,7 +231,7 @@ class Thread extends Component {
                                     <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.votes}</SubTitle>
                                 </PostsIconFrame>
 
-                                <PostsIconFrame onPress={this.downvote}>
+                                <PostsIconFrame onPress={() => this.props.post.downvoted ? this.removeVote("Down") : this.downvote()}>
                                     <PostsIcons style={{ flex: 1, tintColor: this.props.post.downvoted ? this.props.colors.brand : this.props.colors.tertiary }} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                                 </PostsIconFrame>
 
