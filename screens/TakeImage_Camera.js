@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {View, Text, TouchableOpacity, Image, Dimensions, Alert, Platform} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Dimensions, Alert, Platform, AppState} from 'react-native';
 import {Camera} from 'expo-camera';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
@@ -52,6 +52,20 @@ const TakeImage_Camera = ({navigation, route}) => {
 
     const isFocused = useIsFocused()
     isFocused ? showCamera ? null : setShowCamera(true) : showCamera ? setShowCamera(false) : null
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener("change", (state) => {
+            if (state !== 'active') {
+                setShowCamera(false)
+            } else {
+                isFocused ? showCamera ? null : setShowCamera(true) : showCamera ? setShowCamera(false) : null
+            }
+        })
+
+        return () => {
+            subscription.remove();
+        }
+    }, [])
 
     useEffect(() => {
         const checkForCameraPermissions = async () => {
