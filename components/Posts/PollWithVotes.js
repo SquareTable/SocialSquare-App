@@ -167,7 +167,7 @@ class PollWithVotes extends PollClass {
                         <ActivityIndicator color='#FFFFFF' size="large"/>
                     </View>
                 }
-                <ViewScreenPollPostFrame style={{width: '100%'}}>
+                <ViewScreenPollPostFrame style={{width: '100%', alignSelf: 'center'}}>
                     <PostsHorizontalView style={{borderBottomWidth: 3, borderColor: this.props.colors.darkLight, width: '100%', paddingBottom: 5}}>
                         <PostsVerticalView>
                             <PostCreatorIcon source={{uri: this.props.post.pfpB64}}/>
