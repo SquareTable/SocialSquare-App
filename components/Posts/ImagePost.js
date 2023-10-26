@@ -61,11 +61,11 @@ class ImagePost extends Component {
     }
 
     runIfAuthenticated = (func) => {
-        return () => {
+        return (...args) => {
             if (this.props.userId === 'SSGUEST' || !this.props.userId) {
                 this.props.navigation.navigate('ModalLoginScreen', {modal: true})
             } else {
-                func()
+                func(...args)
             }
         }
     }
@@ -73,30 +73,14 @@ class ImagePost extends Component {
     upvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
-            const url = this.props.serverUrl + '/tempRoute/upvoteimage';
-            const toSend = {userId: this.props.userId, imageId: this.props.post._id}
+            const url = this.props.serverUrl + '/tempRoute/voteonpost';
+            const toSend = {postId: this.props.post._id, postFormat: "Image", voteType: "Up"}
 
-            axios.post(url, toSend).then(response => {
-                const {message, status} = response.data;
-
-                if (status !== "SUCCESS") {
-                    this.handleStopVoteChange()
-                    console.error(`status returned from server after trying to upvote image is not SUCCESS. Server's message:`, message)
-                } else {
-                    if (message == "Post UpVoted") {
-                        console.log('UpVoted')
-                        this.props.dispatch({
-                            type: 'upVote',
-                            postIndex: this.props.index
-                        })
-                    } else {
-                        console.log('Neutral Voted')
-                        this.props.dispatch({
-                            type: 'neutralVote',
-                            postIndex: this.props.index
-                        })
-                    }
-                }
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({
+                    type: 'upVote',
+                    postIndex: this.props.index
+                })
             }).catch(error => {
                 this.handleStopVoteChange()
                 console.error(error)
@@ -107,28 +91,32 @@ class ImagePost extends Component {
     downvote = this.runIfAuthenticated(() => {
         if (!this.props.post.changingVote) {
             this.handleStartVoteChange()
-            const url = this.props.serverUrl + '/tempRoute/downvoteimage';
-            const toSend = {userId: this.props.userId, imageId: this.props.post._id}
+            const url = this.props.serverUrl + '/tempRoute/voteonpost';
+            const toSend = {postId: this.props.post._id, postFormat: "Image", voteType: "Down"}
 
-            axios.post(url, toSend).then(response => {
-                const {message, status} = response.data;
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({
+                    type: 'downVote',
+                    postIndex: this.props.index
+                })
+            }).catch(error => {
+                this.handleStopVoteChange()
+                console.error(error)
+            })
+        }
+    })
 
-                if (status !== "SUCCESS") {
-                    this.handleStopVoteChange()
-                    console.error(`status returned from server after trying to downvote image is not SUCCESS. Server's message:`, message)
-                } else {
-                    if (message == "Post DownVoted") {
-                        this.props.dispatch({
-                            type: 'downVote',
-                            postIndex: this.props.index
-                        })
-                    } else {
-                        this.props.dispatch({
-                            type: 'neutralVote',
-                            postIndex: this.props.index
-                        })
-                    }
-                }
+    removeVote = this.runIfAuthenticated((voteType) => {
+        if (!this.props.post.changingVote) {
+            this.handleStartVoteChange();
+            const url = this.props.serverUrl + '/tempRoute/removevoteonpost';
+            const toSend = {postId: this.props.post._id, postFormat: "Image", voteType}
+
+            axios.post(url, toSend).then(() => {
+                this.props.dispatch({
+                    type: 'neutralVote',
+                    postIndex: this.props.index
+                })
             }).catch(error => {
                 this.handleStopVoteChange()
                 console.error(error)
@@ -191,7 +179,7 @@ class ImagePost extends Component {
                     }
                     <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                         
-                        <PostsIconFrame onPress={this.upvote}>
+                        <PostsIconFrame onPress={() => this.props.post.upvoted ? this.removeVote("Up") : this.upvote()}>
                             <PostsIcons style={{flex: 1, tintColor: this.props.post.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         </PostsIconFrame>
 
@@ -205,7 +193,7 @@ class ImagePost extends Component {
                             }
                         </PostsIconFrame>
                         
-                        <PostsIconFrame onPress={this.downvote}>
+                        <PostsIconFrame onPress={() => this.props.post.downvoted ? this.removeVote("Down") : this.downvote()}>
                             <PostsIcons style={{flex: 1, tintColor: this.props.post.downvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         </PostsIconFrame>
 
