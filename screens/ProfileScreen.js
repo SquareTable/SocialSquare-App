@@ -186,7 +186,6 @@ const Welcome = ({navigation, route}) => {
     // ActionSheet menus
     let PfpSaveActionMenu = useRef();
     const PfpSaveActionMenuOptions = [
-        'Save to Camera Roll',
         'Change Profile Picture',
         'Cancel'
     ];
@@ -1138,26 +1137,6 @@ const Welcome = ({navigation, route}) => {
         }
     })
 
-    async function savePicture(imageTag) {
-        if (await MediaLibrary.isAvailableAsync() == true) {
-            if (await MediaLibrary.getPermissionsAsync == 'all' || 'limited') {
-                MediaLibrary.saveToLibraryAsync(imageTag)
-            } else {
-                if (await MediaLibrary.requestPermissionsAsync() == 'granted') {
-                    if (Platform.OS == 'ios') {
-                        MediaLibrary.saveToLibraryAsync(imageTag)
-                    } else {
-                        alert('Android saving images is coming soon')
-                    }
-                } else {
-                    alert('Photo library write permissions have not been enabled. Please enable them in your settings to use this feature.')
-                }
-            }
-        } else {
-            alert('This device cannot save images to the photo library')
-        }
-    };
-
     const GetBadgeIcon = (badge) => {
         return (
             <View style={{width: 25, height: 25, marginHorizontal: 3, marginTop: 6, marginBottom: 12}}>
@@ -1251,10 +1230,8 @@ const Welcome = ({navigation, route}) => {
                             //destructiveButtonIndex={2}
                             onPress={(index) => {
                                 if (index == 0) {
-                                    savePicture(profilePictureUri)
-                                } else if (index == 1) {
                                     PfpPickerActionMenu.current.show();
-                                } else if (index == 2) {
+                                } else if (index == 1) {
                                     console.log('Cancelling')
                                 }
                             }}
