@@ -600,7 +600,8 @@ const ProfilePages = ({ route, navigation }) => {
                             upvoted: data.upvoted,
                             downvoted: data.downvoted,
                             isOwner: data.isOwner,
-                            _id: data._id
+                            _id: data._id,
+                            creatorPublicId: data.creatorPublicId
                         })
                     } catch (error) {
                         reject(error)
