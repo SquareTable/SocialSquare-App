@@ -137,17 +137,13 @@ const RootStack = () => {
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
         <Stack.Screen name="EditProfile" component={EditProfile}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+        <Stack.Screen name="ProfilePages" component={ProfilePages}/>
       </Stack.Group>
     </Stack.Navigator>
   );
 };
 
 const FindScreen_Stack = () => {
-  if (darkModeOn === true) {
-    var styling = darkModeStyling;
-  } else {
-    var styling = lightModeStyling;
-  }
   const { colors } = useTheme();
   return (
     <Stack.Navigator screenOptions={{
@@ -203,6 +199,7 @@ const HomeScreenStack = () => {
       <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
       <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+      <Stack.Screen name="ProfilePages" component={ProfilePages}/>
     </Stack.Navigator>
   )
 }
@@ -286,6 +283,7 @@ const SettingsStack = () => {
       <Stack.Screen name="ActivityScreen" component={ActivityScreen}/>
       <Stack.Screen name="LoginActivitySettings" component={LoginActivitySettings}/>
       <Stack.Screen name="PostUpvoteDownvoteActivity" component={PostUpvoteDownvoteActivity}/>
+      <Stack.Screen name="ProfilePages" component={ProfilePages}/>
     </Stack.Navigator>
   )
 }

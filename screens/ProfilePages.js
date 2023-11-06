@@ -1,7 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import Icon from 'react-native-vector-icons/Feather';
-import FontAwesomeFive from 'react-native-vector-icons/FontAwesome5';
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
@@ -106,6 +104,7 @@ import * as Haptics from 'expo-haptics';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons.js';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import ActionSheet from 'react-native-actionsheet';
@@ -131,9 +130,14 @@ const ProfilePages = ({ route, navigation }) => {
     const [PageElementsState, setPageElementsState] = useState(false)
     const { colors, indexNum } = useTheme();
     //context
-    const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey, badges, pubId, bio, privateAccount } = route.params;
+    const { paramsProfileData, pubId } = route.params;
+
+    const [profileData, setProfileData] = useState(paramsProfileData || null);
+    const [errorLoadingProfile, setErrorLoadingProfile] = useState(null);
+    const loadPostsAfterProfileDataLoad = useRef(!paramsProfileData);
+
     const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
-    if (storedCredentials) {var { _id, secondId, badges: storedBadges } = storedCredentials} else {var {_id, secondId, badges: storedBadges} = {_id: "SSGUEST", secondId: "SSGUEST", badges: []}}
+    if (storedCredentials) {var { secondId, badges: storedBadges } = storedCredentials} else {var {_id, secondId, badges: storedBadges} = {_id: "SSGUEST", secondId: "SSGUEST", badges: []}}
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
     const [selectedPostFormatName, setSelectedPostFormatName] = useState("This user has no Image posts.")
     const [formatOneText, setFormatOneText] = useState("This user has no Image posts.")
@@ -189,53 +193,69 @@ const ProfilePages = ({ route, navigation }) => {
     const getFollowersEtc = () => {
         //The resolve is used to know when getFollowersEtc has finished. getFollowersEtc handles errors internally, so we do not need a reject
         return new Promise(resolve => {
-            const url = `${serverUrl}/tempRoute/reloadUsersDetails`;
-            const toSend = {
-                usersPubId: pubId
-            }
+            if (!userNotFound) {
+                setErrorLoadingProfile(null)
+                const url = `${serverUrl}/tempRoute/reloadUsersDetails`;
+                const toSend = {
+                    usersPubId: pubId
+                }
 
-            changeToOne()
-            
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const { message, status, data } = result;
+                if (profileData !== null) changeToOne()
+                
+                axios.post(url, toSend).then(async (response) => {
+                    const result = response.data;
+                    const { data } = result;
 
-                if (status !== 'SUCCESS') {
-                    if (message == "User not found.") {
-                        setUserNotFound(true);
+                    let profileImage = SocialSquareLogo_B64_png;
+
+                    if (data.profileKey) {
+                        const url = serverUrl + '/getImageOnServer/' + data.profileKey
+                        try {
+                            const imageData = (await axios.get(url)).data
+                            profileImage = 'data:image/jpeg;base64,' + imageData
+                        } catch (error) {
+                            console.error(error)
+                        }
                     }
-                    handleMessage(message, status);
-                    console.log(status)
-                    console.error(message)
-                    setLoadingFollowers('Error')
-                    navigation.setParams({following: 'Error'});
-                } else {
-                    console.log(status)
-                    console.log(message)
-                    /*setProfilesName(data.name)
-                    setProfilesDisplayName(data.displayName)
-                    setFollowers(data.followers)
-                    setFollowing(data.following)*/
+
                     setInitiallyFollowed(data.userIsFollowing)
                     setUserIsFollowed(data.userIsFollowing)
-                    //setTotalLikes(data.totalLikes)
+    
+                    setProfileData({
+                        profilesName: data.name,
+                        profilesDisplayName: data.displayName,
+                        followers: data.followers,
+                        following: data.following,
+                        totalLikes: data.totalLikes,
+                        profileKey: profileImage,
+                        badges: data.badges,
+                        privateAccount: data.privateAccount
+                    })
                     setLoadingFollowers(false)
-                }
-                //setSubmitting(false);
-                resolve()
-            }).catch(error => {
-                console.error(error);
-                //setSubmitting(false);
-                handleMessage(ParseErrorMessage(error));
-                setLoadingFollowers('Error')
-                resolve()
-            })
+
+                    resolve()
+                }).catch(error => {
+                    console.error(error);
+                    setLoadingFollowers('Error')
+                    const errorMessage = ParseErrorMessage(error)
+                    if (errorMessage === 'Could not find user with provided userId.') setUserNotFound(true);
+                    if (profileData === null) setErrorLoadingProfile(ParseErrorMessage(error));
+                    resolve()
+                })
+            }
         })
     }
 
     useEffect(() => {
         getFollowersEtc()
     }, [])
+
+    useEffect(() => {
+        if (loadPostsAfterProfileDataLoad.current === true && profileData) {
+            loadPostsAfterProfileDataLoad.current = false;
+            changeToOne()
+        }
+    }, [profileData])
 
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
@@ -293,20 +313,20 @@ const ProfilePages = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </ProfileHorizontalView>
                 <ProfInfoAreaImage style={{marginTop: 1}}>
-                    <Avatar resizeMode="cover" source={{uri: profileKey}} />
-                    <Text style={{fontSize: 35, fontWeight: 'bold', textAlign: 'center', color: colors.brand, paddingVertical: 0, paddingHorizontal: 10}}>{profilesDisplayName || profilesName || "Couldn't get name"}</Text>
-                    <SubTitle style={{color: colors.tertiary, marginBottom: 0}}>{"@" + profilesName}</SubTitle>
-                    {BadgesArea(badges)}
-                    {bio ? <SubTitle style={{color: colors.tertiary, marginBottom: 5, fontSize: 14, textAlign: 'center'}} bioText={true} >{bio}</SubTitle> : null}
+                    <Avatar resizeMode="cover" source={{uri: profileData.profileKey}} />
+                    <Text style={{fontSize: 35, fontWeight: 'bold', textAlign: 'center', color: colors.brand, paddingVertical: 0, paddingHorizontal: 10}}>{profileData.profilesDisplayName || profileData.profilesName || "Couldn't get name"}</Text>
+                    <SubTitle style={{color: colors.tertiary, marginBottom: 0}}>{"@" + profileData.profilesName}</SubTitle>
+                    {BadgesArea(profileData.badges)}
+                    {profileData.bio ? <SubTitle style={{color: colors.tertiary, marginBottom: 5, fontSize: 14, textAlign: 'center'}} bioText={true} >{profileData.bio}</SubTitle> : null}
                 </ProfInfoAreaImage>
                 <ProfileHorizontalView>
                     <ProfileHorizontalViewItem profLeftIcon={true}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Followers', followers: followers, publicId: pubId, isSelf: pubId === secondId, name: profilesDisplayName || profilesName})}} style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Followers', followers: profileData.followers, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
                             {pubId === secondId ?
                                 <>
                                     <SubTitle welcome={true} style={{color: colors.tertiary}}> Followers </SubTitle> 
                                     <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
-                                    <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
+                                    <SubTitle welcome={true} style={{color: colors.tertiary}}> {profileData.followers} </SubTitle> 
                                 </>
                             : loadingFollowers == true ?
                                 <>
@@ -326,25 +346,25 @@ const ProfilePages = ({ route, navigation }) => {
                                     {initiallyFollowed == false && (
                                         <View>
                                             {userIsFollowed == true && (
-                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers + 1} </SubTitle> 
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {profileData.followers + 1} </SubTitle> 
                                             )}
                                             {(userIsFollowed == false || userIsFollowed == 'Requested') && (
-                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {profileData.followers} </SubTitle> 
                                             )}
                                         </View>
                                     )}
                                     {initiallyFollowed == true && (
                                         <View>
                                             {userIsFollowed == true && (
-                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {profileData.followers} </SubTitle> 
                                             )}
                                             {(userIsFollowed == false || userIsFollowed == 'Requested') && (
-                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers - 1} </SubTitle> 
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {profileData.followers - 1} </SubTitle> 
                                             )}
                                         </View>
                                     )}
                                     {initiallyFollowed == 'Requested' && (
-                                        <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
+                                        <SubTitle welcome={true} style={{color: colors.tertiary}}> {profileData.followers} </SubTitle> 
                                     )}
                                     {togglingFollow == false && pubId !== secondId && (
                                         <View style={{width: '80%', borderRadius: 5, backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 3, paddingHorizontal: 10, paddingTop: 2}}>
@@ -354,7 +374,7 @@ const ProfilePages = ({ route, navigation }) => {
                                                 </TouchableOpacity>
                                             )}
                                             {userIsFollowed == true && (
-                                                <TouchableOpacity onPress={() => privateAccount == true ? UnfollowPrivateAccountConfirmationPickerMenu.current.show() : toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => profileData.privateAccount == true ? UnfollowPrivateAccountConfirmationPickerMenu.current.show() : toggleFollowOfAUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Unfollow </SubTitle>
                                                 </TouchableOpacity>
                                             )}
@@ -384,10 +404,10 @@ const ProfilePages = ({ route, navigation }) => {
                         </TouchableOpacity>
                     </ProfileHorizontalViewItem>
                     <ProfileHorizontalViewItem profCenterIcon={true}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Following', followers: following, publicId: pubId, isSelf: pubId === secondId, name: profilesDisplayName || profilesName})}} style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Following', followers: profileData.following, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                             <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> {following} </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> {profileData.following} </SubTitle>
                         </TouchableOpacity>
                     </ProfileHorizontalViewItem>
                     <ProfileHorizontalViewItem profRightIcon={true}>
@@ -453,9 +473,9 @@ const ProfilePages = ({ route, navigation }) => {
             return (
                 <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10}}>
                     {categoryList ?
-                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{profilesDisplayName || profilesName} isn't a part of any categories.</Text>
+                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{profileData.profilesDisplayName || profileData.profilesName} isn't a part of any categories.</Text>
                     :
-                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{profilesDisplayName || profilesName} has no {postFormat}s.</Text>
+                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{profileData.profilesDisplayName || profileData.profilesName} has no {postFormat}s.</Text>
                     }
                 </View>
             )
@@ -576,7 +596,7 @@ const ProfilePages = ({ route, navigation }) => {
                             creatorDisplayName: data.creatorDisplayName,
                             datePosted: data.datePosted,
                             postNum: index,
-                            creatorPfpB64: profileKey,
+                            creatorPfpB64: profileData.profileKey,
                             upvoted: data.upvoted,
                             downvoted: data.downvoted,
                             isOwner: data.isOwner,
@@ -746,7 +766,7 @@ const ProfilePages = ({ route, navigation }) => {
             console.log(pollData[index])
             async function getPfpImageForPollWithAsync() {
                 
-                var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, comments: pollData[index].comments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profileKey, isOwner: pollData[index].isOwner}
+                var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, comments: pollData[index].comments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profileData.profileKey, isOwner: pollData[index].isOwner}
                 tempSections.push(tempSectionsTemp)
                 itemsProcessed++;
                 if(itemsProcessed === pollData.length) {
@@ -829,7 +849,7 @@ const ProfilePages = ({ route, navigation }) => {
                                 creatorDisplayName: threadData[index].creatorDisplayName,
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: null,
-                                creatorImageB64: profileKey,
+                                creatorImageB64: profileData.profileKey,
                                 isOwner: threadData[index].isOwner
                             })
                         } else if (data.threadType === "Images") {
@@ -855,7 +875,7 @@ const ProfilePages = ({ route, navigation }) => {
                                 creatorDisplayName: threadData[index].creatorDisplayName,
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: imageInThreadB64,
-                                creatorImageB64: profileKey,
+                                creatorImageB64: profileData.profileKey,
                                 isOwner: threadData[index].isOwner
                             })
                         }
@@ -1076,7 +1096,7 @@ const ProfilePages = ({ route, navigation }) => {
 
                     console.log("Attempting to create a DM")
                     const url = serverUrl + "/conversations/createDirectMessage";
-                    const toSend = {recipientName: profilesName, cryptographicNonce: nonce}
+                    const toSend = {recipientName: profileData.profilesName, cryptographicNonce: nonce}
                     axios.post(url, toSend).then((response) => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -1110,7 +1130,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const navigateToChatScreen = () => {
-        const url = `${serverUrl}/conversations/singleDmWithName/${profilesName}`;
+        const url = `${serverUrl}/conversations/singleDmWithName/${profileData.profilesName}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const { message, status, data } = result;
@@ -1196,7 +1216,7 @@ const ProfilePages = ({ route, navigation }) => {
     const BadgesArea = (badges) => {
         if (badges.length > 0) {
             return (
-                <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges", {name: profilesName, displayName: profilesDisplayName, badgesObject: badges, profilePictureUri: profileKey})} style={{borderColor: colors.primary}}>
+                <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges", {name: profileData.profilesName, displayName: profileData.profilesDisplayName, badgesObject: badges, profilePictureUri: profileData.profileKey})} style={{borderColor: colors.primary}}>
                     {badges.length == 1 ?
                         <>
                             <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
@@ -1276,7 +1296,7 @@ const ProfilePages = ({ route, navigation }) => {
                         //Unfollowed or unrequested
                         setUserIsFollowed(false)
                         setTogglingFollow(false)
-                        if (privateAccount == true) {
+                        if (profileData.privateAccount == true) {
                             cancelTokenPostFormatOne.cancel()
                             cancelTokenPostFormatTwo.cancel()
                             cancelTokenPostFormatThree.cancel()
@@ -1297,6 +1317,37 @@ const ProfilePages = ({ route, navigation }) => {
 
     console.log('User is followed: ' + userIsFollowed)
     console.log('Initially user followed is: ' + initiallyFollowed)
+
+    if (profileData === null) {
+        return (
+            <>
+                <TouchableOpacity style={{position: 'absolute', left: 10, top: StatusBarHeight}} onPress={() => {navigation.goBack()}}>
+                    <Image
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </TouchableOpacity>
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    {
+                        errorLoadingProfile ?
+                            <>
+                                <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>{errorLoadingProfile}</Text>
+                                <TouchableOpacity onPress={getFollowersEtc}>
+                                    <Ionicons name="reload" size={50} color={colors.errorColor} />
+                                </TouchableOpacity>
+                            </>
+                        :
+                            <>
+                                <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>Loading profile...</Text>
+                                <ActivityIndicator color={colors.brand} size="large"/>
+                            </>
+                    }
+                </View>
+            </>
+        )
+    }
 
     return (
         <>
@@ -1344,7 +1395,7 @@ const ProfilePages = ({ route, navigation }) => {
                     </ProfileOptionsView>
                 :
                     <ProfileOptionsView style={{backgroundColor: colors.primary, height: 500}} viewHidden={false}>
-                        <ProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
+                        <ProfileOptionsViewText style={{color: colors.tertiary}}>{profileData.profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
                         <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
                         <ProfileOptionsViewButtons greyButton={true} style={{height: 'auto', paddingVertical: 10}} onPress={changeProfilesOptionsView}>
                             <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
@@ -1374,8 +1425,8 @@ const ProfilePages = ({ route, navigation }) => {
                         </TouchableOpacity>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <PageTitle style={{fontSize: 24, padding: 0}} welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
-                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profileKey}}/>
+                        <PageTitle style={{fontSize: 24, padding: 0}} welcome={true}>{profileData.profilesDisplayName || profileData.profilesName || "Couldn't get name"}</PageTitle>
+                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profileData.profileKey}}/>
                     </View>
                     <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
                         <TouchableOpacity onPress={changeProfilesOptionsView}>
@@ -1397,7 +1448,7 @@ const ProfilePages = ({ route, navigation }) => {
                             <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold'}}>User not found</Text>
                         </View>
                     </ScrollView>
-                : privateAccount == false || (userIsFollowed === true && privateAccount == true) || (privateAccount == true && pubId === secondId) ?
+                : profileData.privateAccount == false || (userIsFollowed === true && profileData.privateAccount == true) || (profileData.privateAccount == true && pubId === secondId) ?
                     <>
                         <ProfileGridPosts>
                             {selectedPostFormat == "One" && (<FlatList

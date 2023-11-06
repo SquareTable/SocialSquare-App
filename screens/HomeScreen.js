@@ -215,7 +215,7 @@ const HomeScreen = ({navigation, route}) => {
                     //Add
                     const addAndPush = async () => {
                         console.log("TestHere")
-                        var forSendBack = {format: "Image", _id: imageData._id, imageKey: imageData.imageKey, imageB64: imageB64, imageTitle: imageData.imageTitle, imageDescription: imageData.imageDescription, votes: imageData.votes, comments: imageData.comments, creatorName: imageData.creatorName, creatorDisplayName: imageData.creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData.datePosted, postNum: index, hasSeenPosts: imageData.hasSeenPosts, upvoted: imageData.upvoted, downvoted: imageData.downvoted, isOwner: imageData.isOwner}
+                        var forSendBack = {format: "Image", _id: imageData._id, imageKey: imageData.imageKey, imageB64: imageB64, imageTitle: imageData.imageTitle, imageDescription: imageData.imageDescription, votes: imageData.votes, comments: imageData.comments, creatorName: imageData.creatorName, creatorDisplayName: imageData.creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData.datePosted, postNum: index, hasSeenPosts: imageData.hasSeenPosts, upvoted: imageData.upvoted, downvoted: imageData.downvoted, isOwner: imageData.isOwner, creatorPublicId: imageData.creatorPublicId}
                         return callback(forSendBack)
                     }
                     await addAndPush()
@@ -229,7 +229,7 @@ const HomeScreen = ({navigation, route}) => {
                 const addAndPush = async () => {
                     var pfpB64 = imageInPfp
                     console.log("TestHere")
-                    var forSendBack = {format: "Image", _id: imageData._id, imageKey: imageData.imageKey, imageB64: imageB64, imageTitle: imageData.imageTitle, imageDescription: imageData.imageDescription, votes: imageData.votes, comments: imageData.comments, creatorName: imageData.creatorName, creatorDisplayName: imageData.creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData.datePosted, postNum: index, hasSeenPosts: imageData.hasSeenPosts, upvoted: imageData.upvoted, downvoted: imageData.downvoted, isOwner: imageData.isOwner}
+                    var forSendBack = {format: "Image", _id: imageData._id, imageKey: imageData.imageKey, imageB64: imageB64, imageTitle: imageData.imageTitle, imageDescription: imageData.imageDescription, votes: imageData.votes, comments: imageData.comments, creatorName: imageData.creatorName, creatorDisplayName: imageData.creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData.datePosted, postNum: index, hasSeenPosts: imageData.hasSeenPosts, upvoted: imageData.upvoted, downvoted: imageData.downvoted, isOwner: imageData.isOwner, creatorPublicId: imageData.creatorPublicId}
                     return callback(forSendBack)
                 }
                 await addAndPush()
