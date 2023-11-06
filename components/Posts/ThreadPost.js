@@ -148,6 +148,10 @@ class Thread extends Component {
         })
     })
 
+    navigateToProfileScreen = () => {
+        this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
+    }
+
     render() {
         return (
             <>
@@ -169,11 +173,17 @@ class Thread extends Component {
                         <TouchableOpacity style={{ width: '100%', height: 60 }}>
                             <PostsHorizontalView>
                                 <PostsVerticalView>
-                                    <PostCreatorIcon source={{uri: this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}` : (this.props.post.creatorImageB64 || SocialSquareLogo_B64_png)}} />
+                                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                        <PostCreatorIcon source={{uri: this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}` : (this.props.post.creatorImageB64 || SocialSquareLogo_B64_png)}} />
+                                    </TouchableOpacity>
                                 </PostsVerticalView>
                                 <PostsVerticalView style={{ marginTop: 9 }}>
-                                    <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorDisplayName || this.props.post.creatorName}</SubTitle>
-                                    <SubTitle style={{ fontSize: 12, color: this.props.colors.brand, marginBottom: 0 }}>@{this.props.post.creatorName}</SubTitle>
+                                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                        <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorDisplayName || this.props.post.creatorName}</SubTitle>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                        <SubTitle style={{ fontSize: 12, color: this.props.colors.brand, marginBottom: 0 }}>@{this.props.post.creatorName}</SubTitle>
+                                    </TouchableOpacity>
                                 </PostsVerticalView>
                             </PostsHorizontalView>
                         </TouchableOpacity>

@@ -851,7 +851,8 @@ const ProfilePages = ({ route, navigation }) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: null,
                                 creatorImageB64: profileData.profileKey,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId
                             })
                         } else if (data.threadType === "Images") {
                             const imageInThreadB64 = await getImageWithKeyFour(data.threadImageKey)
@@ -877,7 +878,8 @@ const ProfilePages = ({ route, navigation }) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: imageInThreadB64,
                                 creatorImageB64: profileData.profileKey,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId
                             })
                         }
                     } catch (error) {

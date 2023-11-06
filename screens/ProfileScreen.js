@@ -705,7 +705,8 @@ const Welcome = ({navigation, route}) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: null,
                                 creatorImageB64: profilePictureUri,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId
                             })
                         } else if (data.threadType === "Images") {
                             const imageInThreadB64 = await getImageWithKeyFour(data.threadImageKey)
@@ -731,7 +732,8 @@ const Welcome = ({navigation, route}) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: imageInThreadB64,
                                 creatorImageB64: profilePictureUri,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId
                             })
                         }
                     } catch (error) {
