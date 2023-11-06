@@ -165,13 +165,13 @@ const ProfileStats = ({navigation, route}) => {
         if (type == 'Followers') {
             return (
                 <Fragment key={index.toString()}>
-                    <ProfileStats_FollowersItem item={item} index={index} setUserOnThreeDotsMenu={setUserOnThreeDotsMenu} userOnThreeDotsMenu={userOnThreeDotsMenu}/>
+                    <FollowersItem item={item} index={index} setUserOnThreeDotsMenu={setUserOnThreeDotsMenu} userOnThreeDotsMenu={userOnThreeDotsMenu} navigation={navigation}/>
                 </Fragment>
             )
         } else {
             return (
                 <Fragment key={index.toString()}>
-                    <ProfileStats_FollowingItem item={item} index={index} setListItems={setListItems} UnfollowPrivateAccountConfirmationPickerMenu={UnfollowPrivateAccountConfirmationPickerMenu} isSelf={isSelf} profilePictures={profilePictures}/>
+                    <ProfileStats_FollowingItem item={item} index={index} setListItems={setListItems} UnfollowPrivateAccountConfirmationPickerMenu={UnfollowPrivateAccountConfirmationPickerMenu} isSelf={isSelf} profilePictures={profilePictures} navigation={navigation}/>
                 </Fragment>
             )
         }
@@ -407,7 +407,7 @@ const ProfileStats = ({navigation, route}) => {
                 <FlatList
                     data={listItems}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => type == 'Followers' ? <FollowersItem item={item} index={index} setUserOnThreeDotsMenu={setUserOnThreeDotsMenu} colors={colors} profilePictures={profilePictures} isSelf={isSelf}/> : <MemoizedItem item={item} index={index}/>}
+                    renderItem={({ item, index }) => type == 'Followers' ? <FollowersItem item={item} index={index} setUserOnThreeDotsMenu={setUserOnThreeDotsMenu} colors={colors} profilePictures={profilePictures} isSelf={isSelf} navigation={navigation}/> : <MemoizedItem item={item} index={index}/>}
                     getItemLayout={(data, index) => (
                         {length: 70, offset: 70 * index, index}
                     )}
@@ -426,7 +426,7 @@ const ProfileStats = ({navigation, route}) => {
 
 export default ProfileStats;
 
-function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateAccountConfirmationPickerMenu, profilePictures, isSelf}) {
+function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateAccountConfirmationPickerMenu, profilePictures, isSelf, navigation}) {
     const {colors} = useTheme()
     const [following, setFollowing] = useState(item.following);
     const [changingFollowing, setChangingFollowing] = useState(false)
@@ -498,6 +498,10 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
         }
     }
 
+    const navigateToProfileScreen = () => {
+        navigation.navigate('ProfilePages', {pubId: item.pubId})
+    }
+
     if (item.status === 'FAILED') {
         return (
             <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
@@ -508,8 +512,12 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
     } else {
         return (
             <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
-                <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey]}} defaultSource={{uri: profilePictures[item.profileImageKey]}}/>
-                <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
+                <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                    <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey]}} defaultSource={{uri: profilePictures[item.profileImageKey]}}/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                    <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
+                </TouchableOpacity>
                 {isSelf && (
                     changingFollowing == false ?
                         <TouchableOpacity onPress={() => {
@@ -537,6 +545,10 @@ class FollowersItem extends PureComponent {
         super(props)
     }
 
+    navigateToProfileScreen = () => {
+        this.props.navigation.navigate('ProfilePages', {pubId: this.props.item.pubId})
+    }
+
     render() {
         if (this.props.item.status === 'FAILED') {
             return (
@@ -548,8 +560,12 @@ class FollowersItem extends PureComponent {
         } else {
             return (
                 <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: this.props.index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: this.props.colors.borderColor, height: 70}}>
-                    <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: this.props.colors.brand, borderWidth: 2, resizeMode: "cover"}} source={{uri: this.props.profilePictures[this.props.item.profileImageKey]}} defaultSource={{uri: this.props.profilePictures[this.props.item.profileImageKey]}}/>
-                    <SubTitle style={{color: this.props.colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{this.props.item.displayName || this.props.item.name || 'Error getting username'}</SubTitle>
+                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                        <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: this.props.colors.brand, borderWidth: 2, resizeMode: "cover"}} source={{uri: this.props.profilePictures[this.props.item.profileImageKey]}} defaultSource={{uri: this.props.profilePictures[this.props.item.profileImageKey]}}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                        <SubTitle style={{color: this.props.colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{this.props.item.displayName || this.props.item.name || 'Error getting username'}</SubTitle>
+                    </TouchableOpacity>
                     {this.props.isSelf &&
                         <TouchableOpacity onPress={() => {this.props.setUserOnThreeDotsMenu({name: this.props.item.displayName || this.props.item.name, pubId: this.props.item.pubId})}} style={{position: 'absolute', right: 10}}>
                             <Image

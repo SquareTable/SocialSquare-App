@@ -106,7 +106,7 @@ const BlockedAccountsScreen = ({navigation}) => {
                 <FlatList
                     data={reducer.users}
                     keyExtractor={(item) => item.pubId}
-                    renderItem={({ item, index }) => <MemoizedItem item={item} index={index} dispatch={dispatch} profilePictures={reducer.profilePictures}/>}
+                    renderItem={({ item, index }) => <MemoizedItem item={item} index={index} dispatch={dispatch} profilePictures={reducer.profilePictures} navigation={navigation}/>}
                     getItemLayout={(data, index) => (
                         {length: 70, offset: 70 * index, index}
                     )}
@@ -121,7 +121,7 @@ const BlockedAccountsScreen = ({navigation}) => {
     );
 }
 
-const Item = ({item, index, dispatch, profilePictures}) => {
+const Item = ({item, index, dispatch, profilePictures, navigation}) => {
     const {colors, dark} = useTheme();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
@@ -152,11 +152,19 @@ const Item = ({item, index, dispatch, profilePictures}) => {
             dispatch({type: 'stopChangingBlockedStatus', userIndex: index})
         })
     }
+
+    const navigateToProfileScreen = () => {
+        navigation.navigate('ProfilePages', {pubId: item.pubId})
+    }
     
     return (
         <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
-            <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey] || SocialSquareLogo_B64_png}} />
-            <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
+            <TouchableOpacity onPress={navigateToProfileScreen}>
+                <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey] || SocialSquareLogo_B64_png}} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={navigateToProfileScreen}>
+                <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
+            </TouchableOpacity>
             {item.changingBlockedStatus ?
                 <View style={{position: 'absolute', right: 10, justifyContent: 'center', alignItems: 'center'}}>
                     <ActivityIndicator color={colors.brand} size="large"/>

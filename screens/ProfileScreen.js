@@ -455,7 +455,8 @@ const Welcome = ({navigation, route}) => {
                             upvoted: data.upvoted,
                             downvoted: data.downvoted,
                             isOwner: data.isOwner,
-                            _id: data._id
+                            _id: data._id,
+                            creatorPublicId: data.creatorPublicId
                         })
                     } catch (error) {
                         reject(error)
@@ -621,7 +622,7 @@ const Welcome = ({navigation, route}) => {
             console.log(pollData[index])
             async function getPfpImageForPollWithAsync() {
                 
-                var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, comments: pollData[index].comments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profilePictureUri, isOwner: pollData[index].isOwner}
+                var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, comments: pollData[index].comments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profilePictureUri, isOwner: pollData[index].isOwner, creatorPublicId: pollData[index].creatorPublicId}
                 tempSections.push(tempSectionsTemp)
                 itemsProcessed++;
                 if(itemsProcessed === pollData.length) {
@@ -704,7 +705,8 @@ const Welcome = ({navigation, route}) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: null,
                                 creatorImageB64: profilePictureUri,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId
                             })
                         } else if (data.threadType === "Images") {
                             const imageInThreadB64 = await getImageWithKeyFour(data.threadImageKey)
@@ -730,7 +732,8 @@ const Welcome = ({navigation, route}) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: imageInThreadB64,
                                 creatorImageB64: profilePictureUri,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId
                             })
                         }
                     } catch (error) {

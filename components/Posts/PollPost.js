@@ -29,6 +29,7 @@ import { ServerUrlContext } from '../ServerUrlContext.js';
 import axios from 'axios';
 import { getTimeFromUTCMS } from '../../libraries/Time';
 import { CredentialsContext } from '../CredentialsContext';
+import { TouchableOpacity } from 'react-native';
 
 class Poll extends Component {
     constructor(props) {
@@ -160,6 +161,10 @@ class Poll extends Component {
         })
     })
 
+    navigateToProfileScreen = () => {
+        this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
+    }
+
     render() {
         return (
             <>
@@ -172,16 +177,17 @@ class Poll extends Component {
                 <PollPostFrame style={{marginLeft: 0, marginRight: 0, width: '100%'}} onPress={this.navigateToFullScreen}>
                     <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: this.props.colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                         <PostsVerticalView>
-                            <PostCreatorIcon source={this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? {uri: `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}`} : this.props.post.pfpB64 ? { uri: this.props.post.pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
+                            <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                <PostCreatorIcon source={this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? {uri: `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}`} : this.props.post.pfpB64 ? { uri: this.props.post.pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
+                            </TouchableOpacity>
                         </PostsVerticalView>
                         <PostsVerticalView style={{ marginTop: 9 }}>
-                            {this.props.post.creatorDisplayName !== "" ? (
-                                <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorDisplayName}</SubTitle>
-                            ) : (null)}
-                            {this.props.post.creatorDisplayName == "" ? (
-                                <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorName}</SubTitle>
-                            ) : (null)}
-                            <SubTitle style={{ fontSize: 12, marginBottom: 0, color: this.props.colors.tertiary }}>@{this.props.post.creatorName}</SubTitle>
+                            <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorDisplayName !== "" ? this.props.post.creatorDisplayName : this.props.post.creatorName}</SubTitle>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                <SubTitle style={{ fontSize: 12, marginBottom: 0, color: this.props.colors.tertiary }}>@{this.props.post.creatorName}</SubTitle>
+                            </TouchableOpacity>
                         </PostsVerticalView>
                     </PostsHorizontalView>
                     <PollPostTitle style={{ width: '95%', color: this.props.colors.brand }}>

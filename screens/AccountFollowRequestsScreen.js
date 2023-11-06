@@ -161,6 +161,10 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
         }
     }
 
+    const navigateToProfileScreen = (pubId) => {
+        navigation.navigate('ProfilePages', {pubId})
+    }
+
     const Item = ({item, index}) => {
         if (item.status === 'FAILED') {
             return (
@@ -172,8 +176,12 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
         } else {
             return (
                 <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
-                    <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: item.profileImageB64}} />
-                    <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8, fontSize: 16}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
+                    <TouchableOpacity onPress={() => navigateToProfileScreen(item.pubId)}>
+                        <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: item.profileImageB64}} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigateToProfileScreen(item.pubId)}>
+                        <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8, fontSize: 16}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
+                    </TouchableOpacity>
                     <View style={{position: 'absolute', right: 10, flexDirection: 'row'}}>
                         <TouchableOpacity onPress={() => {acceptFollowRequest(item.pubId, index)}} style={{justifyContent: 'center', alignItems: 'center', borderColor: colors.borderColor, borderWidth: 2, paddingVertical: 6, paddingHorizontal: 8, marginHorizontal: 3, borderRadius: 10}}>
                             <Text style={{color: colors.tertiary, fontSize: 15, fontWeight: 'bold', color: colors.green}}>Accept</Text>

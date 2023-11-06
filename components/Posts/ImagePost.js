@@ -147,6 +147,10 @@ class ImagePost extends Component {
         })
     })
 
+    navigateToProfileScreen = () => {
+        this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
+    }
+
     render() {
         return (
             <>
@@ -159,11 +163,17 @@ class ImagePost extends Component {
                 <View style={{backgroundColor: this.props.colors.borderColor, borderRadius: 15}}>
                     <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: this.props.colors.darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                         <PostsVerticalView style={{marginRight: 5}}>
-                            <PostCreatorIcon style={{borderColor: this.props.colors.tertiary, borderWidth: 3}} source={{uri: this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? (this.props.serverUrl + `/getRawImageOnServer/${this.props.post.creatorPfpKey}`) : this.props.post.creatorPfpB64}}/>
+                            <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                <PostCreatorIcon style={{borderColor: this.props.colors.tertiary, borderWidth: 3}} source={{uri: this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? (this.props.serverUrl + `/getRawImageOnServer/${this.props.post.creatorPfpKey}`) : this.props.post.creatorPfpB64}}/>
+                            </TouchableOpacity>
                         </PostsVerticalView>
                         <PostsVerticalView style={{marginTop: 9}}>
-                            <SubTitle style={{fontSize: 20, color: this.props.colors.brand, marginBottom: 0}}>{this.props.post.creatorDisplayName}</SubTitle>
-                            <SubTitle style={{fontSize: 12, marginBottom: 0, color: this.props.colors.tertiary}}>@{this.props.post.creatorName}</SubTitle>
+                            <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                <SubTitle style={{fontSize: 20, color: this.props.colors.brand, marginBottom: 0}}>{this.props.post.creatorDisplayName}</SubTitle>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                <SubTitle style={{fontSize: 12, marginBottom: 0, color: this.props.colors.tertiary}}>@{this.props.post.creatorName}</SubTitle>
+                            </TouchableOpacity>
                         </PostsVerticalView>
                     </PostsHorizontalView>
                     <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
