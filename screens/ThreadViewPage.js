@@ -54,7 +54,13 @@ const ThreadViewPage = ({navigation, route}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {name} = storedCredentials} else {var {name} = {name: 'SSGUEST'}}
-    const {threadId, creatorPfpB64} = route.params;
+    const {post} = route.params;
+
+    useEffect(() => {
+        dispatch({type: 'addPosts', posts: [post]})
+    }, [])
+
+    const threadId = '' // -- Remove this once Comment component has been completed and merged into the main branch
     
     //ServerStuff
     const [message, setMessage] = useState();
@@ -69,8 +75,6 @@ const ThreadViewPage = ({navigation, route}) => {
     const [commentsLength , setCommentsLength] = useState("Loading")
     const [loadingMoreComments, setLoadingMoreComments] = useState(false)
     //change stuff
-    const [limitRefresh, setLimitRefresh] = useState(false)
-    const [threadCategory, setThreadCategory] = useState("Finding")
     const [creatorDisplayName, setCreatorDisplayName] = useState("Finding")
     const [creatorName, setCreatorName] = useState("Finding")
     const [creatorImageB64, setCreatorImageB64] = useState("Finding")
@@ -129,59 +133,22 @@ const ThreadViewPage = ({navigation, route}) => {
         setMessageType(type);
     }
 
-    //Refresh All Values
-    const refreshAllValues = () => {
-        const changeValues = async (data) => {
-            let imageB64Var = null
-            if (data.threadImageKey !== "") {
-                console.log(data.threadImageKey)
-                imageB64Var = await getImageWithKey(data.threadImageKey)
-            }
+    useEffect(() => {
+        const abortController = new AbortController();
 
-            data.creatorImageB64 = creatorPfpB64
-            data.imageInThreadB64 = imageB64Var
-
-            dispatch({type: 'addPosts', posts: [data]})
-            setCreatorDisplayName(data.creatorDisplayName)
-            setCreatorName(data.creatorName)
-
-            //Get category image
-            let categoryB64Var = null
-            if (data.categoryImageKey !== "") {
-                console.log(data.categoryImageKey)
-                categoryB64Var = await getImageWithKey(data.categoryImageKey)
-            } 
-            setCategoryImageB64(categoryB64Var)
-            setThreadCategory(data.threadCategory)
+        if (post.categoryImageKey && post.categoryImageKey !== "") {
+            const url = serverUrl + '/getImageOnServer/' + post.categoryImageKey;
+            axios.get(url, {signal: abortController.signal}).then(res => {
+                setCategoryImageB64('data:image/jpeg;base64,' + res.data)
+            }).catch(error => {
+                console.error('Error loading image:', error)
+            })
         }
-        const url = `${serverUrl}/tempRoute/getthreadbyid`;
-        const toSend = {
-            threadId
-        }
-        
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-    
-            if (status !== 'SUCCESS') {
-                console.log("Failed")
-                handleMessage(message, status);
-            } else {
-                console.log("SUCCESS getting thread by ID")
-                changeValues(data);
-            }
-            //setSubmitting(false);
-        }).catch(error => {
-            console.error(error);
-            //setSubmitting(false);
-            handleMessage(ParseErrorMessage(error));
-        })
-    }
 
-    if (limitRefresh == false) {
-        setLimitRefresh(true);
-        refreshAllValues();
-    }
+        return () => {
+            abortController.abort();
+        }
+    }, [])
 
     const prepareComments = () => {
         upVotedComments = []
@@ -761,21 +728,16 @@ const ThreadViewPage = ({navigation, route}) => {
                         resizeMethod="resize"
                     />
                 </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{creatorDisplayName ? creatorDisplayName : creatorName}'s thread</TestText>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{postReducer.posts.length > 0 ? (postReducer.posts[0].creatorDisplayName || postReducer.posts[0].creatorName) : 'Finding'}'s thread</TestText>
             </ChatScreen_Title>
             <KeyboardAvoidingScrollView>
                 <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2, paddingTop: 0}}>
                         <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: categoryImageB64 == null || categoryImageB64 == "Finding" ? SocialSquareLogo_B64_png : categoryImageB64}}/>
-                    <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
+                    <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {postReducer.posts.length > 0 ? postReducer.posts[0].threadCategory : 'Finding'}</SubTitle>
                 </StyledContainer>
                 {postReducer.posts.length > 0 ?
                     <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0} onDeleteCallback={onDeleteCallback}/>
-                :
-                    <>
-                        <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Loading thread... (At some point we should put a loading animation here)</Text>
-                        <ActivityIndicator color={colors.brand} size="large"/>
-                    </>
-                }
+                : null}
                 {storedCredentials ?
                     <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
                         <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
