@@ -152,6 +152,10 @@ class Thread extends Component {
         this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
     }
 
+    navigateToCategory = () => {
+        this.props.navigation.navigate('CategoryViewPage', {categoryId: this.props.post.categoryId, categoryTitle: this.props.post.threadCategory})
+    }
+
     render() {
         return (
             <>
@@ -190,7 +194,7 @@ class Thread extends Component {
                     </PostsHorizontalView>
                     <TouchableOpacity onPress={this.navigateToFullScreen}>
                         <ImagePostTextFrame style={{ textAlign: 'left', alignItems: 'baseline' }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={this.navigateToCategory}>
                                 <SubTitle style={{ fontSize: 10, color: this.props.colors.brand, marginBottom: 0 }}>Category: {this.props.post.threadCategory}</SubTitle>
                             </TouchableOpacity>
                             <SubTitle style={{ fontSize: 20, color: this.props.colors.tertiary, marginBottom: 0 }}>{this.props.post.threadTitle}</SubTitle>
