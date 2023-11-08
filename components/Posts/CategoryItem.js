@@ -18,9 +18,13 @@ class CategoryItemClass extends PureComponent {
         super(props);
     }
 
+    navigateToCategoryViewPage = () => {
+        this.props.navigation.navigate("CategoryViewPage", {categoryId: this.props.categoryId, categoryTitle: this.props.categoryTitle})
+    }
+
     render() {
         return (
-            <SearchFrame onPress={() => this.props.onPressFunction ? this.props.onPressFunction(this.props.categoryTitle, this.props.allowScreenShots, this.props.categoryId) : this.props.navigation.navigate("CategoryViewPage", {categoryTitle: this.props.categoryTitle, NSFL: this.props.NSFL, NSFW: this.props.NSFW, allowScreenShots: (this.props.allowScreenShots != undefined ? this.props.allowScreenShots : true), categoryId: this.props.categoryId})}>
+            <SearchFrame onPress={() => this.props.onPressFunction ? this.props.onPressFunction(this.props.categoryTitle, this.props.allowScreenShots, this.props.categoryId) : this.navigateToCategoryViewPage()}>
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: this.props.image != undefined && this.props.image != null && this.props.image != '' ? this.props.image : SocialSquareLogo_B64_png}} />
                 {this.props.NSFW == false && (
                     <View>
