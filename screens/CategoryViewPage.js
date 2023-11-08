@@ -463,21 +463,31 @@ const CategoryViewPage = ({route, navigation}) => {
         <>
             <StatusBar style={colors.StatusBarColor}/>
             {categoryData === null ?
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary}}>
-                    {errorLoadingCategory ?
-                        <>
-                            <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>{errorLoadingCategory}</Text>
-                            <TouchableOpacity onPress={getCategoryItems}>
-                                <Ionicons name="reload" size={50} color={colors.errorColor} />
-                            </TouchableOpacity>
-                        </>
-                    :
-                        <>
-                            <Text style={{fontSize: 20, color: colors.tertiary, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>Loading {categoryTitle} category...</Text>
-                            <ActivityIndicator size="large" color={colors.brand}/>
-                        </>
-                    }
-                </View>
+                <>
+                    <TouchableOpacity style={{position: 'absolute', left: 10, top: StatusBarHeight}} onPress={() => {navigation.goBack()}}>
+                        <Image
+                            source={require('../assets/app_icons/back_arrow.png')}
+                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                        />
+                    </TouchableOpacity>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary}}>
+                        {errorLoadingCategory ?
+                            <>
+                                <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>{errorLoadingCategory}</Text>
+                                <TouchableOpacity onPress={getCategoryItems}>
+                                    <Ionicons name="reload" size={50} color={colors.errorColor} />
+                                </TouchableOpacity>
+                            </>
+                        :
+                            <>
+                                <Text style={{fontSize: 20, color: colors.tertiary, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>Loading {categoryTitle} category...</Text>
+                                <ActivityIndicator size="large" color={colors.brand}/>
+                            </>
+                        }
+                    </View>
+                </>
             :
                 <>
                     {displayAgeRequirementWarning == false ?
