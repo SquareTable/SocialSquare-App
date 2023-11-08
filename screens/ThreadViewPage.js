@@ -716,6 +716,10 @@ const ThreadViewPage = ({navigation, route}) => {
         if (isFocused && deleted) navigation.goBack();
     }, [isFocused])
 
+    const navigateToCategoryViewPage = () => {
+        navigation.navigate('CategoryViewPage', {categoryId: post.categoryId, categoryTitle: post.threadCategory})
+    }
+
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
@@ -732,8 +736,12 @@ const ThreadViewPage = ({navigation, route}) => {
             </ChatScreen_Title>
             <KeyboardAvoidingScrollView>
                 <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2, paddingTop: 0}}>
+                    <TouchableOpacity onPress={navigateToCategoryViewPage}>
                         <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: categoryImageB64 == null || categoryImageB64 == "Finding" ? SocialSquareLogo_B64_png : categoryImageB64}}/>
-                    <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {postReducer.posts.length > 0 ? postReducer.posts[0].threadCategory : 'Finding'}</SubTitle>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={navigateToCategoryViewPage}>
+                        <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {postReducer.posts.length > 0 ? postReducer.posts[0].threadCategory : 'Finding'}</SubTitle>
+                    </TouchableOpacity>
                 </StyledContainer>
                 {postReducer.posts.length > 0 ?
                     <ThreadPost post={postReducer.posts[0]} colors={colors} colorsIndexNum={colorsIndexNum} dispatch={dispatch} index={0} onDeleteCallback={onDeleteCallback}/>
