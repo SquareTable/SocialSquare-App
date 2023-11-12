@@ -18,8 +18,6 @@ import {
     ReportProfileOptionsViewButtonsText,
     ReportProfileOptionsViewSubtitleText,
     ReportProfileOptionsViewText,
-    ChatScreen_Title,
-    Navigator_BackButton,
     InnerContainer,
     PageTitle,
     SubTitle,

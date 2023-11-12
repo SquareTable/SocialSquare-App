@@ -1,3 +1,4 @@
+import { useNavigation, useTheme } from '@react-navigation/native';
 import { 
     ChatScreen_Title,
     Navigator_BackButton,
@@ -5,6 +6,9 @@ import {
 } from '../screens/screenStylings/styling';
 
 const TopNavBar = ({extraStyles = {}, rightIcon, screenName}) => {
+    const colors = useTheme();
+    const navigation = useNavigation();
+
     return (
         <ChatScreen_Title style={[extraStyles, {backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}]}>
             <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>

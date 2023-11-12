@@ -1,11 +1,6 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
 import {useTheme} from '@react-navigation/native';
 
-import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
-} from './screenStylings/styling.js';
 import {View, Image, Text, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppStylingContext } from '../components/AppStylingContext.js';
@@ -15,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import RadioButton from '../components/RadioButton.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 
 const AppStyling = ({navigation}) => {
@@ -47,17 +43,7 @@ const AppStyling = ({navigation}) => {
     }
     return(
         <View style={{height: '100%'}}>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>App Styling</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName="App Styling"/>
             <View style={{justifyContent: 'space-between', alignContent: 'center', alignItems: 'center', alignSelf: 'center', flex: 3}}>
                 <View style={{flex: 2, alignItems: 'center', flexDirection: 'row'}}>
                     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
