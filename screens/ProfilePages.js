@@ -1006,7 +1006,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && categories.categories.length > 0) {
-                toSend.previousCategoryId = categories.categories[categories.categories.length - 1].categoryId
+                toSend.previousCategoryMemberId = categories.categories[categories.categories.length - 1].memberId
             }
 
             axios.post(url, toSend).then((response) => {
