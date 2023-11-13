@@ -120,11 +120,10 @@ const CategoryViewPage = ({route, navigation}) => {
     const [categoryDescription, setCategoryDescription] = useState("Loading");
     const [categoryTags, setCategoryTags] = useState();
     const [members, setMembers] = useState();
-    const [modPerms, setModPerms] = useState();
-    const [ownerPerms, setOwnerPerms] = useState();
     const [datePosted, setDatePosted] = useState();
     const [inCategory, setInCategory] = useState("Finding");
     const [initialInCategory, setInitialInCategory] = useState();
+    const [permissions, setPermissions] = useState({});
 
     // NSFW / NSFL warning
     const [displayAgeRequirementWarning, setDisplayAgeRequirementWarning] = useState(false);
@@ -188,11 +187,10 @@ const CategoryViewPage = ({route, navigation}) => {
             setCategoryDescription(data.categoryDescription)
             setCategoryTags(data.categoryTags)
             setMembers(data.members)
-            setModPerms(data.modPerms)
-            setOwnerPerms(data.ownerPerms)
             setDatePosted(data.datePosted)
             setInCategory(data.inCategory)
             setInitialInCategory(data.inCategory)
+            setPermissions(data.permissions)
         }).catch(error => {
             console.error(error);
             setErrorLoadingCategory(ParseErrorMessage(error))

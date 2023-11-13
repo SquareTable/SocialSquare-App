@@ -813,7 +813,8 @@ const Welcome = ({navigation, route}) => {
                                 NSFW: category.NSFW,
                                 NSFL: category.NSFL,
                                 datePosted: category.datePosted,
-                                categoryId: category.categoryId
+                                categoryId: category.categoryId,
+                                memberId: category.memberId
                             })
                         } else {
                             //category without an image
@@ -826,7 +827,8 @@ const Welcome = ({navigation, route}) => {
                                 NSFW: category.NSFW,
                                 NSFL: category.NSFL,
                                 datePosted: category.datePosted,
-                                categoryId: category.categoryId
+                                categoryId: category.categoryId,
+                                memberId: category.memberId
                             })
                         }
                     } catch (error) {
@@ -835,10 +837,7 @@ const Welcome = ({navigation, route}) => {
                 })
             })
         ).then(categories => {
-            dispatchCategories({type: 'addCategories', categories})
-            if (data.noMoreCategories) {
-                dispatchCategories({type: 'noMoreCategories'})
-            }
+            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreCategories})
         }).catch(error => {
             dispatchCategories({type: 'error', error: String(error)})
         })
@@ -860,7 +859,7 @@ const Welcome = ({navigation, route}) => {
             const toSend = {pubId: secondId};
 
             if (!reload && categories.categories.length > 0) {
-                toSend.previousCategoryId = categories.categories[categories.categories.length - 1].categoryId
+                toSend.previousCategoryMemberId = categories.categories[categories.categories.length - 1].memberId
             }
 
             axios.post(url, toSend).then((response) => {
@@ -1393,7 +1392,7 @@ const Welcome = ({navigation, route}) => {
                             onEndReached = {({distanceFromEnd})=>{
                                 if (distanceFromEnd > 0) {
                                     console.log('End of the categories feed was reached with ' + distanceFromEnd + ' pixels from the end.')
-                                    if (categories.loadingFeed === false) {
+                                    if (categories.loadingFeed === false && !categories.noMoreCategories) {
                                         loadCategories()
                                     }
                                 }

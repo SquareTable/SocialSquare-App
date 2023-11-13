@@ -7,13 +7,21 @@ const reducer = (state, action) => {
     if (action.type === 'addCategories') {
         console.warn('Adding categories')
         if (action.categories) {
-            return {
+            const newState = {
                 ...state,
                 categories: state.categories.concat(action.categories),
                 loadingFeed: false,
                 reloadingFeed: false,
                 error: null
             }
+            
+            if (typeof action.noMoreCategories === 'boolean') {
+                newState.noMoreCategories = action.noMoreCategories
+            } else {
+                console.warn('noMoreCategories is not a boolean')
+            }
+
+            return newState;
         } else {
             console.error('No posts were given to reducer')
             return {
