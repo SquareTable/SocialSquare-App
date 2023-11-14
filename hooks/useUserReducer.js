@@ -7,13 +7,19 @@ const reducer = (state, action) => {
     if (action.type === 'addUsers') {
         console.warn('Adding users')
         if (action.users) {
-            return {
+            const newState = {
                 ...state,
                 users: state.users.concat(action.users),
                 loadingFeed: false,
                 reloadingFeed: false,
                 error: null
+            };
+
+            if (typeof action.noMoreItems === 'boolean') {
+                newState.noMoreItems = action.noMoreItems;
             }
+
+            return newState;
         } else {
             console.error('No users were given to reducer')
             return {
