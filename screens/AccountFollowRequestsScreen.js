@@ -12,6 +12,8 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import Ionicons from 'react-native-vector-icons/Ionicons.js';
+import ParseErrorMessage from '../components/ParseErrorMessage.js';
 
 const AccountFollowRequestsScreen = ({navigation, route}) => {
     const StatusBarHeight = useContext(StatusBarHeightContext);
@@ -21,7 +23,7 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [noMoreItems, setNoMoreItems] = useState(false);
     const [accountFollowRequests, setAccountFollowRequests] = useState('NOT LOADED');
-    const [errorOccured, setErrorOccured] = useState(false);
+    const [errorOccurred, setErrorOccurred] = useState(false);
     const [refreshFlatList, setRefreshFlatList] = useState(false);
 
     async function loadItems() {
@@ -85,13 +87,13 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
             
             if (status !== 'SUCCESS') {
                 console.log(message);
-                setErrorOccured(true);
+                setErrorOccurred(message);
             } else {
                 setAccountFollowRequests(data);
             }
         }).catch(e => {
             console.error(e)
-            setErrorOccured(true);
+            setErrorOccurred(ParseErrorMessage(e));
         })
     }, [])
 
@@ -209,9 +211,12 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Account Follow Requests</TestText>
             </ChatScreen_Title>
-            {errorOccured ? (
-                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold'}}>An error occured. Please try again.</Text>
+            {errorOccurred ? (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>{errorOccurred}</Text>
+                    <TouchableOpacity onPress={() => alert('Coming soon')}>
+                        <Ionicons name="reload" size={50} color={colors.errorColor} />
+                    </TouchableOpacity>
                 </View>
             ) : (
                 accountFollowRequests.length != 0 ?
