@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, memo, useState, useRef} from 'react';
+import React, {useContext, useEffect, memo, useRef} from 'react';
 import { useTheme } from '@react-navigation/native';
-import {View, SafeAreaView, Text, TouchableOpacity, Image, FlatList, ActivityIndicator} from 'react-native';
+import {View, Text, TouchableOpacity, Image, FlatList, ActivityIndicator} from 'react-native';
 import {
     SubTitle
 } from './screenStylings/styling.js';
@@ -8,14 +8,12 @@ import axios from 'axios';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
-import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import TopNavBar from '../components/TopNavBar.js';
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
 import useUserReducer from '../hooks/useUserReducer.js';
 
 const AccountFollowRequestsScreen = ({navigation, route}) => {
-    const StatusBarHeight = useContext(StatusBarHeightContext);
     const {colors, dark} = useTheme()
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
