@@ -266,8 +266,7 @@ const FindScreen = ({navigation}) => {
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if(itemsProcessed === allData.length) {
-                                    dispatchCategories({type: 'addCategories', categories: tempSections})
-                                    if (noMoreCategories) dispatchCategories({type: 'noMoreCategories'})
+                                    dispatchCategories({type: 'addCategories', categories: tempSections, noMoreCategories})
                                 }
                             }
                             asyncFunctionForImages()
@@ -276,8 +275,7 @@ const FindScreen = ({navigation}) => {
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
-                                dispatchCategories({type: 'addCategories', categories: tempSections})
-                                if (noMoreCategories) dispatchCategories({type: 'noMoreCategories'})
+                                dispatchCategories({type: 'addCategories', categories: tempSections, noMoreCategories})
                             }
                         }
                     });
@@ -490,7 +488,7 @@ const FindScreen = ({navigation}) => {
                             onEndReached = {({distanceFromEnd})=>{
                                 if (distanceFromEnd > 0) {
                                     console.log('End of the categories feed was reached with ' + distanceFromEnd + ' pixels from the end.')
-                                    if (categoriesReducer.loadingFeed === false) {
+                                    if (categoriesReducer.loadingFeed === false && !categoriesReducer.noMoreCategories) {
                                         handleCategorySearch(searchValue.current)
                                     }
                                 }
