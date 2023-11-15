@@ -47,10 +47,7 @@ import {
     PostsIcons,
     PostsHorizontalView,
     PostsVerticalView,
-    PostCreatorIcon,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText
+    PostCreatorIcon
 } from './screenStylings/styling';
 
 // keyboard avoiding view
@@ -77,6 +74,7 @@ import PollWithVotes from '../components/Posts/PollWithVotes';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
+import TopNavBar from '../components/TopNavBar.js';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -289,17 +287,7 @@ const ViewPollPostPage = ({route, navigation}) => {
         <>
             <ThreeDotMenuActionSheet dispatch={dispatch} threeDotsMenu={postReducer.threeDotsMenu}/>
             <StatusBar style={colors.StatusBarColor}/>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                        source={require('../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{(post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) || 'ERROR'}'s poll</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName={((post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) || 'ERROR') + "'s poll"}/>
             <KeyboardAvoidingScrollView>
                 {postReducer.posts.length > 0 ? <PollWithVotes colors={colors} dispatch={dispatch} index={0} post={postReducer.posts[0]} isOwner={isOwner} colorsIndexNum={colorsIndexNum} onDeleteCallback={onDeleteCallback}/> : null}
                 {storedCredentials ?

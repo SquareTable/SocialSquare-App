@@ -2,9 +2,6 @@ import React, {useContext, useState} from 'react';
 import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
     StyledButton,
     ButtonText
 } from './screenStylings/styling.js';
@@ -12,6 +9,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {CredentialsContext} from '../components/CredentialsContext';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 const NotificationsScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -21,12 +19,7 @@ const NotificationsScreen = ({navigation}) => {
     const [notifications, setNotifications] = useState([])
     return(
         <>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <TouchableOpacity style={{top: StatusBarHeight + 2, right: 10, position: 'absolute', zIndex: 2}} onPress={() => {navigation.navigate('HomeScreen')}}>
-                    <AntDesign size={40} color={colors.tertiary} name="arrowright"/>
-                </TouchableOpacity>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName="Notifications"/>
             {storedCredentials ?
                 <>
                     <FlatList

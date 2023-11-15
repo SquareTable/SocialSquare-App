@@ -2,10 +2,6 @@ import React, {useContext, useState, useEffect, Component} from 'react';
 import { useTheme } from '@react-navigation/native';
 import {View, SafeAreaView, Text, TouchableOpacity, Image, ActivityIndicator, FlatList} from 'react-native';
 import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
-    Colors,
     StyledButton,
     ButtonText
 } from '../screenStylings/styling.js';
@@ -16,6 +12,7 @@ import axios from 'axios';
 import { ServerUrlContext } from '../../components/ServerUrlContext.js';
 import { getTimeFromUTCMS } from '../../libraries/Time.js';
 import ParseErrorMessage from '../../components/ParseErrorMessage.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 class RefreshTokenItem extends Component {
     constructor(props) {
@@ -49,7 +46,6 @@ class RefreshTokenItem extends Component {
 
 const LoginActivity = ({navigation}) => {
     const {colors, dark} = useTheme()
-    const {brand} = Colors;
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const StatusBarHeight = useContext(StatusBarHeightContext);
     const [error, setError] = useState(null)
@@ -146,17 +142,7 @@ const LoginActivity = ({navigation}) => {
 
     return(
         <>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Login Activity</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName="Login Activity"/>
             {storedCredentials ?
                 <>
                     <TouchableOpacity onPress={() => {navigation.navigate('LoginActivitySettings')}} style={{borderColor: colors.borderColor, borderWidth: 2, justifyContent: 'center', alignItems: 'center', paddingVertical: 10}}>

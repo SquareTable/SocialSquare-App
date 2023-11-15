@@ -2,9 +2,7 @@ import React, {useState, useEffect, useContext, useRef} from 'react';
 import {View, Text, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import {
-    ChatScreen_Title,
     Navigator_BackButton,
-    TestText,
     Colors,
     SearchBarArea,
     LeftIcon,
@@ -29,6 +27,7 @@ import { AppStylingContext } from '../../components/AppStylingContext.js';
 import { SimpleStylingVersion } from '../../components/StylingVersionsFile.js';
 import {CredentialsContext} from '../../components/CredentialsContext.js';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 const UserTextInput = ({label, icon, isPassword, ...props}) => {
     const {colors} = useTheme();
@@ -412,23 +411,17 @@ const SimpleStylingMenu = ({navigation, route}) => {
     return (
         <KeyboardAvoidingWrapper_NoScrollview style={{backgroundColor: colors.primary}}>
             <>
-                <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                    {backToProfileScreen == false ?
-                        <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                            <Image
-                            source={require('../../assets/app_icons/back_arrow.png')}
-                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
-                    :
-                        <Navigator_BackButton onPress={() => {navigation.replace('Welcome', {goToStylingMenu: false, backButtonHidden: true, imageFromRoute: null})}}>
-                            <Octicons name={"x"} size={40} color={colors.tertiary}/>
-                        </Navigator_BackButton>
+                <TopNavBar 
+                    screenName="Custom Styling"
+                    leftIcon={
+                        backToProfileScreen === false ? 
+                            <Navigator_BackButton onPress={() => {navigation.replace('Welcome', {goToStylingMenu: false, backButtonHidden: true, imageFromRoute: null})}}>
+                                <Octicons name={"x"} size={40} color={colors.tertiary}/>
+                            </Navigator_BackButton>
+                        : undefined
                     }
-                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Custom Styling</TestText>
-                    {confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true && outdatedStyleWarningWhenEditingHidden == true &&
+                    rightIcon={
+                        confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true && outdatedStyleWarningWhenEditingHidden == true &&
                         <TouchableOpacity onPress={() => {versionReleaseNotesHidden == true ? setNamingNewStyle(NamingNewStyle == true ? false : true) : setVersionReleaseNotesHidden(true)}} style={{position: 'absolute', right: versionReleaseNotesHidden == false ? 15 : NamingNewStyle == true ? 10 : 15, top: StatusBarHeight + 2}}>
                             {NamingNewStyle == true ?
                                 versionReleaseNotesHidden == true ?
@@ -440,7 +433,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                             }
                         </TouchableOpacity>
                     }
-                </ChatScreen_Title>
+                />
                 <ProfileOptionsView style={{backgroundColor: colors.primary, justifyContent: 'space-around', alignItems: 'center'}} viewHidden={outdatedStyleWarningWhenEditingHidden}>
                     <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>This styling is outdated</Text>
                     <Text style={{color: colors.errorColor, fontSize: 18, textAlign: 'center'}}>You cannot edit this styling. If you want to be able to edit this style, please update it.</Text>

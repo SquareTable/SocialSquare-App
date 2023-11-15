@@ -15,8 +15,6 @@ import {
     darkModeStyling,
     lightModeStyling,
     BackgroundDarkColor,
-    ChatScreen_Title,
-    Navigator_BackButton,
     TestText,
     TextLink,
     TextLinkContent,
@@ -37,6 +35,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 var _ = require('lodash');
 
@@ -224,26 +223,18 @@ const NotificationsSettingsScreen = ({navigation}) => {
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>
+            <TopNavBar screenName="Notification Settings" rightIcon={
+                storedCredentials ?
+                    savingChanges ?
+                        <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 20}}/>
+                    :
+                        <TouchableOpacity disabled={!changesHaveBeenMade} style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={saveNotificationsSettings}>
+                            <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: changesHaveBeenMade ? 1 : 0.5}}>Save</Text>
+                        </TouchableOpacity>
+                : null
+            }/>
             {storedCredentials ? 
                 <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
-                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                        <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                            <Image
-                            source={require('../assets/app_icons/back_arrow.png')}
-                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
-                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications Settings</TestText>
-                        {savingChanges ?
-                            <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 20}}/>
-                        :
-                            <TouchableOpacity disabled={!changesHaveBeenMade} style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={saveNotificationsSettings}>
-                                <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: changesHaveBeenMade ? 1 : 0.5}}>Save</Text>
-                            </TouchableOpacity>
-                        }
-                    </ChatScreen_Title>
                     {showSettings == true ?
                         <WelcomeContainer style={{backgroundColor: colors.primary, width: '100%', height: '100%'}}>
                             {notificationsAllowed == true ?
@@ -351,28 +342,15 @@ const NotificationsSettingsScreen = ({navigation}) => {
                     }
                 </BackgroundDarkColor>
             :
-                <>
-                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                        <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                            <Image
-                            source={require('../assets/app_icons/back_arrow.png')}
-                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
-                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications Settings</TestText>
-                    </ChatScreen_Title>
-                    <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
-                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to change notifications settings</Text>
-                        <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
-                            <ButtonText> Login </ButtonText>
-                        </StyledButton>
-                        <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true, Modal_NoCredentials: true})}>
-                                <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
-                        </StyledButton>
-                    </View>
-                </>
+                <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
+                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to change notifications settings</Text>
+                    <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                        <ButtonText> Login </ButtonText>
+                    </StyledButton>
+                    <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true, Modal_NoCredentials: true})}>
+                            <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                    </StyledButton>
+                </View>
             }   
         </>
     );

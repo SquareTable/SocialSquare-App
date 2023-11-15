@@ -1,27 +1,16 @@
-import React, {useState, useEffect, createRef, useContext} from 'react';
-import {View, Text, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
-import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
-} from '../screenStylings/styling.js'
-import Icon from 'react-native-vector-icons/Entypo';
+import React, {createRef, useContext} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
-
-import { Formik } from 'formik';
-
-import KeyboardAvoidingWrapper_NoScrollview from '../../components/KeyboardAvoidingWrapper_NoScrollview.js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Octicons from 'react-native-vector-icons/Octicons.js';
 
 import ColorPicker from 'react-native-wheel-color-picker'
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 const Simple_ColorPickerScreen = ({navigation, route}) => {
     const {name, indexNum, type, stylingType, stylingVersion, dark, primary, tertiary, borderColor, background, secondary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue, StatusBarColor, navFocusedColor, navNonFocusedColor, orange, yellow, purple, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor, errorColor, placeToNavigateBackTo} = route.params;
     let ColorPickerRef = createRef()
-    const [reRender, setReRender] = useState(0)
     const StatusBarHeight = useContext(StatusBarHeightContext);
 
     function isStatusBarDarkOrLight() {
@@ -39,15 +28,11 @@ const Simple_ColorPickerScreen = ({navigation, route}) => {
     return (
         <>
             <StatusBar style={StatusBarColor}/>
-            <ChatScreen_Title style={{backgroundColor: primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Octicons name={"x"} size={40} color={tertiary} />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: tertiary, fontSize: 14, marginVertical: 4}}>Edit {type == 'primary' ? 'Background' : type == 'tertiary' ? 'Text and Image Tint' : type == 'secondary' ? 'Secondary' : type == 'darkLight' ? 'Dark Light' : type == 'brand' ? 'Brand' : type == 'green' ? 'Green' : type == 'red' ? 'Red' : type == 'orange' ? 'Orange' : type == 'yellow' ? 'yellow' : type == 'purple' ? 'Purple' : type == 'greyish' ? 'Greyish' : type == 'bronzeRarity' ? 'Bronze Badge' : type == 'darkestBlue' ? 'Darkest Blue' : type == 'navFocusedColor' ? 'Nav Focused Color' : type == 'navNonFocusedColor' ? 'Nav Non Focused Color' : type == 'borderColor' ? 'Border' : type == 'slightlyLighterGrey' ? 'Slightly Lighter Grey' : type == 'midWhite' ? 'Mid White' : type == 'slightlyLighterPrimary' ? 'Slightly Lighter Primary' : type == 'descTextColor' ? 'Description Text' : type == 'StatusBarColor' ? 'Status Bar' : type == 'errorColor' ? 'Error Colour' : 'ERROR OCCURED'} Color</TestText>
+            <TopNavBar screenName={'Edit ' + (type == 'primary' ? 'Background' : type == 'tertiary' ? 'Text and Image Tint' : type == 'secondary' ? 'Secondary' : type == 'darkLight' ? 'Dark Light' : type == 'brand' ? 'Brand' : type == 'green' ? 'Green' : type == 'red' ? 'Red' : type == 'orange' ? 'Orange' : type == 'yellow' ? 'yellow' : type == 'purple' ? 'Purple' : type == 'greyish' ? 'Greyish' : type == 'bronzeRarity' ? 'Bronze Badge' : type == 'darkestBlue' ? 'Darkest Blue' : type == 'navFocusedColor' ? 'Nav Focused Color' : type == 'navNonFocusedColor' ? 'Nav Non Focused Color' : type == 'borderColor' ? 'Border' : type == 'slightlyLighterGrey' ? 'Slightly Lighter Grey' : type == 'midWhite' ? 'Mid White' : type == 'slightlyLighterPrimary' ? 'Slightly Lighter Primary' : type == 'descTextColor' ? 'Description Text' : type == 'StatusBarColor' ? 'Status Bar' : type == 'errorColor' ? 'Error Colour' : 'ERROR OCCURED') + ' Color'} rightIcon={
                 <TouchableOpacity onPress={() => {navigation.navigate(placeToNavigateBackTo, {name: name, indexNum: indexNum, type: null, dark: dark, stylingType: stylingType, stylingVersion: stylingVersion, primary: primary, tertiary: tertiary, borderColor: borderColor, background: background, secondary: secondary, darkLight: darkLight, brand: brand, green: green, red: red, darkest: darkest, greyish: greyish, bronzeRarity: bronzeRarity, darkestBlue: darkestBlue, StatusBarColor: StatusBarColor, navFocusedColor: navFocusedColor, navNonFocusedColor: navNonFocusedColor, orange: orange, yellow: yellow, purple: purple, slightlyLighterGrey: slightlyLighterGrey, midWhite: midWhite, slightlyLighterPrimary: slightlyLighterPrimary, descTextColor: descTextColor, errorColor: errorColor})}} style={{position: 'absolute', right: 10, top: StatusBarHeight + 2}}>
                     <Octicons name={"check"} size={40} color={tertiary} />
                 </TouchableOpacity>
-            </ChatScreen_Title>
+            }/>
             <View style={{backgroundColor: primary, height: '100%', alignItems: 'center', alignSelf: 'center', width: '100%'}}>
                 {type == 'StatusBarColor' || type == 'PostScreenStatusBarColor' ?
                     <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
