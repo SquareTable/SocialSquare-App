@@ -4,9 +4,6 @@ import { View, Image, ActivityIndicator, Text, TouchableOpacity, ScrollView, Ale
 import { ServerUrlContext } from '../components/ServerUrlContext';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
     StyledButton,
     ButtonText
 } from './screenStylings/styling';
@@ -15,6 +12,7 @@ import axios from 'axios';
 import { CredentialsContext } from '../components/CredentialsContext';
 import RadioButton from '../components/RadioButton';
 import ParseErrorMessage from '../components/ParseErrorMessage';
+import TopNavBar from '../components/TopNavBar';
 
 var _ = require('lodash');
 
@@ -130,24 +128,16 @@ const PrivacySettings = ({navigation}) => {
 
     return (
         <>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Privacy Settings</TestText>
-                {savingChanges ?
-                    <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 20}}/>
-                :
-                    <TouchableOpacity disabled={!changesHaveBeenMade} style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={savePrivacySettings}>
-                        <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: changesHaveBeenMade ? 1 : 0.5}}>Save</Text>
-                    </TouchableOpacity>
-                }
-            </ChatScreen_Title>
+            <TopNavBar screenName="Privacy Settings" rightIcon={
+                storedCredentials ?
+                    savingChanges ?
+                        <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 20}}/>
+                    :
+                        <TouchableOpacity disabled={!changesHaveBeenMade} style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={savePrivacySettings}>
+                            <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: changesHaveBeenMade ? 1 : 0.5}}>Save</Text>
+                        </TouchableOpacity>
+                : null
+            }/>
             {storedCredentials ?
                 loading ?
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

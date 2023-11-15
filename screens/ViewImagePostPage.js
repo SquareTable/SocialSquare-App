@@ -22,10 +22,7 @@ import {
     CommentIcons,
     CommentsHorizontalViewItem,
     VoteText,
-    MsgBox,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText
+    MsgBox
 } from './screenStylings/styling';
 
 // keyboard avoiding view
@@ -49,6 +46,7 @@ import ImagePost from '../components/Posts/ImagePost';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet';
 import ParseErrorMessage from '../components/ParseErrorMessage';
 import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
+import TopNavBar from '../components/TopNavBar.js';
 
 
 const ViewImagePostPage = ({route, navigation}) => {
@@ -274,17 +272,7 @@ const ViewImagePostPage = ({route, navigation}) => {
         <>    
             <ThreeDotMenuActionSheet dispatch={dispatchPost} threeDotsMenu={postState.threeDotsMenu}/>
             <StatusBar style={colors.StatusBarColor}/>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                        source={require('../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{post.creatorDisplayName ? post.creatorDisplayName : post.creatorName}'s post</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName={(post.creatorDisplayName ? post.creatorDisplayName : post.creatorName) + "'s post"}/>
             <KeyboardAvoidingScrollView>
                 {postState.posts.length > 0 ? <ImagePost post={postState.posts[0]} index={0} isOwner={isOwner} colors={colors} dispatch={dispatchPost} colorsIndexNum={indexNum} onDeleteCallback={onDeleteCallback}/> : null}
                 {storedCredentials ?

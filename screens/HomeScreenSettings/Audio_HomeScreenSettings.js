@@ -2,28 +2,9 @@ import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {useTheme} from "@react-navigation/native";
 
-import {
-    WelcomeContainer,
-    Avatar,
-    SettingsPageItemTouchableOpacity,
-    SettingsItemImage,
-    SettingsItemText,
-    ConfirmLogoutView,
-    ConfirmLogoutText,
-    ConfirmLogoutButtons,
-    ConfirmLogoutButtonText,
-    TextLinkContent,
-    TextLink,
-    SettingsHorizontalView,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    StyledButton,
-    ButtonText,
-    TestText
-} from '../screenStylings/styling.js';
-
 import {Image, View, Text, TouchableOpacity, ScrollView, Alert, Switch} from 'react-native';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 
 const Audio_HomeScreenSettings = ({navigation}) => {
@@ -63,20 +44,11 @@ const Audio_HomeScreenSettings = ({navigation}) => {
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary, fontSize: 18}}>Home Screen Audio Settings</TestText>
+            <TopNavBar screenName="Home Screen Audio Settings" rightIcon={
                 <TouchableOpacity style={{position: 'absolute', top: StatusBarHeight + 8, right: 10}} onPress={() => {alert('Coming soon!')}}>
                     <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold'}}>Save</Text>
                 </TouchableOpacity>
-            </ChatScreen_Title>
+            }/>
             <ScrollView>
                 <Text style={{color: colors.tertiary, fontSize: 14, textAlign: 'center', marginHorizontal: '5%'}}>Control whether audio plays in silent mode</Text>
                 <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>This screen has not been linked up to the backend yet and does not work.</Text>

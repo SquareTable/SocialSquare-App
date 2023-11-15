@@ -1,11 +1,8 @@
 import React, {useState, useContext} from 'react';
-import {View, Text, Switch, TouchableOpacity, Image, ActivityIndicator} from 'react-native';
+import {View, Text, Switch, ActivityIndicator} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
     ConfirmLogoutView,
     ConfirmLogoutText,
     ConfirmLogoutButtons,
@@ -15,6 +12,7 @@ import axios from 'axios';
 import {ServerUrlContext} from '../../../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../../../components/StatusBarHeightContext.js';
 import ParseErrorMessage from '../../../components/ParseErrorMessage.js';
+import TopNavBar from '../../../components/TopNavBar.js';
 
 const ActivateEmailMFA = ({navigation, route}) => {
     const {colors, dark} = useTheme();
@@ -65,17 +63,7 @@ const ActivateEmailMFA = ({navigation, route}) => {
                 }
             </ConfirmLogoutView>
             <StatusBar style={colors.StatusBarColor}/>   
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../../../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Email MFA</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName="Email MFA"/>
             <View style={{backgroundColor: colors.primary, flex: 1}}>
                 <Text style={{color: colors.tertiary, fontSize: 14, textAlign: 'center', marginBottom: 10}}>With Email Multi-Factor Authentication enabled, whenever someone tries to login to your SocialSquare account, they must enter a code sent to your email along with any other steps for other multi-factor authentication options you have turned on to get into your account.</Text>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: colors.tertiary, borderWidth: 2, padding: 10}}>

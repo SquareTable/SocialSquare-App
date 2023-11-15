@@ -21,10 +21,7 @@ import {
     CommentIcons,
     CommentText,
     CommentsContainer,
-    VoteText,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText
+    VoteText
 } from './screenStylings/styling';
 
 // formik
@@ -46,6 +43,7 @@ import ParseErrorMessage from '../components/ParseErrorMessage';
 import usePostReducer from '../hooks/usePostReducer';
 import ThreadPost from '../components/Posts/ThreadPost';
 import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView';
+import TopNavBar from '../components/TopNavBar.js';
 
 const ThreadViewPage = ({navigation, route}) => {
     const [postReducer, dispatch] = usePostReducer();
@@ -723,17 +721,7 @@ const ThreadViewPage = ({navigation, route}) => {
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
-            <ChatScreen_Title style={{backgroundColor: dark ? colors.darkest : colors.greyish, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                        source={require('../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{postReducer.posts.length > 0 ? (postReducer.posts[0].creatorDisplayName || postReducer.posts[0].creatorName) : 'Finding'}'s thread</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName={(postReducer.posts.length > 0 ? (postReducer.posts[0].creatorDisplayName || postReducer.posts[0].creatorName) : 'Finding') + "'s thread"}/>
             <KeyboardAvoidingScrollView>
                 <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2, paddingTop: 0}}>
                     <TouchableOpacity onPress={navigateToCategoryViewPage}>

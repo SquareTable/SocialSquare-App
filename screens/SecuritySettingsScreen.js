@@ -8,9 +8,6 @@ import {
     SettingsItemImage,
     SettingsItemText,
     BackgroundDarkColor,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
     ConfirmLogoutView,
     ConfirmLogoutText,
     ConfirmLogoutButtons,
@@ -42,6 +39,7 @@ import { AppStylingContext } from '../components/AppStylingContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import AppCredits from '../components/AppCredits.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 
 const SecuritySettingsScreen = ({navigation}) => {
@@ -154,17 +152,7 @@ const SecuritySettingsScreen = ({navigation}) => {
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
             <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
-                <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, height: 'auto', paddingBottom: 5, paddingTop: StatusBarHeight + 10}}>
-                    <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                        <Image
-                        source={require('../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                        />
-                    </Navigator_BackButton>
-                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Security Settings</TestText>
-                </ChatScreen_Title>
+                <TopNavBar screenName="Security Settings"/>
                 <ConfirmLogoutView style={{backgroundColor: colors.primary, height: 500}} viewHidden={destroyLocalDataMenuHidden}>
                     <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 24}}>Are you sure you want to delete all locally stored data?</ConfirmLogoutText>
                     <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14}}>Any data stored on your device will be removed. Data stored on a SocialSquare server will not be removed however.</ConfirmLogoutText>

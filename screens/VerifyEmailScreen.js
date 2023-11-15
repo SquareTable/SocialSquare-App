@@ -6,9 +6,6 @@ import { ServerUrlContext } from '../components/ServerUrlContext';
 import { Formik } from 'formik';
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
     InnerContainer,
     StyledFormArea,
     StyledButton,
@@ -22,6 +19,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext';
 import ParseErrorMessage from '../components/ParseErrorMessage';
+import TopNavBar from '../components/TopNavBar.js';
 
 const VerifyEmailScreen = ({navigation, route}) => {
     const [message, setMessage] = useState();
@@ -75,17 +73,7 @@ const VerifyEmailScreen = ({navigation, route}) => {
 
     return (
         <>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Verify Email</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName="Verify Email"/>
             <View style={{flex: 1}}>
                 <KeyboardAvoidingWrapper>
                     <InnerContainer>
