@@ -1,25 +1,29 @@
 import React, {useContext, useState} from 'react';
-import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import {
     StyledButton,
     ButtonText
 } from './screenStylings/styling.js';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign.js'
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {CredentialsContext} from '../components/CredentialsContext';
-import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import TopNavBar from '../components/TopNavBar.js';
+import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 
 const NotificationsScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
-    const StatusBarHeight = useContext(StatusBarHeightContext);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {privateAccount} = storedCredentials} else {var {privateAccount} = {privateAccount: false}}
     const [notifications, setNotifications] = useState([])
+    const StatusBarHeight = useContext(StatusBarHeightContext);
     return(
         <>
-            <TopNavBar screenName="Notifications"/>
+            <TopNavBar screenName="Notifications" hideBackButton rightIcon={
+                <TouchableOpacity style={{top: StatusBarHeight + 2, right: 10, position: 'absolute', zIndex: 2}} onPress={() => {navigation.navigate('HomeScreen')}}>
+                    <AntDesign size={40} color={colors.tertiary} name="arrowright"/>
+                </TouchableOpacity>
+            }/>
             {storedCredentials ?
                 <>
                     <FlatList

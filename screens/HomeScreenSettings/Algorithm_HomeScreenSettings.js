@@ -165,11 +165,11 @@ const Algorithm_HomeScreenSettings = ({navigation, route}) => {
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
-            <TopNavBar hideTitle={accountSetup} hideBackButton={accountSetup} screenName="Hoem Screen Algorithm Settings" rightIcon={
+            <TopNavBar hideTitle={accountSetup} hideBackButton={accountSetup} screenName="Algorithm Settings" rightIcon={
                 savingChanges ?
                     <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 22}}/>
                 :
-                    <TouchableOpacity disabled={accountSetup ? false : !hasUnsavedChanges} style={{position: 'absolute', top: StatusBarHeight + 8, right: 10}} onPress={saveAlgorithmSettings}>
+                    <TouchableOpacity disabled={accountSetup ? false : !hasUnsavedChanges} style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={saveAlgorithmSettings}>
                         <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: accountSetup ? 1 : hasUnsavedChanges ? 1 : 0.5}}>Save</Text>
                     </TouchableOpacity>
             }/>

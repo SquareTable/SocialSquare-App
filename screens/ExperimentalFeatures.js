@@ -20,7 +20,7 @@ const ExperimentalFeatures = ({navigation}) => {
 
     return (
         <>
-            <TopNavBar screenName="Experimental Features<"/>
+            <TopNavBar screenName="Experimental Features"/>
             <Text style={{color: colors.tertiary, fontSize: 16, marginVertical: 10, textAlign: 'center', marginHorizontal: 10}}>Experimental features are features that we are working on bringing to SocialSquare to bring a better experience to you. Some features may be broken, not work as intended, or may perform slowly. You can turn these features on at your own risk. Please send us feedback and report any bugs you experience on <TouchableOpacity onPress={() => {Linking.openURL('https://github.com/SquareTable/SocialSquare-App/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}><Text style={{color: colors.brand, textDecorationLine: 'underline', textDecorationColor: colors.brand, fontWeight: 'bold'}}>SocialSquare's GitHub page.</Text></TouchableOpacity></Text>
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <Octicons name="beaker" size={100} color={colors.tertiary} />

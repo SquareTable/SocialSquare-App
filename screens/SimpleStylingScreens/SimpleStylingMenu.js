@@ -414,7 +414,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                 <TopNavBar 
                     screenName="Custom Styling"
                     leftIcon={
-                        backToProfileScreen === false ? 
+                        backToProfileScreen === true ? 
                             <Navigator_BackButton onPress={() => {navigation.replace('Welcome', {goToStylingMenu: false, backButtonHidden: true, imageFromRoute: null})}}>
                                 <Octicons name={"x"} size={40} color={colors.tertiary}/>
                             </Navigator_BackButton>

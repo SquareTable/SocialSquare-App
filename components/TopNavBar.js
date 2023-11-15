@@ -1,12 +1,16 @@
+import { useContext } from 'react';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { 
     ChatScreen_Title,
     Navigator_BackButton,
     TestText
 } from '../screens/screenStylings/styling';
+import { StatusBarHeightContext } from './StatusBarHeightContext';
+import { Image } from 'react-native';
 
 const TopNavBar = ({extraStyles = {}, rightIcon, screenName, hideBackButton, hideTitle, leftIconChild, leftIcon}) => {
-    const colors = useTheme();
+    const StatusBarHeight = useContext(StatusBarHeightContext);
+    const {colors} = useTheme();
     const navigation = useNavigation();
 
     return (
