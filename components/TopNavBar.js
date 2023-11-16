@@ -14,7 +14,7 @@ const TopNavBar = ({extraStyles = {}, rightIcon, screenName, hideBackButton, hid
     const navigation = useNavigation();
 
     return (
-        <ChatScreen_Title style={[extraStyles, {backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}]}>
+        <ChatScreen_Title style={[{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}, extraStyles]}>
             {hideBackButton ? null :
                 leftIcon || (
                     <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
