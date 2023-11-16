@@ -200,6 +200,7 @@ const HomeScreenStack = () => {
       <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
       <Stack.Screen name="ProfilePages" component={ProfilePages}/>
+      <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
     </Stack.Navigator>
   )
 }
