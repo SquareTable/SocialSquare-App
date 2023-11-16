@@ -31,8 +31,6 @@ import {
     PostsHorizontalView,
     PostsVerticalView,
     PostCreatorIcon,
-    ChatScreen_Title,
-    Navigator_BackButton,
     Navigator_RightButton
 } from './screenStylings/styling.js';
 import {View, ActivityIndicator, ImageBackground, StyleSheet, Image, SectionList, Text, Animated} from 'react-native';
@@ -74,6 +72,7 @@ import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 function usePrevious(value) {
     const ref = useRef();
@@ -556,22 +555,15 @@ const Conversations = ({navigation}) => {
     return(
         <>
             <StatusBar style={colors.StatusBarColor}/>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                        source={require('../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                    <Text style={{color: colors.tertiary, textAlign: 'center', fontWeight: 'bold', fontSize: 22, marginTop: -2}}>{storedCredentials ? name : 'Conversations'}</Text>
-                {storedCredentials &&
-                    <Navigator_RightButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.navigate("CreateConversationSelection")}}>
-                        <AntDesign name="plus" size={40} color={colors.tertiary} />
-                    </Navigator_RightButton>
-                }
-            </ChatScreen_Title>
+            <TopNavBar screenName={storedCredentials ? name : 'Conversations'} rightIcon={
+                <>
+                    {storedCredentials &&
+                        <Navigator_RightButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.navigate("CreateConversationSelection")}}>
+                            <AntDesign name="plus" size={40} color={colors.tertiary} />
+                        </Navigator_RightButton>
+                    }
+                </>
+            }/>
             {storedCredentials ?
                 <View style={{flex: 1}}>
                     <SectionList

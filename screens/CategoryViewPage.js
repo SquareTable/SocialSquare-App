@@ -89,6 +89,8 @@ import ThreadPost from '../components/Posts/ThreadPost';
 import usePostReducer from '../hooks/usePostReducer';
 import ParseErrorMessage from '../components/ParseErrorMessage';
 
+import Ionicons from 'react-native-vector-icons/Ionicons.js';
+
 const CategoryViewPage = ({route, navigation}) => {
     const {colors, dark, indexNum} = useTheme()
 
@@ -96,7 +98,11 @@ const CategoryViewPage = ({route, navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
-    const {categoryTitle, NSFW, NSFL, allowScreenShots, categoryId} = route.params;
+    const {categoryId, categoryTitle} = route.params;
+
+    const [categoryData, setCategoryData] = useState(null);
+    const [errorLoadingCategory, setErrorLoadingCategory] = useState(null);
+
     const [AvatarImg, setAvatarImage] = useState(null)
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
     const [selectedPostFormatName, setSelectedPostFormatName] = useState("No thread posts yet, Be the first!")
@@ -114,13 +120,10 @@ const CategoryViewPage = ({route, navigation}) => {
     const [categoryDescription, setCategoryDescription] = useState("Loading");
     const [categoryTags, setCategoryTags] = useState();
     const [members, setMembers] = useState();
-    //const [NSFW, setNSFW] = useState(false);
-    //const [NSFL, setNSFL] = useState(false);
-    const [modPerms, setModPerms] = useState();
-    const [ownerPerms, setOwnerPerms] = useState();
     const [datePosted, setDatePosted] = useState();
     const [inCategory, setInCategory] = useState("Finding");
     const [initialInCategory, setInitialInCategory] = useState();
+    const [permissions, setPermissions] = useState({});
 
     // NSFW / NSFL warning
     const [displayAgeRequirementWarning, setDisplayAgeRequirementWarning] = useState(false);
@@ -129,12 +132,12 @@ const CategoryViewPage = ({route, navigation}) => {
     const StatusBarHeight = useContext(StatusBarHeightContext)
 
     useEffect(() => {
-        if (NSFW || NSFL) {
+        if (categoryData?.NSFW || categoryData?.NSFL) {
             setDisplayAgeRequirementWarning(true)
-        } else {
+        } else if (!threads.noMorePosts && threads.posts.length === 0 && threads.loadingFeed === false) {
             changeToOne()
         }
-    }, [])
+    }, [categoryData?.NSFW, categoryData?.NSFL])
 
     const dismissAgeRequirementWarning = () => {
         setDisplayAgeRequirementWarning(false)
@@ -151,88 +154,58 @@ const CategoryViewPage = ({route, navigation}) => {
         }
     }
 
-    const getAllCategoryItems = () => {
+    const getAllCategoryItems = (abortController) => {
+        setErrorLoadingCategory(null)
+        const config = abortController ? {signal: abortController.signal} : {};
+
         const url = `${serverUrl}/tempRoute/findcategorybyid`;
         const toSend = {
             categoryId
         }
     
-        axios.post(url, toSend).then((response) => {
+        axios.post(url, toSend, config).then((response) => {
             const result = response.data;
-            const {message, status, data} = result;
+            const {data} = result;
 
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                console.log(data)
-                var CategoryData = data
-                if (data.imageKey) {
-                    axios.get(`${serverUrl}/getImageOnServer/${data.imageKey}`)
-                    .then((response) => {
-                        //set image
-                        if (response.data) {
-                            //convert back to image
-                            var base64Icon = `data:image/jpeg;base64,${response.data}`
-                            setAvatarImage(base64Icon)
-                            setCategoryDescription(CategoryData.categoryDescription)
-                            setCategoryTags(CategoryData.categoryTags)
-                            setMembers(CategoryData.members)
-                            //setNSFW(CategoryData.NSFW)
-                            //setNSFL(CategoryData.NSFL)
-                            setModPerms(CategoryData.modPerms)
-                            setOwnerPerms(CategoryData.ownerPerms)
-                            setDatePosted(CategoryData.datePosted)
-                            setInCategory(CategoryData.inCategory)
-                            setInitialInCategory(CategoryData.inCategory)
-                        } else {
-                            setAvatarImage(null)
-                            setCategoryDescription(CategoryData.categoryDescription)
-                            setCategoryTags(CategoryData.categoryTags)
-                            setMembers(CategoryData.members)
-                            //setNSFW(CategoryData.NSFW)
-                            //setNSFL(CategoryData.NSFL)
-                            setModPerms(CategoryData.modPerms)
-                            setOwnerPerms(CategoryData.ownerPerms)
-                            setDatePosted(CategoryData.datePosted)
-                            setInCategory(CategoryData.inCategory)
-                            setInitialInCategory(CategoryData.inCategory)
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log("Image not recieved")
-                        console.log(error);
-                    });
-                } else {
-                    setAvatarImage(null)
-                    setCategoryDescription(CategoryData.categoryDescription)
-                    setCategoryTags(CategoryData.categoryTags)
-                    setMembers(CategoryData.members)
-                    //setNSFW(CategoryData.NSFW)
-                    //setNSFL(CategoryData.NSFL)
-                    setModPerms(CategoryData.modPerms)
-                    setOwnerPerms(CategoryData.ownerPerms)
-                    setDatePosted(CategoryData.datePosted)
-                    setInCategory(CategoryData.inCategory)
-                    setInitialInCategory(CategoryData.inCategory)
-                }
+            if (data.imageKey) {
+                axios.get(`${serverUrl}/getImageOnServer/${data.imageKey}`, config)
+                .then((response) => {
+                    if (response.data) {
+                        const base64Icon = `data:image/jpeg;base64,${response.data}`
+                        setAvatarImage(base64Icon)
+                    }
+                })
             }
-            //setSubmitting(false);
-    
+
+            setCategoryData({
+                categoryTitle: data.categoryTitle,
+                NSFW: data.NSFW,
+                NSFL: data.NSFL,
+                allowScreenShots: data.allowScreenShots
+            })
+
+            setCategoryDescription(data.categoryDescription)
+            setCategoryTags(data.categoryTags)
+            setMembers(data.members)
+            setDatePosted(data.datePosted)
+            setInCategory(data.inCategory)
+            setInitialInCategory(data.inCategory)
+            setPermissions(data.permissions)
         }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage(ParseErrorMessage(error));
+            console.error(error);
+            setErrorLoadingCategory(ParseErrorMessage(error))
         })
     }
 
-    if (getCategoryItems !== true) {
-        getAllCategoryItems()
-        setGetCategoryItems(true)
-    }
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        getAllCategoryItems(abortController)
+
+        return () => {
+            abortController.abort();
+        }
+    }, [])
 
     const JoinLeaveCategory = () => {
         if (storedCredentials) {
@@ -460,7 +433,7 @@ const CategoryViewPage = ({route, navigation}) => {
                         <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted ? getTimeFromUTCMS(datePosted) : 'Loading...'} </SubTitle>
                     </ProfileHorizontalViewItem>
                 </ProfileHorizontalView>
-                <TouchableOpacity style={{backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: colors.tertiary, width: '50%', alignSelf: 'center', marginVertical: 10, borderRadius: 10}} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack', allowScreenShots: allowScreenShots, fromCategoryViewPage: true, categoryId}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                <TouchableOpacity style={{backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: colors.tertiary, width: '50%', alignSelf: 'center', marginVertical: 10, borderRadius: 10}} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryData.categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack', allowScreenShots: categoryData.allowScreenShots, fromCategoryViewPage: true, categoryId}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
                     <ButtonText style={{color: colors.tertiary}}>Post Thread</ButtonText>
                 </TouchableOpacity>
                 <ProfileSelectMediaTypeHorizontalView>
@@ -485,60 +458,90 @@ const CategoryViewPage = ({route, navigation}) => {
     }
 
     return(
-        <>    
+        <>
             <StatusBar style={colors.StatusBarColor}/>
-            {displayAgeRequirementWarning == false ?
+            {categoryData === null ?
                 <>
-                    <View style={{paddingTop: StatusBarHeight - 15, color: colors.primary, flexDirection: 'row', justifyContent: 'center'}}>
-                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
-                            <Image
-                                source={require('../assets/app_icons/back_arrow.png')}
-                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary, top: -11}}
-                                resizeMode="contain"
-                                resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
-                        {NSFW == true && (
-                            <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFW)</SubTitle>
-                        )}
-                        {NSFL == true && (
-                            <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFL)</SubTitle>
-                        )}
-                        <PageTitle style={{fontSize: 26}} welcome={true}>{categoryTitle || "Couldn't get name"}</PageTitle>
+                    <TouchableOpacity style={{position: 'absolute', left: 10, top: StatusBarHeight}} onPress={() => {navigation.goBack()}}>
+                        <Image
+                            source={require('../assets/app_icons/back_arrow.png')}
+                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                        />
+                    </TouchableOpacity>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary}}>
+                        {errorLoadingCategory ?
+                            <>
+                                <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>{errorLoadingCategory}</Text>
+                                <TouchableOpacity onPress={getCategoryItems}>
+                                    <Ionicons name="reload" size={50} color={colors.errorColor} />
+                                </TouchableOpacity>
+                            </>
+                        :
+                            <>
+                                <Text style={{fontSize: 20, color: colors.tertiary, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>Loading {categoryTitle} category...</Text>
+                                <ActivityIndicator size="large" color={colors.brand}/>
+                            </>
+                        }
                     </View>
-                    {selectedPostFormat == "One" && (<FlatList
-                        data={threads.posts}
-                        keyExtractor={(item) => item._id}
-                        renderItem={({ item, index }) => <ThreadPost post={item} colors={colors} colorsIndexNum={indexNum} dispatch={dispatchThreads} index={index}/>}
-                        ListFooterComponent={() => <ListFooters feedData={threads} loadMoreFunction={changeToOne} dataType="threads"/>}
-                        ListHeaderComponent={ListHeaders}
-                    />)}
-                    {selectedPostFormat == "Two" && (<FlatList
-                        data={changeSections}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
-                    />)}
-                    {selectedPostFormat == "Three" && (<FlatList
-                        data={changeSections}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
-                    />)}
                 </>
             :
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <AntDesign name="warning" size={75} color={colors.tertiary} style={{marginBottom: 20}}/>
-                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Warning</Text>
-                    <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', textAlign: 'center'}}>You are about to see {NSFW == true ? 'NSFW' : NSFL == true ? 'NSFL' : 'Error Occured'} content</Text>
-                    <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center'}}>By continuing you confirm that you are 18 or older and can look at adult content.</Text>
-                    <View style={{flexDirection: 'row', marginTop: 20}}>
-                        <TouchableOpacity onPress={() => {navigation.goBack()}} style={{borderColor: colors.tertiary, borderWidth: 3, padding: 12, borderRadius: 10, marginRight: 20}}>
-                            <Text style={{color: colors.tertiary, fontSize: 14, fontWeight: 'bold'}}>Go back to safety</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={dismissAgeRequirementWarning} style={{borderColor: colors.errorColor, borderWidth: 3, padding: 12, borderRadius: 10}}>
-                            <Text style={{color: colors.tertiary, fontSize: 14, fontWeight: 'bold'}}>Continue</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                <>
+                    {displayAgeRequirementWarning == false ?
+                        <>
+                            <View style={{paddingTop: StatusBarHeight - 15, color: colors.primary, flexDirection: 'row', justifyContent: 'center'}}>
+                                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                                    <Image
+                                        source={require('../assets/app_icons/back_arrow.png')}
+                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary, top: -11}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </Navigator_BackButton>
+                                {categoryData.NSFW == true && (
+                                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFW)</SubTitle>
+                                )}
+                                {categoryData.NSFL == true && (
+                                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFL)</SubTitle>
+                                )}
+                                <PageTitle style={{fontSize: 26}} welcome={true}>{categoryData.categoryTitle || "Couldn't get name"}</PageTitle>
+                            </View>
+                            {selectedPostFormat == "One" && (<FlatList
+                                data={threads.posts}
+                                keyExtractor={(item) => item._id}
+                                renderItem={({ item, index }) => <ThreadPost post={item} colors={colors} colorsIndexNum={indexNum} dispatch={dispatchThreads} index={index}/>}
+                                ListFooterComponent={() => <ListFooters feedData={threads} loadMoreFunction={changeToOne} dataType="threads"/>}
+                                ListHeaderComponent={ListHeaders}
+                            />)}
+                            {selectedPostFormat == "Two" && (<FlatList
+                                data={changeSections}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
+                            />)}
+                            {selectedPostFormat == "Three" && (<FlatList
+                                data={changeSections}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
+                            />)}
+                        </>
+                    :
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                            <AntDesign name="warning" size={75} color={colors.tertiary} style={{marginBottom: 20}}/>
+                            <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Warning</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', textAlign: 'center'}}>You are about to see {categoryData.NSFW == true ? 'NSFW' : categoryData.NSFL == true ? 'NSFL' : 'Error Occured'} content</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center'}}>By continuing you confirm that you are 18 or older and can look at adult content.</Text>
+                            <View style={{flexDirection: 'row', marginTop: 20}}>
+                                <TouchableOpacity onPress={() => {navigation.goBack()}} style={{borderColor: colors.tertiary, borderWidth: 3, padding: 12, borderRadius: 10, marginRight: 20}}>
+                                    <Text style={{color: colors.tertiary, fontSize: 14, fontWeight: 'bold'}}>Go back to safety</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={dismissAgeRequirementWarning} style={{borderColor: colors.errorColor, borderWidth: 3, padding: 12, borderRadius: 10}}>
+                                    <Text style={{color: colors.tertiary, fontSize: 14, fontWeight: 'bold'}}>Continue</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    }
+                </>
             }
         </>
     );

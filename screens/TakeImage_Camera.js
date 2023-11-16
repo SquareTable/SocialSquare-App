@@ -74,7 +74,6 @@ const TakeImage_Camera = ({navigation, route}) => {
             var { status } = await Camera.getMicrophonePermissionsAsync();
             setMicrophonePermissionsAreGranted(status === 'granted');
             if (microphonePermissionsAreGranted == true && cameraPermissionsAreGranted == true) {
-                setContinueToCamera(true)
                 setAllowVideoSound(true)
             }
         }

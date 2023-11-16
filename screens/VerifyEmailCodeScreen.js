@@ -3,9 +3,6 @@ import React, {useState, useContext, useRef, useEffect} from 'react';
 import { Image, ActivityIndicator, View, Text, Pressable, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import { useTheme } from '@react-navigation/native';
 import {
-    Navigator_BackButton,
-    ChatScreen_Title,
-    TestText,
     StyledButton,
     ButtonText,
     MsgBox
@@ -26,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {storeJWT} from './../jwtHandler'
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 const VerifyEmailCodeScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme();
@@ -415,17 +413,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
     }
     return (
         <>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Verify Email Code</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName="Verify Email Code"/>
             <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginHorizontal: '5%'}}>An email with a verification code has been sent to {email} from {fromAddress}.</Text>
             <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>If you can't find it please check your spam folder.</Text>
             <Text style={{color: colors.errorColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>Codes expire after 5 minutes from being sent.</Text>

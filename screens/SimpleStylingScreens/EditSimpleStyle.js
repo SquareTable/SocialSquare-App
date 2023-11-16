@@ -1,9 +1,6 @@
 import React, {useState, useContext} from 'react';
-import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import {
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText,
     ProfileOptionsView
 } from '../screenStylings/styling.js'
 import Icon from 'react-native-vector-icons/Entypo';
@@ -14,6 +11,7 @@ import {Octicons} from '@expo/vector-icons';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 const EditSimpleStyle = ({navigation, route}) => {
     const {name, indexNum, type, dark, stylingType, stylingVersion, primary, tertiary, borderColor, background, secondary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue, StatusBarColor, navFocusedColor, navNonFocusedColor, orange, yellow, purple, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor, errorColor, backToProfileScreen} = route.params;
@@ -81,21 +79,8 @@ const EditSimpleStyle = ({navigation, route}) => {
                 </ScrollView>
                 <View style={{width: '100%', backgroundColor: borderColor, minHeight: 1, maxHeight: 1}}/>
             </ProfileOptionsView>
-            <ChatScreen_Title style={{backgroundColor: primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {showCrossAndTick == true ? navigation.goBack() : setShowCrossAndTick(true)}}>
-                    {showCrossAndTick == false ?
-                        <Image
-                        source={require('../../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                        />
-                    :
-                        <Octicons name={"x"} size={40} color={tertiary} />
-                    }
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: tertiary}}>Edit {name}</TestText>
-                {showCrossAndTick != false ?
+            <TopNavBar screenName={'Edit ' + name} leftIconChild={showCrossAndTick === false ? undefined : <Octicons name={"x"} size={40} color={tertiary} />} rightIcon={
+                showCrossAndTick != false ?
                     <TouchableOpacity onPress={leaveAndSave} style={{position: 'absolute', right: 10, top: StatusBarHeight + 2}}>
                         <Icon name="save" size={40} color={tertiary}/>
                     </TouchableOpacity>
@@ -108,8 +93,7 @@ const EditSimpleStyle = ({navigation, route}) => {
                         <TouchableOpacity onPress={() => {setInfoPageIsHidden(true)}} style={{position: 'absolute', right: 17, top: StatusBarHeight}}>
                             <Octicons name={'x'} size={40} color={tertiary}/>
                         </TouchableOpacity>
-                }
-            </ChatScreen_Title>
+            }/>
             <View style={{backgroundColor: primary}}>
                 {InfoPageIsHidden == true ?
                     <ScrollView style={{height: '100%'}} contentContainerStyle={{alignItems: 'center', backgroundColor: primary}}>

@@ -2,35 +2,15 @@ import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {useTheme} from "@react-navigation/native";
 
-import {
-    WelcomeContainer,
-    Avatar,
-    SettingsPageItemTouchableOpacity,
-    SettingsItemImage,
-    SettingsItemText,
-    ConfirmLogoutView,
-    ConfirmLogoutText,
-    ConfirmLogoutButtons,
-    ConfirmLogoutButtonText,
-    TextLinkContent,
-    TextLink,
-    SettingsHorizontalView,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    StyledButton,
-    ButtonText,
-    TestText
-} from '../screenStylings/styling.js';
-
 import {Image, View, Text, TouchableOpacity, ScrollView, Alert, Switch, Linking, ActivityIndicator} from 'react-native';
 
-import { CredentialsContext } from '../../components/CredentialsContext.js';
 import { ServerUrlContext } from '../../components/ServerUrlContext.js';
 import axios from 'axios';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 import ParseErrorMessage from '../../components/ParseErrorMessage.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 var _ = require('lodash');
 
@@ -185,28 +165,14 @@ const Algorithm_HomeScreenSettings = ({navigation, route}) => {
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                {accountSetup == false ?
-                    <>
-                        <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                            <Image
-                            source={require('../../assets/app_icons/back_arrow.png')}
-                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
-                        <TestText style={{textAlign: 'center', color: colors.tertiary, fontSize: 14, top: 3}}>Home Screen Algorithm Settings</TestText>
-                    </>
-                : null}
-                {savingChanges ?
+            <TopNavBar hideTitle={accountSetup} hideBackButton={accountSetup} screenName="Algorithm Settings" rightIcon={
+                savingChanges ?
                     <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 22}}/>
                 :
-                    <TouchableOpacity disabled={accountSetup ? false : !hasUnsavedChanges} style={{position: 'absolute', top: StatusBarHeight + 8, right: 10}} onPress={saveAlgorithmSettings}>
+                    <TouchableOpacity disabled={accountSetup ? false : !hasUnsavedChanges} style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={saveAlgorithmSettings}>
                         <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: accountSetup ? 1 : hasUnsavedChanges ? 1 : 0.5}}>Save</Text>
                     </TouchableOpacity>
-                }
-            </ChatScreen_Title>
+            }/>
             {loadingSettings == true ?
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <ActivityIndicator size="large" color={colors.brand}/>

@@ -186,7 +186,6 @@ const Welcome = ({navigation, route}) => {
     // ActionSheet menus
     let PfpSaveActionMenu = useRef();
     const PfpSaveActionMenuOptions = [
-        'Save to Camera Roll',
         'Change Profile Picture',
         'Cancel'
     ];
@@ -456,7 +455,8 @@ const Welcome = ({navigation, route}) => {
                             upvoted: data.upvoted,
                             downvoted: data.downvoted,
                             isOwner: data.isOwner,
-                            _id: data._id
+                            _id: data._id,
+                            creatorPublicId: data.creatorPublicId
                         })
                     } catch (error) {
                         reject(error)
@@ -622,7 +622,7 @@ const Welcome = ({navigation, route}) => {
             console.log(pollData[index])
             async function getPfpImageForPollWithAsync() {
                 
-                var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, comments: pollData[index].comments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profilePictureUri, isOwner: pollData[index].isOwner}
+                var tempSectionsTemp = {_id: pollData[index]._id, pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, votes: pollData[index].votes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, comments: pollData[index].comments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted, upvoted: pollData[index].upvoted, downvoted: pollData[index].downvoted, pfpB64: profilePictureUri, isOwner: pollData[index].isOwner, creatorPublicId: pollData[index].creatorPublicId}
                 tempSections.push(tempSectionsTemp)
                 itemsProcessed++;
                 if(itemsProcessed === pollData.length) {
@@ -705,7 +705,10 @@ const Welcome = ({navigation, route}) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: null,
                                 creatorImageB64: profilePictureUri,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId,
+                                categoryImageKey: threadData[index].categoryImageKey,
+                                categoryId: threadData[index].categoryId
                             })
                         } else if (data.threadType === "Images") {
                             const imageInThreadB64 = await getImageWithKeyFour(data.threadImageKey)
@@ -731,7 +734,10 @@ const Welcome = ({navigation, route}) => {
                                 creatorName: threadData[index].creatorName,
                                 imageInThreadB64: imageInThreadB64,
                                 creatorImageB64: profilePictureUri,
-                                isOwner: threadData[index].isOwner
+                                isOwner: threadData[index].isOwner,
+                                creatorPublicId: threadData[index].creatorPublicId,
+                                categoryImageKey: threadData[index].categoryImageKey,
+                                categoryId: threadData[index].categoryId
                             })
                         }
                     } catch (error) {
@@ -807,7 +813,8 @@ const Welcome = ({navigation, route}) => {
                                 NSFW: category.NSFW,
                                 NSFL: category.NSFL,
                                 datePosted: category.datePosted,
-                                categoryId: category.categoryId
+                                categoryId: category.categoryId,
+                                memberId: category.memberId
                             })
                         } else {
                             //category without an image
@@ -820,7 +827,8 @@ const Welcome = ({navigation, route}) => {
                                 NSFW: category.NSFW,
                                 NSFL: category.NSFL,
                                 datePosted: category.datePosted,
-                                categoryId: category.categoryId
+                                categoryId: category.categoryId,
+                                memberId: category.memberId
                             })
                         }
                     } catch (error) {
@@ -829,10 +837,7 @@ const Welcome = ({navigation, route}) => {
                 })
             })
         ).then(categories => {
-            dispatchCategories({type: 'addCategories', categories})
-            if (data.noMoreCategories) {
-                dispatchCategories({type: 'noMoreCategories'})
-            }
+            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreCategories})
         }).catch(error => {
             dispatchCategories({type: 'error', error: String(error)})
         })
@@ -854,7 +859,7 @@ const Welcome = ({navigation, route}) => {
             const toSend = {pubId: secondId};
 
             if (!reload && categories.categories.length > 0) {
-                toSend.previousCategoryId = categories.categories[categories.categories.length - 1].categoryId
+                toSend.previousCategoryMemberId = categories.categories[categories.categories.length - 1].memberId
             }
 
             axios.post(url, toSend).then((response) => {
@@ -1138,26 +1143,6 @@ const Welcome = ({navigation, route}) => {
         }
     })
 
-    async function savePicture(imageTag) {
-        if (await MediaLibrary.isAvailableAsync() == true) {
-            if (await MediaLibrary.getPermissionsAsync == 'all' || 'limited') {
-                MediaLibrary.saveToLibraryAsync(imageTag)
-            } else {
-                if (await MediaLibrary.requestPermissionsAsync() == 'granted') {
-                    if (Platform.OS == 'ios') {
-                        MediaLibrary.saveToLibraryAsync(imageTag)
-                    } else {
-                        alert('Android saving images is coming soon')
-                    }
-                } else {
-                    alert('Photo library write permissions have not been enabled. Please enable them in your settings to use this feature.')
-                }
-            }
-        } else {
-            alert('This device cannot save images to the photo library')
-        }
-    };
-
     const GetBadgeIcon = (badge) => {
         return (
             <View style={{width: 25, height: 25, marginHorizontal: 3, marginTop: 6, marginBottom: 12}}>
@@ -1251,10 +1236,8 @@ const Welcome = ({navigation, route}) => {
                             //destructiveButtonIndex={2}
                             onPress={(index) => {
                                 if (index == 0) {
-                                    savePicture(profilePictureUri)
-                                } else if (index == 1) {
                                     PfpPickerActionMenu.current.show();
-                                } else if (index == 2) {
+                                } else if (index == 1) {
                                     console.log('Cancelling')
                                 }
                             }}
@@ -1409,7 +1392,7 @@ const Welcome = ({navigation, route}) => {
                             onEndReached = {({distanceFromEnd})=>{
                                 if (distanceFromEnd > 0) {
                                     console.log('End of the categories feed was reached with ' + distanceFromEnd + ' pixels from the end.')
-                                    if (categories.loadingFeed === false) {
+                                    if (categories.loadingFeed === false && !categories.noMoreCategories) {
                                         loadCategories()
                                     }
                                 }

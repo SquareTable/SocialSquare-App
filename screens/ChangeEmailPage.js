@@ -31,7 +31,6 @@ import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
 // API client
 import axios from 'axios';
-// mongodb+srv://Thekookiekov:<password>@cluster0.c403h.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';

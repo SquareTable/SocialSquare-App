@@ -5,69 +5,20 @@ import { useTheme } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 import {
-    InnerContainer,
-    PageTitle,
-    SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
-    Avatar,
-    StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    PostTypeSelector,
-    PostHorizontalView,
-    PostIcons,
-    PostCollectionView,
-    PostMsgBox,
     BackgroundDarkColor,
-    FlexRow,
-    LeftButton_AudioUploadScreen,
-    RightButton_AudioUploadScreen,
-    darkModeOn,
-    darkModeStyling,
-    lightModeStyling,
-    AudioUploadScreenUploadButtons,
-    HorizontalLineAcrossScreen,
-    RecordAudio_AudioUploadPage,
-    RecordButton_RecordScreen_AudioUploadPage,
-    RecordButtonChanger_RecordScreen_AudioUploadPage,
-    AudioWaveBox_RecordScreen_AudioUploadPage,
-    ViewHider,
-    ChatScreenInformation_Title,
-    ChatScreenNavigator_Row_Styling,
-    ChatScreenNavigator_Title,
-    ChatScreen_Title,
-    Chat_Info_Icon_Styling,
-    Navigator_BackButton,
     TestText
 } from '../screenStylings/styling.js';
 
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 //credentials context
-import { CredentialsContext } from './../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView, Alert, Dimensions, Platform } from 'react-native';
+import { Image, TouchableOpacity, View, Alert, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { convertCompilerOptionsFromJson } from 'typescript';
 import Constants from 'expo-constants'
 import * as Linking from 'expo-linking';
 import 'expo-intent-launcher'
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 
 
@@ -408,52 +359,42 @@ const RecordAudioPage = ({navigation}) => {
         <>    
             <StatusBar style={colors.StatusBarColor}/>
                 <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
-                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                        <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                            <Image
-                            source={require('../../assets/app_icons/back_arrow.png')}
-                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
-                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Record Audio</TestText>
-                    </ChatScreen_Title>
-                        <View>
-                            <View style={{alignItems: 'center'}}>
-                                <TouchableOpacity disabled={recordButtonDisabled} onPress={changeRecordingStatus}>
-                                    <Image style={{width: 100, height: 100}} source={recordingStatus == false? 
-                                        dark? require('../../assets/record_button.png') : require('../../assets/lightmode_recordbutton.png') 
-                                        : dark? require('../../assets/recording_icon.png') : require('../../assets/lightmode_recordingicon.png')}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            {!recording_uri && !recording && !recordingStatus && hoursDisplay == null && minutesDisplay == null && secondsDisplay == null ? <TestText style={{marginTop: 20, color: colors.tertiary}}>Press the recording button to get started</TestText> : null}
-                            <TestText style={{color: colors.tertiary, marginTop: 20}}>{hoursDisplay == null & minutesDisplay == null & secondsDisplay == null ? null : "Recording for " + hoursDisplay + minutesDisplay + secondsDisplay}</TestText>
-                            <View style={{alignItems: 'center', marginVertical: 20}}>
-                                {recording_uri ?
-                                    !recording && !recordingStatus ?
-                                        isAudioPlaying == true?
-                                            <TouchableOpacity disabled={playButtonDisabled} onPress={pauseAudio}>
-                                                <Icon name="pausecircleo" color={colors.tertiary} size={80}/>
-                                            </TouchableOpacity> 
-                                            :
-                                            <TouchableOpacity disabled={playButtonDisabled} onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
-                                                <Icon name="playcircleo" color={colors.tertiary} size={80}/>
-                                            </TouchableOpacity> 
-                                        : null 
-                                    : null
-                                }
-                            </View>
-                            {recording_uri? 
-                                !recordingStatus && !recording ?
-                                    <StyledButton onPress={sendAudioSnippet}>
-                                        <ButtonText>Send Audio Snippet</ButtonText>
-                                    </StyledButton> 
+                    <TopNavBar screenName="Record Audio"/>
+                    <View>
+                        <View style={{alignItems: 'center'}}>
+                            <TouchableOpacity disabled={recordButtonDisabled} onPress={changeRecordingStatus}>
+                                <Image style={{width: 100, height: 100}} source={recordingStatus == false? 
+                                    dark? require('../../assets/record_button.png') : require('../../assets/lightmode_recordbutton.png') 
+                                    : dark? require('../../assets/recording_icon.png') : require('../../assets/lightmode_recordingicon.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        {!recording_uri && !recording && !recordingStatus && hoursDisplay == null && minutesDisplay == null && secondsDisplay == null ? <TestText style={{marginTop: 20, color: colors.tertiary}}>Press the recording button to get started</TestText> : null}
+                        <TestText style={{color: colors.tertiary, marginTop: 20}}>{hoursDisplay == null & minutesDisplay == null & secondsDisplay == null ? null : "Recording for " + hoursDisplay + minutesDisplay + secondsDisplay}</TestText>
+                        <View style={{alignItems: 'center', marginVertical: 20}}>
+                            {recording_uri ?
+                                !recording && !recordingStatus ?
+                                    isAudioPlaying == true?
+                                        <TouchableOpacity disabled={playButtonDisabled} onPress={pauseAudio}>
+                                            <Icon name="pausecircleo" color={colors.tertiary} size={80}/>
+                                        </TouchableOpacity> 
+                                        :
+                                        <TouchableOpacity disabled={playButtonDisabled} onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
+                                            <Icon name="playcircleo" color={colors.tertiary} size={80}/>
+                                        </TouchableOpacity> 
+                                    : null 
                                 : null
-                            : null
                             }
                         </View>
+                        {recording_uri? 
+                            !recordingStatus && !recording ?
+                                <StyledButton onPress={sendAudioSnippet}>
+                                    <ButtonText>Send Audio Snippet</ButtonText>
+                                </StyledButton> 
+                            : null
+                        : null
+                        }
+                    </View>
                 </BackgroundDarkColor>
         </>
     );

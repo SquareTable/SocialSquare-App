@@ -70,8 +70,20 @@ class UserItem extends PureComponent {
                 </SearchHorizontalView>
             </SearchFrame>
         */
+        const data = {
+            profilesName: this.props.name,
+            profilesDisplayName: this.props.displayName,
+            following: this.props.following,
+            followers: this.props.followers,
+            totalLikes: this.props.totalLikes,
+            profileKey: this.props.profileKey != null ? this.props.profileKey : SocialSquareLogo_B64_png,
+            badges: this.props.badges,
+            bio: this.props.bio,
+            privateAccount: this.props.privateAccount
+        }
+
         return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("ProfilePages", {profilesName: this.props.name, profilesDisplayName: this.props.displayName, following: this.props.following, followers: this.props.followers, totalLikes: this.props.totalLikes, profileKey: this.props.profileKey != null ? this.props.profileKey : SocialSquareLogo_B64_png, badges: this.props.badges, pubId: this.props.pubId, bio: this.props.bio, privateAccount: this.props.privateAccount})} style={{borderColor: this.props.colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate("ProfilePages", {paramsProfileData: data, pubId: this.props.pubId})} style={{borderColor: this.props.colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
                     <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: this.props.profileKey != null ? this.props.profileKey : SocialSquareLogo_B64_png}} />
                     <SubTitle style={{color: this.props.colors.tertiary, marginTop: 24, marginLeft: 10}} searchResTitle={true}>{this.props.displayName || this.props.name}</SubTitle>
@@ -254,8 +266,7 @@ const FindScreen = ({navigation}) => {
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if(itemsProcessed === allData.length) {
-                                    dispatchCategories({type: 'addCategories', categories: tempSections})
-                                    if (noMoreCategories) dispatchCategories({type: 'noMoreCategories'})
+                                    dispatchCategories({type: 'addCategories', categories: tempSections, noMoreCategories})
                                 }
                             }
                             asyncFunctionForImages()
@@ -264,8 +275,7 @@ const FindScreen = ({navigation}) => {
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
-                                dispatchCategories({type: 'addCategories', categories: tempSections})
-                                if (noMoreCategories) dispatchCategories({type: 'noMoreCategories'})
+                                dispatchCategories({type: 'addCategories', categories: tempSections, noMoreCategories})
                             }
                         }
                     });
@@ -478,7 +488,7 @@ const FindScreen = ({navigation}) => {
                             onEndReached = {({distanceFromEnd})=>{
                                 if (distanceFromEnd > 0) {
                                     console.log('End of the categories feed was reached with ' + distanceFromEnd + ' pixels from the end.')
-                                    if (categoriesReducer.loadingFeed === false) {
+                                    if (categoriesReducer.loadingFeed === false && !categoriesReducer.noMoreCategories) {
                                         handleCategorySearch(searchValue.current)
                                     }
                                 }

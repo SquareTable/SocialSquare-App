@@ -45,10 +45,7 @@ import {
     RecordButton_RecordScreen_AudioUploadPage,
     RecordButtonChanger_RecordScreen_AudioUploadPage,
     AudioWaveBox_RecordScreen_AudioUploadPage,
-    ViewHider,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText
+    ViewHider
 } from '../screenStylings/styling.js';
 
 // async-storage
@@ -59,6 +56,7 @@ import { CredentialsContext } from './../../components/CredentialsContext';
 import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
+import TopNavBar from '../../components/TopNavBar.js';
 
 
 
@@ -73,17 +71,7 @@ const AudioUploadPage = ({navigation}) => {
         <>    
             <StatusBar style={colors.StatusBarColor}/>
                 <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
-                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                        <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                            <Image
-                            source={require('../../assets/app_icons/back_arrow.png')}
-                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
-                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Audio Post Screen</TestText>
-                    </ChatScreen_Title>
+                    <TopNavBar screenName="Audio Post Screen"/>
                         <View style={{backgroundColor: colors.primary}}>
                             <AudioUploadScreenUploadButtons>
                                 <FlexRow>

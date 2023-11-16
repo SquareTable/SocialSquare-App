@@ -35,12 +35,7 @@ import {
     AboveButtonText,
     PostHorizontalView,
     CheckBoxForPosts,
-    PostIcons,
-    MultiMediaPostFrame,
-    Avatar,
-    ChatScreen_Title,
-    Navigator_BackButton,
-    TestText
+    PostIcons
 } from './screenStylings/styling.js';
 const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor} = Colors;
 
@@ -65,6 +60,7 @@ import { useTheme } from '@react-navigation/native';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 const ConversationCreationPage = ({route, navigation}) => {
     const isFocused = useIsFocused();
@@ -179,17 +175,7 @@ const ConversationCreationPage = ({route, navigation}) => {
 
     return(
         <>
-            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}}>
-                <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Create a Conversation</TestText>
-            </ChatScreen_Title>
+            <TopNavBar screenName="Create a Conversation"/>
             <KeyboardAvoidingWrapper style={{backgroundColor: colors.primary}}>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                         <StatusBar style={colors.StatusBarColor}/>

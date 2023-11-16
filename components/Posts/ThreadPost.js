@@ -129,7 +129,7 @@ class Thread extends Component {
     })
 
     navigateToFullScreen = () => {
-        this.props.navigation.navigate("ThreadViewPage", { threadId: this.props.post._id, creatorPfpB64: this.props.post.creatorImageB64 })
+        this.props.navigation.navigate("ThreadViewPage", { post: this.props.post })
     }
 
     openThreeDotsMenu = this.runIfAuthenticated(() => {
@@ -147,6 +147,14 @@ class Thread extends Component {
             onDeleteCallback: this.props.onDeleteCallback
         })
     })
+
+    navigateToProfileScreen = () => {
+        this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
+    }
+
+    navigateToCategory = () => {
+        this.props.navigation.navigate('CategoryViewPage', {categoryId: this.props.post.categoryId, categoryTitle: this.props.post.threadCategory})
+    }
 
     render() {
         return (
@@ -169,18 +177,24 @@ class Thread extends Component {
                         <TouchableOpacity style={{ width: '100%', height: 60 }}>
                             <PostsHorizontalView>
                                 <PostsVerticalView>
-                                    <PostCreatorIcon source={{uri: this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}` : (this.props.post.creatorImageB64 || SocialSquareLogo_B64_png)}} />
+                                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                        <PostCreatorIcon source={{uri: this.props.useRawImages && typeof this.props.post.creatorPfpKey === 'string' ? `${this.props.serverUrl}/getRawImageOnServer/${this.props.post.creatorPfpKey}` : (this.props.post.creatorImageB64 || SocialSquareLogo_B64_png)}} />
+                                    </TouchableOpacity>
                                 </PostsVerticalView>
                                 <PostsVerticalView style={{ marginTop: 9 }}>
-                                    <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorDisplayName || this.props.post.creatorName}</SubTitle>
-                                    <SubTitle style={{ fontSize: 12, color: this.props.colors.brand, marginBottom: 0 }}>@{this.props.post.creatorName}</SubTitle>
+                                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                        <SubTitle style={{ color: this.props.colors.brand, fontSize: 20, marginBottom: 0 }}>{this.props.post.creatorDisplayName || this.props.post.creatorName}</SubTitle>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                                        <SubTitle style={{ fontSize: 12, color: this.props.colors.brand, marginBottom: 0 }}>@{this.props.post.creatorName}</SubTitle>
+                                    </TouchableOpacity>
                                 </PostsVerticalView>
                             </PostsHorizontalView>
                         </TouchableOpacity>
                     </PostsHorizontalView>
                     <TouchableOpacity onPress={this.navigateToFullScreen}>
                         <ImagePostTextFrame style={{ textAlign: 'left', alignItems: 'baseline' }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={this.navigateToCategory}>
                                 <SubTitle style={{ fontSize: 10, color: this.props.colors.brand, marginBottom: 0 }}>Category: {this.props.post.threadCategory}</SubTitle>
                             </TouchableOpacity>
                             <SubTitle style={{ fontSize: 20, color: this.props.colors.tertiary, marginBottom: 0 }}>{this.props.post.threadTitle}</SubTitle>
