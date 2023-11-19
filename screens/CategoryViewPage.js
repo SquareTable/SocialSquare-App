@@ -462,15 +462,15 @@ const CategoryViewPage = ({route, navigation}) => {
             <StatusBar style={colors.StatusBarColor}/>
             {categoryData === null ?
                 <>
-                    <TouchableOpacity style={{position: 'absolute', left: 10, top: StatusBarHeight}} onPress={() => {navigation.goBack()}}>
-                        <Image
-                            source={require('../assets/app_icons/back_arrow.png')}
-                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary}}>
+                        <TouchableOpacity style={{position: 'absolute', left: 10, top: StatusBarHeight}} onPress={() => {navigation.goBack()}}>
+                            <Image
+                                source={require('../assets/app_icons/back_arrow.png')}
+                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
                         {errorLoadingCategory ?
                             <>
                                 <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>{errorLoadingCategory}</Text>
