@@ -7,7 +7,35 @@ const reducer = (state, action) => {
         return {
             ...state,
             notifications: newNotifications,
+            error: null,
+            loadingFeed: false,
+            reloadingFeed: false
+        }
+    }
+
+    if (action.type === 'startLoadingNotifications') {
+        return {
+            ...state,
+            loadingFeed: true,
             error: null
+        }
+    }
+
+    if (action.type === 'startReloadingNotifications') {
+        return {
+            ...state,
+            loadingFeed: true,
+            reloadingFeed: true,
+            error: null
+        }
+    }
+
+    if (action.type === 'errorLoadingNotifications') {
+        return {
+            ...state,
+            loadingFeed: false,
+            reloadingFeed: false,
+            error: action.error
         }
     }
 
@@ -97,4 +125,4 @@ const useNotificationReducer = () => {
     return useReducer(reducer, initialState)
 }
 
-return useNotificationReducer;
+export default useNotificationReducer;
