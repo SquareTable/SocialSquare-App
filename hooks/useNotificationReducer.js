@@ -9,7 +9,8 @@ const reducer = (state, action) => {
             notifications: newNotifications,
             error: null,
             loadingFeed: false,
-            reloadingFeed: false
+            reloadingFeed: false,
+            noMoreNotifications: action.noMoreNotifications
         }
     }
 
@@ -26,7 +27,9 @@ const reducer = (state, action) => {
             ...state,
             loadingFeed: true,
             reloadingFeed: true,
-            error: null
+            error: null,
+            noMoreNotifications: false,
+            notifications: []
         }
     }
 
@@ -47,12 +50,20 @@ const reducer = (state, action) => {
         }
     }
 
+    if (action.type === 'cancelClearingNotifications') {
+        return {
+            ...state,
+            errorClearing: null
+        }
+    }
+
     if (action.type === 'clearedNotifications') {
         return {
             ...state,
             clearing: false,
             notifications: [],
-            errorClearing: null
+            errorClearing: null,
+            noMoreNotifications: false
         }
     }
 
@@ -109,6 +120,13 @@ const reducer = (state, action) => {
         }
     }
 
+    if (action.type === 'noMoreNotifications') {
+        return {
+            ...state,
+            noMoreNotifications: true
+        }
+    }
+
     throw new Error(`Unknown action type was given to useNotificationReducer: ${action.type}`)
 }
 
@@ -118,7 +136,8 @@ const initialState = {
     loadingFeed: false,
     reloadingFeed: false,
     errorClearing: null,
-    clearing: false
+    clearing: false,
+    noMoreNotifications: false
 }
 
 const useNotificationReducer = () => {
