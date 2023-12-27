@@ -44,7 +44,7 @@ const ThreeDotMenuActionSheet = ({dispatch, threeDotsMenu}) => {
     const deleteImage = () => {
         dispatch({type: 'startDeletePost', postIndex})
         const url = serverUrl + '/tempRoute/deleteimage';
-        const toSend = {imageId: postId}
+        const toSend = {postId}
         console.log(toSend)
         axios.post(url, toSend).then((response) => { 
             const result = response.data;
