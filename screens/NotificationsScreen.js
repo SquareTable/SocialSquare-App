@@ -15,11 +15,12 @@ import axios from 'axios';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
+import Notification from '../components/Notification.js';
 
 const NotificationsScreen = ({navigation}) => {
     const [notificationReducer, dispatch] = useNotificationReducer();
 
-    const {colors, dark} = useTheme();
+    const {colors, colorsIndexNum} = useTheme();
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {privateAccount} = storedCredentials} else {var {privateAccount} = {privateAccount: false}}
     const StatusBarHeight = useContext(StatusBarHeightContext);
@@ -30,11 +31,13 @@ const NotificationsScreen = ({navigation}) => {
         dispatch({type: reloadFeed ? 'startReloadingNotifications' : 'startLoadingNotifications'})
 
         const url = serverUrl + '/tempRoute/getnotifications';
-        const toSend = notificationReducer.notifications.length > 0 ? {lastNotificationId: notificationReducer.notifications[notificationReducer.notifications.length - 1]._id} : {};
+        const toSend = notificationReducer.notifications.length > 0 && !reloadFeed ? {lastNotificationId: notificationReducer.notifications[notificationReducer.notifications.length - 1]._id} : {};
 
         axios.post(url, toSend).then(response => {
             const result = response.data;
             const {notifications, noMoreNotifications} = result.data;
+
+            console.warn(result.data)
 
             dispatch({type: 'addNotifications', notifications, noMoreNotifications})
         }).catch(error => {
@@ -52,7 +55,7 @@ const NotificationsScreen = ({navigation}) => {
     }
 
     useEffect(() => {
-        loadNotifications();
+        loadNotifications(true);
     }, [])
 
     return(
@@ -99,7 +102,7 @@ const NotificationsScreen = ({navigation}) => {
                         : notificationReducer.notifications.length > 0 ?
                             <FlatList
                                 data={notificationReducer.notifications}
-                                renderItem={({item}) => {/* Implement when notifications are implemented */}}
+                                renderItem={({item, index}) => <Notification notification={item} index={index}/>}
                                 keyExtractor={(item, index) => 'key'+index}
                                 ListHeaderComponent={
                                     <TouchableOpacity style={{borderColor: colors.red, borderWidth: 2, paddingVertical: 5, paddingHorizontal: 10, borderRadius: 10, marginHorizontal: 40, marginVertical: 10}} onPress={clearNotifications}>
@@ -128,7 +131,7 @@ const NotificationsScreen = ({navigation}) => {
                                         <>
                                             <Text style={{color: colors.errorColor, fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>An error occured:</Text>
                                             <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', marginVertical: 20}}>{notificationReducer.error}</Text>
-                                            <TouchableOpacity onPress={loadNotifications(true)}>
+                                            <TouchableOpacity onPress={() => loadNotifications(true)}>
                                                 <Ionicons name="reload" size={50} color={colors.errorColor} />
                                             </TouchableOpacity>
                                         </>
