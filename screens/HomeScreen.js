@@ -107,6 +107,7 @@ import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js'
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet.js';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
+import AppBannerAd from '../components/ads/AppBannerAd.js';
 
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
 
@@ -132,7 +133,6 @@ const HomeScreen = ({navigation, route}) => {
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const [postSent, setPostSent] = useState(null);
-    const {AdID, setAdID} = useContext(AdIDContext);
     const StatusBarHeight = useContext(StatusBarHeightContext);
     async function unloadAudioFunction() {
         playRecording.unloadAsync;
@@ -1031,14 +1031,7 @@ const HomeScreen = ({navigation, route}) => {
 
                 {index % 5 == 0 && index !== 0 && (
                     <View style={{alignItems: 'center'}}>
-                        <BannerAd
-                            unitId={AdID}
-                            size={BannerAdSize.MEDIUM_RECTANGLE}
-                            requestOptions={{
-                                requestNonPersonalizedAdsOnly: true,
-                            }}
-                            onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
-                        />
+                        <AppBannerAd/>
                     </View>
                 )}
 
@@ -1353,14 +1346,7 @@ const HomeScreen = ({navigation, route}) => {
 
                                     {index % 5 == 0 && index !== 0 && (
                                         <View style={{alignItems: 'center'}}>
-                                            <BannerAd
-                                                unitId={AdID}
-                                                size={BannerAdSize.MEDIUM_RECTANGLE}
-                                                requestOptions={{
-                                                    requestNonPersonalizedAdsOnly: true,
-                                                }}
-                                                onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
-                                            />
+                                            <AppBannerAd/>
                                         </View>
                                     )}
 
