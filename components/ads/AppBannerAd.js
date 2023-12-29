@@ -7,6 +7,10 @@ import { AdIDContext } from "../AdIDContext";
 class AppBannerAdClass extends Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            error: false
+        }
     }
 
     static getDerivedStateFromError(error) {
