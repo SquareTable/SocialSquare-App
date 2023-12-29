@@ -23,9 +23,7 @@ class AppBannerAdClass extends Component {
 
     render() {
         if (this.state.error) return (
-            <View style={{height: 250, width: 300, borderColor: this.props.colors.errorColor, borderWidth: 1, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={{color: colors.tertiary, fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>Error</Text>
-            </View>
+            <View style={{height: 250, width: 300, borderColor: this.props.colors.errorColor, borderWidth: 1, borderStyle: 'dashed', marginVertical: 10}}/>
         )
 
         return (
