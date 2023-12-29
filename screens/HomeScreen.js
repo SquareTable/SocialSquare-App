@@ -356,7 +356,7 @@ const HomeScreen = ({navigation, route}) => {
 
     const handleRecievedThreadPost = (threadData, indexInRecieved, callback) => {
         async function findImages() {
-            const creatorImageB64 = threadData.creatorImageKey ? await getImageWithKey(threadData.creatorImageKey) : null
+            const creatorImageB64 = threadData.creatorPfpKey ? await getImageWithKey(threadData.creatorPfpKey) : null
             const imageInThreadB64 = threadData.threadImageKey ? await getImageWithKey(threadData.threadImageKey) : null
             return callback({
                 ...threadData,
