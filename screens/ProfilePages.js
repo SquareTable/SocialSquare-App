@@ -369,17 +369,17 @@ const ProfilePages = ({ route, navigation }) => {
                                     {togglingFollow == false && pubId !== secondId && (
                                         <View style={{width: '80%', borderRadius: 5, backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 3, paddingHorizontal: 10, paddingTop: 2}}>
                                             {userIsFollowed == false && (
-                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => followUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Follow </SubTitle>
                                                 </TouchableOpacity>
                                             )}
                                             {userIsFollowed == true && (
-                                                <TouchableOpacity onPress={() => profileData.privateAccount == true ? UnfollowPrivateAccountConfirmationPickerMenu.current.show() : toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => profileData.privateAccount == true ? UnfollowPrivateAccountConfirmationPickerMenu.current.show() : unfollowUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Unfollow </SubTitle>
                                                 </TouchableOpacity>
                                             )}
                                             {userIsFollowed == 'Requested' && (
-                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => unfollowUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary, fontSize: 14}}> Requested </SubTitle>
                                                 </TouchableOpacity>
                                             )}
@@ -1276,45 +1276,53 @@ const ProfilePages = ({ route, navigation }) => {
         }
     }
 
-    const toggleFollowOfAUser = () => {
+    const followUser = () => {
         if (storedCredentials) {
             setTogglingFollow(true)
-            const url = `${serverUrl}/tempRoute/toggleFollowOfAUser`;
-            axios.post(url, {userToFollowPubId: pubId}).then((response) => {
-                const result = response.data;
-                const { message, status, data } = result;
+            const url = `${serverUrl}/tempRoute/followuser`;
+            const toSend = {userPubId: pubId}
+            
+            axios.post(url, toSend).then(response => {
+                const {message} = response.data
+                
+                if (message == "Requested To Follow User") {
+                    setUserIsFollowed('Requested')
+                } else if (message == "Followed User") {
+                    setUserIsFollowed(true)
+                }
+                
+                setTogglingFollow(false)
+            }).catch(error => {
+                console.error(error)
+                setTogglingFollow(false)
+                handleMessage(ParseErrorMessage(error))
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
+    }
 
-                if (status !== "SUCCESS") {
-                    console.log(status + message)
-                    handleMessage(message)
-                    setTogglingFollow(false)
-                } else {
-                    console.log(status + message)
-                    if (message == "Followed User") {
-                        //Followed
-                        setUserIsFollowed(true)
-                        setTogglingFollow(false)
-                    } else if (message == "Requested To Follow User") {
-                        //Requested
-                        setUserIsFollowed('Requested')
-                        setTogglingFollow(false)
-                    } else {
-                        //Unfollowed or unrequested
-                        setUserIsFollowed(false)
-                        setTogglingFollow(false)
-                        if (profileData.privateAccount == true) {
-                            cancelTokenPostFormatOne.cancel()
-                            cancelTokenPostFormatTwo.cancel()
-                            cancelTokenPostFormatThree.cancel()
-                            cancelTokenPostFormatFour.cancel()
-                            cancelTokenPostFormatFive.cancel()
-                        }
-                    }
+    const unfollowUser = () => {
+        if (storedCredentials) {
+            setTogglingFollow(true)
+            const url = `${serverUrl}/tempRoute/unfollowuser`;
+            const toSend = {userPubId: pubId}
+            
+            axios.post(url, toSend).then(() => {
+                setTogglingFollow(false)
+                setUserIsFollowed(false)
+
+                if (profileData.privateAccount == true) {
+                    cancelTokenPostFormatOne.cancel()
+                    cancelTokenPostFormatTwo.cancel()
+                    cancelTokenPostFormatThree.cancel()
+                    cancelTokenPostFormatFour.cancel()
+                    cancelTokenPostFormatFive.cancel()
                 }
             }).catch(error => {
-                console.log(error);
+                console.error(error)
                 setTogglingFollow(false)
-                handleMessage(ParseErrorMessage(error));
+                handleMessage(ParseErrorMessage(error))
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true})
@@ -1369,7 +1377,7 @@ const ProfilePages = ({ route, navigation }) => {
                 destructiveButtonIndex={0}
                 onPress={(index) => {
                     if (index == 0) {
-                        toggleFollowOfAUser()
+                        unfollowUser()
                     } else {
                         console.log('Cancelled')
                     }
