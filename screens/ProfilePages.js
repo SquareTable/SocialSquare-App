@@ -1409,7 +1409,7 @@ const ProfilePages = ({ route, navigation }) => {
                     </ProfileOptionsView>
                 :
                     <ProfileOptionsView style={{backgroundColor: colors.primary, height: 500}} viewHidden={false}>
-                        <ProfileOptionsViewText style={{color: colors.tertiary}}>{profileData.profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
+                        <ProfileOptionsViewText style={{color: colors.tertiary}}>{profileData.profilesDisplayName || profileData.profilesName || "Couldn't get profile name"}</ProfileOptionsViewText>
                         <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
                         <ProfileOptionsViewButtons greyButton={true} style={{height: 'auto', paddingVertical: 10}} onPress={changeProfilesOptionsView}>
                             <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
