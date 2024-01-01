@@ -65,11 +65,11 @@ class PollWithVotes extends PollClass {
     }
 
     runIfAuthenticated = (func) => {
-        return () => {
+        return (...params) => {
             if (this.props.userId === 'SSGUEST' || !this.props.userId) {
                 this.props.navigation.navigate('ModalLoginScreen', {modal: true})
             } else {
-                func()
+                func(...params)
             }
         }
     }
