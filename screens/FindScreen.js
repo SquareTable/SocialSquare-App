@@ -223,6 +223,7 @@ const FindScreen = ({navigation}) => {
             console.log('Empty search')
             setNoResults(false)
             setChangeSectionsOne([])
+            setLoadingOne(false)
         }
     }
 
@@ -301,6 +302,7 @@ const FindScreen = ({navigation}) => {
             } else {
                 console.log('Empty category search')
                 dispatchCategories({type: 'resetCategories'})
+                dispatchCategories({type: 'stopLoad'})
             }
         }
     }
