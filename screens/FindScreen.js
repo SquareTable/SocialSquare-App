@@ -201,21 +201,14 @@ const FindScreen = ({navigation}) => {
             }
             axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const {data} = result;
+                const {items, noMoreItems} = data;
 
-                if (status !== 'SUCCESS') {
-                    setErrorOccured(message)
-                    setLoadingOne(false)
-                    setNoResults(false)
-                    console.error(message)
-                } else {
-                    console.log(data)
-                    layoutUsersFound(data)
-                    console.log('Search complete.')
-                    setNoResults(false)
-                    //persistLogin({...data[0]}, message, status);
-                }
+                setLoadingOne(false)
 
+                layoutUsersFound(items)
+
+                if (noMoreItems) setNoResults(true)
             }).catch(error => {
                 if (error instanceof CanceledError) {
                     console.warn('Cancelled intentionally')
@@ -230,6 +223,7 @@ const FindScreen = ({navigation}) => {
             console.log('Empty search')
             setNoResults(false)
             setChangeSectionsOne([])
+            setLoadingOne(false)
         }
     }
 
@@ -285,7 +279,7 @@ const FindScreen = ({navigation}) => {
                 const url = serverUrl + '/tempRoute/searchpagesearchcategories'
                 const toSend = {
                     val,
-                    lastCategoryId: categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
+                    lastCategoryId: clear ? undefined : categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
                 }
                 axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                     const result = response.data;
@@ -308,6 +302,7 @@ const FindScreen = ({navigation}) => {
             } else {
                 console.log('Empty category search')
                 dispatchCategories({type: 'resetCategories'})
+                dispatchCategories({type: 'stopLoad'})
             }
         }
     }
@@ -408,28 +403,28 @@ const FindScreen = ({navigation}) => {
                             </>
                         )}
                     </TouchableWithoutFeedback>
-                    {filterFormatSearch == "Users" && (
+                    {filterFormatSearch == "Users" ? (
                         <FlatList
                             data={changeSectionsOne}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} badges={item.badges} index={index} pubId={item.pubId} bio={item.bio} privateAccount={item.privateAccount} colors={colors} navigation={navigation}/>}
                             ListFooterComponent={
                                 <>
-                                    {noResults == true && (
+                                    {noResults === true ? (
                                         <View style={{marginTop: 20}}>
-                                            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{changeSectionsOne.length > 0 ? 'No more results' : 'No results found'}</Text>
+                                            <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.errorColor, textAlign: 'center'}}>{changeSectionsOne.length > 0 ? 'No more results' : 'No results'}</Text>
                                         </View>
-                                    )}
-                                    {errorOccured !== null && (
+                                    ) : null}
+                                    {errorOccured !== null ? (
                                         <View style={{marginTop: 20}}>
                                             <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.errorColor, textAlign: 'center'}}>{errorOccured}</Text>
                                         </View>
-                                    )}
-                                    {loadingOne == true && (
+                                    ) : null}
+                                    {loadingOne == true ? (
                                         <View style={{marginTop: 20}}>
                                             <ActivityIndicator size="large" color={colors.brand} />
                                         </View>
-                                    )}
+                                    ) : null}
                                 </>
                             }
                             keyboardDismissMode="on-drag"
@@ -446,9 +441,10 @@ const FindScreen = ({navigation}) => {
                             onContentSizeChange={(contentWidth, contentHeight) => {
                                 userListHeight.current = contentHeight;
                             }}
+                            extraData={noResults}
                         />
-                    )}
-                    {filterFormatSearch == "Categories" && (
+                    ) : null}
+                    {filterFormatSearch == "Categories" ? (
                         <FlatList
                             data={categoriesReducer.categories}
                             keyExtractor={(item) => item.categoryId}
@@ -493,13 +489,14 @@ const FindScreen = ({navigation}) => {
                                     }
                                 }
                             }}
+                            extraData={noResults}
                         />
-                    )}
-                    {filterFormatSearch == "Images" && (
+                    ) : null}
+                    {filterFormatSearch == "Images" ? (
                         <View style={{alignSelf: 'center', textAlign: 'center'}}>
                             <SubTitle style={{alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>This feature is not out yet...</SubTitle>
                         </View>
-                    )}
+                    ) : null}
                 </>
             :
                 <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
