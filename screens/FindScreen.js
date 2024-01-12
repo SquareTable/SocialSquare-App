@@ -285,7 +285,7 @@ const FindScreen = ({navigation}) => {
                 const url = serverUrl + '/tempRoute/searchpagesearchcategories'
                 const toSend = {
                     val,
-                    lastCategoryId: categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
+                    lastCategoryId: clear ? undefined : categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
                 }
                 axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                     const result = response.data;
