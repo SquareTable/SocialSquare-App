@@ -721,7 +721,7 @@ const ThreadViewPage = ({navigation, route}) => {
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
-            <TopNavBar screenName={(postReducer.posts.length > 0 ? (postReducer.posts[0].creatorDisplayName || postReducer.posts[0].creatorName) : 'Finding') + "'s thread"}/>
+            <TopNavBar extraStyles={{backgroundColor: dark ? colors.darkest : colors.greyish}} screenName={(postReducer.posts.length > 0 ? (postReducer.posts[0].creatorDisplayName || postReducer.posts[0].creatorName) : 'Finding') + "'s thread"}/>
             <KeyboardAvoidingScrollView>
                 <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2, paddingTop: 0}}>
                     <TouchableOpacity onPress={navigateToCategoryViewPage}>
