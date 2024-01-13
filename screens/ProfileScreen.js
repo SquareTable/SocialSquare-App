@@ -525,7 +525,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const layoutPollPosts = (data) => {
-        const {posts: pollData, noMorePosts} = data;
+        const {items: pollData, noMoreItems} = data;
 
         console.log('Poll Data:', pollData)
         console.log('Number of polls received:', pollData.length)
@@ -631,7 +631,7 @@ const Welcome = ({navigation, route}) => {
             }
             getPfpImageForPollWithAsync()
         });
-        if (noMorePosts) {
+        if (noMoreItems) {
             dispatchPolls({type: 'noMorePosts'})
         }
     }
