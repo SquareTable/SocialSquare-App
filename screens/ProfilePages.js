@@ -940,7 +940,7 @@ const ProfilePages = ({ route, navigation }) => {
 
     const layoutCategoriesFound = (data) => {
         console.log('DATA:', data)
-        var allData = data.categories
+        var allData = data.items
 
         Promise.all(
             allData.map(category => {
@@ -983,7 +983,7 @@ const ProfilePages = ({ route, navigation }) => {
                 })
             })
         ).then(categories => {
-            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreCategories})
+            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreItems})
         }).catch(error => {
             dispatchCategories({type: 'error', error: String(error)})
         })
