@@ -673,7 +673,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const layoutThreadPosts = (data) => {
-        var threadData = data.data.posts
+        var threadData = data.data.items
         console.log("The Thread data")
         console.log(threadData)
         console.log(threadData.length)
@@ -747,7 +747,7 @@ const Welcome = ({navigation, route}) => {
             })
         ).then(posts => {
             dispatchThreads({type: 'addPosts', posts})
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchThreads({type: 'noMorePosts'})
             }
         }).catch(error => {
