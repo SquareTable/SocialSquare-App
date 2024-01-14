@@ -430,7 +430,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const layoutImagePosts = (data) => {
-        var imageData = data.data.posts
+        var imageData = data.data.items
         console.log("The Image data")
         console.log(imageData)
         console.log(imageData.length)
@@ -469,7 +469,7 @@ const Welcome = ({navigation, route}) => {
                 posts: posts
             })
 
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchImages({type: 'noMorePosts'})
             }
         }).catch(error => {
