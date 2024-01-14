@@ -430,7 +430,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const layoutImagePosts = (data) => {
-        var imageData = data.data.posts
+        var imageData = data.data.items
         console.log("The Image data")
         console.log(imageData)
         console.log(imageData.length)
@@ -469,7 +469,7 @@ const Welcome = ({navigation, route}) => {
                 posts: posts
             })
 
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchImages({type: 'noMorePosts'})
             }
         }).catch(error => {
@@ -525,7 +525,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const layoutPollPosts = (data) => {
-        const {posts: pollData, noMorePosts} = data;
+        const {items: pollData, noMoreItems} = data;
 
         console.log('Poll Data:', pollData)
         console.log('Number of polls received:', pollData.length)
@@ -631,7 +631,7 @@ const Welcome = ({navigation, route}) => {
             }
             getPfpImageForPollWithAsync()
         });
-        if (noMorePosts) {
+        if (noMoreItems) {
             dispatchPolls({type: 'noMorePosts'})
         }
     }
@@ -673,7 +673,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const layoutThreadPosts = (data) => {
-        var threadData = data.data.posts
+        var threadData = data.data.items
         console.log("The Thread data")
         console.log(threadData)
         console.log(threadData.length)
@@ -747,7 +747,7 @@ const Welcome = ({navigation, route}) => {
             })
         ).then(posts => {
             dispatchThreads({type: 'addPosts', posts})
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchThreads({type: 'noMorePosts'})
             }
         }).catch(error => {
@@ -794,7 +794,7 @@ const Welcome = ({navigation, route}) => {
 
     const layoutCategoriesFound = (data) => {
         console.log('DATA:', data)
-        var allData = data.categories
+        var allData = data.items
 
         Promise.all(
             allData.map(category => {
@@ -837,7 +837,7 @@ const Welcome = ({navigation, route}) => {
                 })
             })
         ).then(categories => {
-            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreCategories})
+            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreItems})
         }).catch(error => {
             dispatchCategories({type: 'error', error: String(error)})
         })

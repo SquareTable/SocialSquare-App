@@ -103,12 +103,11 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                 const result = response.data;
                 const {data} = result;
 
-                const {categories, noMoreCategories} = data;
+                const {items, noMoreItems} = data;
 
-                if (categories?.length === 0) return dispatch({type: 'noMoreCategories'})
+                if (items?.length === 0) return dispatch({type: 'noMoreCategories'})
 
-                console.log(categories)
-                layoutCategoriesFound(categories, noMoreCategories)
+                layoutCategoriesFound(items, noMoreItems)
                 console.log('Search complete.')
 
             }).catch(error => {
