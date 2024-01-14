@@ -52,10 +52,10 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
 
             axios.post(url, toSend, {signal: abortController.current.signal}).then(result => {
                 const response = result.data;
-                const {data, message} = response;
-                const {posts, lastVoteId, noMoreVotes} = data;
+                const {data} = response;
+                const {items, lastVoteId, noMoreItems} = data;
 
-                if (posts.length === 0) {
+                if (items.length === 0) {
                     dispatch({type: 'noMorePosts'})
                 }
 
@@ -63,7 +63,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
 
                 const processedPosts = []
 
-                posts.forEach((item, index, dataArray) => {
+                items.forEach((item, index, dataArray) => {
                     async function loadImages() {
                         const post = dataArray[index];
 
@@ -84,9 +84,9 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                         }
 
                         
-                        if (processedPosts.length === posts.length) {
+                        if (processedPosts.length === items.length) {
                             dispatch({type: 'addPosts', posts: processedPosts})
-                            if (noMoreVotes) {
+                            if (noMoreItems) {
                                 dispatch({type: 'noMorePosts'})
                             }
                         }
