@@ -285,10 +285,10 @@ const FindScreen = ({navigation}) => {
                     const result = response.data;
                     const {data} = result;
     
-                    const {categories, noMoreCategories} = data;
+                    const {items, noMoreItems} = data;
     
                     console.log(data)
-                    layoutCategoriesFound(categories, noMoreCategories)
+                    layoutCategoriesFound(items, noMoreItems)
                     console.log('Category search was a success')
     
                 }).catch(error => {
