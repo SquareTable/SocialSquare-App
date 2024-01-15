@@ -23,7 +23,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [feed, dispatch] = usePostReducer();
     const [errorFetching, setErrorFetching] = useState(null)
-    const lastVoteIdRef = useRef(null)
+    const lastItemIdRef = useRef(null)
     const abortController = useRef(new AbortController())
 
     //any image honestly
@@ -45,7 +45,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
             
             const url = serverUrl + '/tempRoute/getUserActivity';
             const toSend = {
-                skip: lastVoteIdRef.current || undefined,
+                skip: lastItemIdRef.current || undefined,
                 voteType: voteType === 'Upvote' ? 'up' : 'down',
                 postFormat
             }
@@ -53,13 +53,13 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
             axios.post(url, toSend, {signal: abortController.current.signal}).then(result => {
                 const response = result.data;
                 const {data} = response;
-                const {items, lastVoteId, noMoreItems} = data;
+                const {items, lastItemId, noMoreItems} = data;
 
                 if (items.length === 0) {
                     dispatch({type: 'noMorePosts'})
                 }
 
-                lastVoteIdRef.current = lastVoteId
+                lastItemIdRef.current = lastItemId
 
                 const processedPosts = []
 
