@@ -639,7 +639,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && images.posts.length > 0) {
-                toSend.previousPostId = images.posts[images.posts.length - 1]._id
+                toSend.lastItemId = images.posts[images.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -797,7 +797,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && polls.posts.length > 0) {
-                toSend.previousPostId = polls.posts[polls.posts.length - 1]._id
+                toSend.lastItemId = polls.posts[polls.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -918,7 +918,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && threads.posts.length > 0) {
-                toSend.previousPostId = threads.posts[threads.posts.length - 1]._id
+                toSend.lastItemId = threads.posts[threads.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -1005,7 +1005,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && categories.categories.length > 0) {
-                toSend.previousCategoryMemberId = categories.categories[categories.categories.length - 1].memberId
+                toSend.lastItemId = categories.categories[categories.categories.length - 1].memberId
             }
 
             axios.post(url, toSend).then((response) => {
