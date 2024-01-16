@@ -27,10 +27,10 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
 
         axios.get(url).then(async response => {
             const result = response.data;
-            const {skip, requesters, noMoreItems} = result.data;
+            const {skip, items, noMoreItems} = result.data;
 
             Promise.allSettled(
-                requesters.map(requester => {
+                items.map(requester => {
                     if (requester.profileImageKey && requester.profileImageKey !== "") {
                         return axios.get(serverUrl + '/getImageOnServer/' + requester.profileImageKey)
                     }
@@ -38,7 +38,7 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
                     return Promise.resolve('SocialSquare');
                 })
             ).then(pfps => {
-                const users = requesters.map((requester, index) => {
+                const users = items.map((requester, index) => {
                     console.warn(pfps[index].value.data)
                     return {
                         ...requester,

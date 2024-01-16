@@ -575,7 +575,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const layoutImagePosts = (data) => {
-        var imageData = data.data.posts
+        var imageData = data.data.items
         console.log("The Image data")
         console.log(imageData)
         console.log(imageData.length)
@@ -614,7 +614,7 @@ const ProfilePages = ({ route, navigation }) => {
                 posts: posts
             })
 
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchImages({type: 'noMorePosts'})
             }
         }).catch(error => {
@@ -639,7 +639,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && images.posts.length > 0) {
-                toSend.previousPostId = images.posts[images.posts.length - 1]._id
+                toSend.lastItemId = images.posts[images.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -670,7 +670,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const layoutPollPosts = (data) => {
-        const {posts: pollData, noMorePosts} = data;
+        const {items: pollData, noMoreItems} = data;
 
         console.log('Poll Data:', pollData)
         console.log('Number of polls received:', pollData.length)
@@ -776,7 +776,7 @@ const ProfilePages = ({ route, navigation }) => {
             }
             getPfpImageForPollWithAsync()
         });
-        if (noMorePosts) {
+        if (noMoreItems) {
             dispatchPolls({type: 'noMorePosts'})
         }
     }
@@ -797,7 +797,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && polls.posts.length > 0) {
-                toSend.previousPostId = polls.posts[polls.posts.length - 1]._id
+                toSend.lastItemId = polls.posts[polls.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -819,7 +819,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const layoutThreadPosts = (data) => {
-        var threadData = data.data.posts
+        var threadData = data.data.items
         console.log("The Thread data")
         console.log(threadData)
         console.log(threadData.length)
@@ -893,7 +893,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
         ).then(posts => {
             dispatchThreads({type: 'addPosts', posts})
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchThreads({type: 'noMorePosts'})
             }
         }).catch(error => {
@@ -918,7 +918,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && threads.posts.length > 0) {
-                toSend.previousPostId = threads.posts[threads.posts.length - 1]._id
+                toSend.lastItemId = threads.posts[threads.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -940,7 +940,7 @@ const ProfilePages = ({ route, navigation }) => {
 
     const layoutCategoriesFound = (data) => {
         console.log('DATA:', data)
-        var allData = data.categories
+        var allData = data.items
 
         Promise.all(
             allData.map(category => {
@@ -983,7 +983,7 @@ const ProfilePages = ({ route, navigation }) => {
                 })
             })
         ).then(categories => {
-            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreCategories})
+            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreItems})
         }).catch(error => {
             dispatchCategories({type: 'error', error: String(error)})
         })
@@ -1005,7 +1005,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && categories.categories.length > 0) {
-                toSend.previousCategoryMemberId = categories.categories[categories.categories.length - 1].memberId
+                toSend.lastItemId = categories.categories[categories.categories.length - 1].memberId
             }
 
             axios.post(url, toSend).then((response) => {

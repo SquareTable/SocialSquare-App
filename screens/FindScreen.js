@@ -279,16 +279,16 @@ const FindScreen = ({navigation}) => {
                 const url = serverUrl + '/tempRoute/searchpagesearchcategories'
                 const toSend = {
                     val,
-                    lastCategoryId: clear ? undefined : categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
+                    lastItemId: clear ? undefined : categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
                 }
                 axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                     const result = response.data;
                     const {data} = result;
     
-                    const {categories, noMoreCategories} = data;
+                    const {items, noMoreItems} = data;
     
                     console.log(data)
-                    layoutCategoriesFound(categories, noMoreCategories)
+                    layoutCategoriesFound(items, noMoreItems)
                     console.log('Category search was a success')
     
                 }).catch(error => {
