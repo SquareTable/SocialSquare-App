@@ -81,6 +81,7 @@ import ActivityScreen from "../screens/ActivityScreen.js";
 import PrivacySettings from "../screens/PrivacySettings.js";
 import LoginActivitySettings from "../screens/SecuritySettingsScreens/LoginActivitySettings.js";
 import PostUpvoteDownvoteActivity from "../screens/ActivityScreens/PostUpvoteDownvoteActivity.js";
+import VotesViewPage from "../screens/VotesViewPage.js";
 
 
 const Stack = createStackNavigator();
@@ -138,6 +139,7 @@ const RootStack = () => {
         <Stack.Screen name="EditProfile" component={EditProfile}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
         <Stack.Screen name="ProfilePages" component={ProfilePages}/>
+        <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -168,6 +170,7 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+        <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       </Stack.Group>
       <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}/>
       <Stack.Screen name="CommentviewPage" component={CommentViewPage}/>
@@ -201,6 +204,7 @@ const HomeScreenStack = () => {
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
       <Stack.Screen name="ProfilePages" component={ProfilePages}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+      <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
     </Stack.Navigator>
   )
 }
@@ -285,6 +289,7 @@ const SettingsStack = () => {
       <Stack.Screen name="LoginActivitySettings" component={LoginActivitySettings}/>
       <Stack.Screen name="PostUpvoteDownvoteActivity" component={PostUpvoteDownvoteActivity}/>
       <Stack.Screen name="ProfilePages" component={ProfilePages}/>
+      <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
     </Stack.Navigator>
   )
 }
