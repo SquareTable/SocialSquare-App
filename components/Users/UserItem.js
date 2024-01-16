@@ -2,7 +2,7 @@ import { PureComponent } from "react";
 import { View, Image, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
-class UserItemClass extends PureComponentComponent {
+class UserItemClass extends PureComponent {
     constructor(props) {
         super(props);
     }

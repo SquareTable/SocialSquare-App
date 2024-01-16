@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import useItemReducer from "../hooks/useItemReducer";
 import { View, Text } from "react-native";
@@ -9,14 +9,16 @@ import { ServerUrlContext } from "./ServerUrlContext";
 import ParseErrorMessage from "./ParseErrorMessage";
 
 export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, extraPOSTData = {}, DisplayComponent, extraProps = {}}) {
-    const {state, dispatch} = useItemReducer();
+    const [state, dispatch] = useItemReducer();
     const {colors} = useTheme();
     const {serverUrl} = useContext(ServerUrlContext)
 
     function loadItems(reload) {
+        dispatch({type: reload ? 'startReload' : 'startLoad'})
+
         const urlToUse = serverUrl + url;
         const toSend = {
-            lastItemId: reload ? undefined : state.items[state.items.length - 1]._id,
+            lastItemId: reload ? undefined : state.items[state.items.length - 1]?._id,
             ...extraPOSTData
         }
 
@@ -29,6 +31,8 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
             console.error(error)
         })
     }
+
+    useEffect(loadItems, [])
 
     if (centreIfNoItems && state.items.length === 0) {
         return (
