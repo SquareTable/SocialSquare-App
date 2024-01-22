@@ -15,7 +15,8 @@ function returnReducer(extensions) {
                 reloading: true,
                 error: null,
                 items: [],
-                noMoreItems: false
+                noMoreItems: false,
+                loading: false
             }
         }
     
@@ -43,7 +44,9 @@ function returnReducer(extensions) {
         if (action.type === 'error') {
             return {
                 ...state,
-                error: action.error
+                error: action.error,
+                loading: false,
+                reloading: false
             }
         }
     
