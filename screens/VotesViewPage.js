@@ -43,6 +43,7 @@ export default function VotesViewPage({route}) {
                         index
                     }
                 }}
+                noMoreItemsText="No more items left"
             />
         </>
     )
