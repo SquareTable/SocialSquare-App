@@ -151,6 +151,10 @@ class ImagePost extends Component {
         this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
     }
 
+    navigateToVotesViewPage = () => {
+        this.props.navigation.navigate('VotesViewPage', {postId: this.props.post._id, postFormat: 'Image'})
+    }
+
     render() {
         return (
             <>
@@ -199,7 +203,9 @@ class ImagePost extends Component {
                                     <ActivityIndicator size="small" color={this.props.colors.brand} />                
                                 </PostsIconFrame>
                             :
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{this.props.post.votes}</SubTitle>
+                                <TouchableOpacity onPress={this.navigateToVotesViewPage}>
+                                    <SubTitle style={{alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{this.props.post.votes}</SubTitle>
+                                </TouchableOpacity>
                             }
                         </PostsIconFrame>
                         
