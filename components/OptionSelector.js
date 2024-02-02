@@ -7,10 +7,10 @@ export default function OptionSelector({options, selected, setOption}) {
     return (
         <View style={{flexDirection: 'row'}}>
             {
-                options.map(option => {
+                options.map((option, index) => {
                     const optionSelected = selected === option
                     return (
-                        <TouchableOpacity key={option} onPress={() => setOption(option)} style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center', borderColor: optionSelected ? colors.brand : colors.tertiary, borderBottomWidth: 2}}>
+                        <TouchableOpacity key={index} onPress={() => setOption(option)} style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center', borderColor: optionSelected ? colors.brand : colors.tertiary, borderBottomWidth: 2}}>
                             <Text style={{color: optionSelected ? colors.brand : colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{option.toUpperCase()}</Text>
                         </TouchableOpacity>
                     )
