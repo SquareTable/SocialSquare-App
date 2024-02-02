@@ -5,7 +5,8 @@ function returnReducer(extensions) {
         if (action.type === 'startLoad') {
             return {
                 ...state,
-                loading: true
+                loading: true,
+                error: null
             }
         }
 
