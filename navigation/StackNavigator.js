@@ -205,6 +205,7 @@ const HomeScreenStack = () => {
       <Stack.Screen name="ProfilePages" component={ProfilePages}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
+      <Stack.Screen name="ProfileStats" component={ProfileStats}/>
     </Stack.Navigator>
   )
 }
