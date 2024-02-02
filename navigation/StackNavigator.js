@@ -207,6 +207,7 @@ const HomeScreenStack = () => {
       <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       <Stack.Screen name="ProfileStats" component={ProfileStats}/>
       <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
+      <Stack.Screen name="AccountBadges" component={AccountBadges}/>
     </Stack.Navigator>
   )
 }
