@@ -229,7 +229,8 @@ const ProfilePages = ({ route, navigation }) => {
                         totalLikes: data.totalLikes,
                         profileKey: profileImage,
                         badges: data.badges,
-                        privateAccount: data.privateAccount
+                        privateAccount: data.privateAccount,
+                        bio: data.bio
                     })
                     setLoadingFollowers(false)
 
