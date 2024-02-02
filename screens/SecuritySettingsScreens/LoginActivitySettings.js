@@ -197,12 +197,12 @@ const LoginActivitySettings = ({navigation, route}) => {
                         <View style={{justifyContent: 'center', alignItems: 'center'}}>
                             {
                                 typeof currentSettings.getIP === 'boolean' ?
-                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => {setCurrentSettings(settings => ({...settings, getIP: !settings.getIP}))}} style={{flexDirection: 'row', alignItems: 'center'}}>
                                         <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary, marginRight: 25}}>Store IP:</Text>
-                                        <TouchableOpacity onPress={() => {setCurrentSettings(settings => ({...settings, getIP: !settings.getIP}))}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                        <View style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
                                             <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{currentSettings.getIP ? '✓' : '✕'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                        </View>
+                                    </TouchableOpacity>
                                 :
                                     <>
                                         <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary}}>Store IP:</Text>
@@ -213,12 +213,12 @@ const LoginActivitySettings = ({navigation, route}) => {
                         <View style={{justifyContent: 'center', alignItems: 'center'}}>
                             {
                                 typeof currentSettings.getDeviceType === 'boolean' ?
-                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => {setCurrentSettings(settings => ({...settings, getDeviceType: !settings.getDeviceType}))}} style={{flexDirection: 'row', alignItems: 'center'}}>
                                         <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary, marginRight: 25}}>Store Device Type:</Text>
-                                        <TouchableOpacity onPress={() => {setCurrentSettings(settings => ({...settings, getDeviceType: !settings.getDeviceType}))}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                        <View style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
                                             <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{currentSettings.getDeviceType ? '✓' : '✕'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                        </View>
+                                    </TouchableOpacity>
                                 :
                                     <>
                                         <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary}}>Store Device Type:</Text>
@@ -230,12 +230,12 @@ const LoginActivitySettings = ({navigation, route}) => {
                             {
                                 typeof currentSettings.getLocation === 'boolean' ?
                                     <>
-                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <TouchableOpacity onPress={() => {setCurrentSettings(settings => ({...settings, getLocation: !settings.getLocation}))}} style={{flexDirection: 'row', alignItems: 'center'}}>
                                             <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary, marginRight: 25}}>Store Location:</Text>
-                                            <TouchableOpacity onPress={() => {setCurrentSettings(settings => ({...settings, getLocation: !settings.getLocation}))}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                            <View style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
                                                 <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{currentSettings.getLocation ? '✓' : '✕'}</Text>
-                                            </TouchableOpacity>
-                                        </View>
+                                            </View>
+                                        </TouchableOpacity>
                                         <Text style={{fontSize: 14, color: colors.tertiary, textAlign: 'center', marginHorizontal: 10, marginTop: 10}}>(Location is derived from your IP address and SocialSquare does not use GPS data to get your location)</Text>
                                     </>
                                 :
