@@ -801,7 +801,7 @@ const PollUploadPage = ({navigation}) => {
                                             </TouchableOpacity>
                                         </View>
                                         <MsgBox type={messageType}>{message}</MsgBox>
-                                        {!isSubmitting && (<StyledButton style={{backgroundColor: colors.brand}} onPress={handleSubmit}>
+                                        {!isSubmitting && (<StyledButton onPress={handleSubmit}>
                                             <ButtonText> Submit </ButtonText>
                                         </StyledButton>)}
 
