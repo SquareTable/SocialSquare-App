@@ -48,6 +48,7 @@ const ProfileStats = ({navigation, route}) => {
     const [profilePictures, setProfilePictures] = useState({
         SocialSquareLogo_B64_png
     })
+    const skipRef = useRef(0);
 
     const accountIndex = allCredentialsStoredList.findIndex(x => x._id === _id)
 
@@ -62,16 +63,17 @@ const ProfileStats = ({navigation, route}) => {
             setError(null)
 
             const url = serverUrl + '/tempRoute/getProfileStats'
-            const toSend = {pubId: publicId, skip: listItems.length, stat: type[0].toLowerCase() + type.slice(1)}
+            const toSend = {pubId: publicId, skip: skipRef.current, stat: type[0].toLowerCase() + type.slice(1)}
             axios.post(url, toSend).then(response => {
                 const result = response.data;
                 const {status, message, data} = result;
-                const {items, noMoreItems} = data || {};
+                const {items, noMoreItems, skip} = data || {};
 
                 if (status !== "SUCCESS") {
                     setError(message)
                     setLoading(false)
                 } else {
+                    skipRef.current = skip;
                     PromiseAllSettled(
                         items.map(item => {
                             return new Promise(resolve => {
