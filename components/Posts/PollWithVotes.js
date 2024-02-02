@@ -161,6 +161,10 @@ class PollWithVotes extends PollClass {
         this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
     }
 
+    navigateToVotesViewPage = () => {
+        this.props.navigation.navigate('VotesViewPage', {postId: this.props.post._id, postFormat: 'Poll'})
+    }
+
     render() {
         this.votes = this.props.post.optionOnesVotes + this.props.post.optionTwosVotes + this.props.post.optionThreesVotes + this.props.post.optionFoursVotes + this.props.post.optionFivesVotes + this.props.post.optionSixesVotes;
         this.optionOnesBarLength = this.votes === 0 ? this.calculateZeroVoteLength(1) : this.props.post.optionOnesVotes / this.votes * 100
@@ -459,7 +463,7 @@ class PollWithVotes extends PollClass {
                                 <PostsIconFrame onPress={() => this.props.post.upvoted ? this.removeVote("Up") : this.upvote()}>
                                     <PostsIcons style={{flex: 1, tintColor: this.props.post.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                                 </PostsIconFrame>
-                                <PostsIconFrame>
+                                <PostsIconFrame onPress={this.navigateToVotesViewPage}>
                                     <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.votes}</SubTitle>
                                 </PostsIconFrame>
                                 <PostsIconFrame onPress={() => this.props.post.downvoted ? this.removeVote("Down") : this.downvote()}>

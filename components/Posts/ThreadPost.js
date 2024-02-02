@@ -156,6 +156,10 @@ class Thread extends Component {
         this.props.navigation.navigate('CategoryViewPage', {categoryId: this.props.post.categoryId, categoryTitle: this.props.post.threadCategory})
     }
 
+    navigateToVotesViewPage = () => {
+        this.props.navigation.navigate('VotesViewPage', {postId: this.props.post._id, postFormat: 'Thread'})
+    }
+
     render() {
         return (
             <>
@@ -241,7 +245,7 @@ class Thread extends Component {
                                     <PostsIcons style={{ flex: 1, tintColor: this.props.post.upvoted ? this.props.colors.brand : this.props.colors.tertiary }} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                                 </PostsIconFrame>
 
-                                <PostsIconFrame>
+                                <PostsIconFrame onPress={this.navigateToVotesViewPage}>
                                     <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.votes}</SubTitle>
                                 </PostsIconFrame>
 

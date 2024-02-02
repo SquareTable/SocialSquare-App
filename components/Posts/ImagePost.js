@@ -197,15 +197,11 @@ class ImagePost extends Component {
                             {!this.props.post.changingVote && <PostsIcons style={{flex: 1, tintColor: this.props.post.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>}
                         </PostsIconFrame>
 
-                        <PostsIconFrame>
+                        <PostsIconFrame disabled={this.props.post.changingVote} onPress={this.navigateToVotesViewPage}>
                             {this.props.post.changingVote ?
-                                <PostsIconFrame>
-                                    <ActivityIndicator size="small" color={this.props.colors.brand} />                
-                                </PostsIconFrame>
+                                <ActivityIndicator size="small" color={this.props.colors.brand} />  
                             :
-                                <TouchableOpacity onPress={this.navigateToVotesViewPage}>
-                                    <SubTitle style={{alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{this.props.post.votes}</SubTitle>
-                                </TouchableOpacity>
+                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{this.props.post.votes}</SubTitle>
                             }
                         </PostsIconFrame>
                         
