@@ -82,6 +82,7 @@ import PrivacySettings from "../screens/PrivacySettings.js";
 import LoginActivitySettings from "../screens/SecuritySettingsScreens/LoginActivitySettings.js";
 import PostUpvoteDownvoteActivity from "../screens/ActivityScreens/PostUpvoteDownvoteActivity.js";
 import VotesViewPage from "../screens/VotesViewPage.js";
+import CategoryMemberViewPage from "../screens/CategoryMemberViewPage.js";
 
 
 const Stack = createStackNavigator();
@@ -138,6 +139,7 @@ const RootStack = () => {
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
         <Stack.Screen name="EditProfile" component={EditProfile}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+        <Stack.Screen name="CategoryMemberViewPage" component={CategoryMemberViewPage}/>
         <Stack.Screen name="ProfilePages" component={ProfilePages}/>
         <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       </Stack.Group>
@@ -166,6 +168,7 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="AccountBadges" component={AccountBadges}/>
         <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+        <Stack.Screen name="CategoryMemberViewPage" component={CategoryMemberViewPage}/>
         <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
         <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
@@ -204,6 +207,7 @@ const HomeScreenStack = () => {
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
       <Stack.Screen name="ProfilePages" component={ProfilePages}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+      <Stack.Screen name="CategoryMemberViewPage" component={CategoryMemberViewPage}/>
       <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       <Stack.Screen name="ProfileStats" component={ProfileStats}/>
       <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>

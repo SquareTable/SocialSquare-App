@@ -397,34 +397,36 @@ const CategoryViewPage = ({route, navigation}) => {
                 ) : null}
                 <ProfileHorizontalView>
                     <ProfileHorizontalViewItem profLeftIcon={true}>
-                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
-                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                        {initialInCategory == true && (
-                            <View>
-                                {inCategory == true && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
-                                )}
-                                {inCategory == false && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members-1} </SubTitle>
-                                )}
-                            </View>
-                        )}
-                        {initialInCategory == false && (
-                            <View>
-                                {inCategory == true && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members+1} </SubTitle>
-                                )}
-                                {inCategory == false && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
-                                )}
-                            </View>
-                        )}
-                        <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinLeaveCategory}>
-                            {typeof inCategory === "boolean" ?
-                                <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
-                            : inCategory === "Changing" || inCategory === "Finding" ?
-                                <ActivityIndicator size="small" color={colors.brand}/>
-                            : null}
+                        <TouchableOpacity onPress={() => navigation.navigate('CategoryMemberViewPage', {categoryId})} style={{width: '100%', alignItems: 'center'}}>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                            {initialInCategory == true && (
+                                <View>
+                                    {inCategory == true && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
+                                    )}
+                                    {inCategory == false && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members-1} </SubTitle>
+                                    )}
+                                </View>
+                            )}
+                            {initialInCategory == false && (
+                                <View>
+                                    {inCategory == true && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members+1} </SubTitle>
+                                    )}
+                                    {inCategory == false && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
+                                    )}
+                                </View>
+                            )}
+                            <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinLeaveCategory}>
+                                {typeof inCategory === "boolean" ?
+                                    <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
+                                : inCategory === "Changing" || inCategory === "Finding" ?
+                                    <ActivityIndicator size="small" color={colors.brand}/>
+                                : null}
+                            </TouchableOpacity>
                         </TouchableOpacity>
                     </ProfileHorizontalViewItem>
                     <ProfileHorizontalViewItem profCenterIcon={true}>
