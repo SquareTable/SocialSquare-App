@@ -33,7 +33,10 @@ class AppBannerAdClass extends Component {
                 requestOptions={{
                     requestNonPersonalizedAdsOnly: true,
                 }}
-                onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
+                onAdFailedToLoad={(error) => {
+                    console.warn('Failed to load ad:', error)
+                    this.setState({error: true})
+                }}
             />
         )
     }
