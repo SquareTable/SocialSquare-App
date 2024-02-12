@@ -83,6 +83,7 @@ import LoginActivitySettings from "../screens/SecuritySettingsScreens/LoginActiv
 import PostUpvoteDownvoteActivity from "../screens/ActivityScreens/PostUpvoteDownvoteActivity.js";
 import VotesViewPage from "../screens/VotesViewPage.js";
 import CategoryMemberViewPage from "../screens/CategoryMemberViewPage.js";
+import PollVoteViewPage from "../screens/PollVoteViewPage.js";
 
 
 const Stack = createStackNavigator();
@@ -136,6 +137,7 @@ const RootStack = () => {
         <Stack.Screen name="AccountBadges" component={AccountBadges}/>
         <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+        <Stack.Screen name="PollVoteViewPage" component={PollVoteViewPage}/>
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
         <Stack.Screen name="EditProfile" component={EditProfile}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
@@ -172,6 +174,7 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
         <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+        <Stack.Screen name="PollVoteViewPage" component={PollVoteViewPage}/>
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
         <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       </Stack.Group>
@@ -204,6 +207,7 @@ const HomeScreenStack = () => {
       <Stack.Screen name="AccountFollowRequestsScreen" component={AccountFollowRequestsScreen}/>
       <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
       <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+      <Stack.Screen name="PollVoteViewPage" component={PollVoteViewPage}/>
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
       <Stack.Screen name="ProfilePages" component={ProfilePages}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
