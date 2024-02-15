@@ -36,11 +36,13 @@ export default function VotesViewPage({route}) {
                 DisplayComponent={UserItem}
                 state={upvoteSelected ? upvoteState : downvoteState}
                 dispatch={upvoteSelected ? dispatchUpvotes : dispatchDownvotes}
-                getItemLayout={(data, index) => {
-                    return {
-                        length: 70,
-                        offset: 70 * index,
-                        index
+                extraProps={{
+                    getItemLayout: (data, index) => {
+                        return {
+                            length: 70,
+                            offset: 70 * index,
+                            index
+                        }
                     }
                 }}
                 noMoreItemsText="No more items left"
