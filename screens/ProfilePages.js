@@ -1468,7 +1468,7 @@ const ProfilePages = ({ route, navigation }) => {
                         <ProfileGridPosts>
                             {selectedPostFormat == "One" && (<FlatList
                                 data={images.posts}
-                                keyExtractor={(item) => item.imageKey}
+                                keyExtractor={(item) => item._id}
                                 renderItem={({ item, index }) => <ImagePost post={item} index={index} dispatch={dispatchImages} colors={colors} colorsIndexNum={indexNum}/> }
                                 ListFooterComponent={<ListFooters feedData={images} loadMoreFunction={loadImages} postFormat="image"/>}
                                 ItemSeparatorComponent={() => <View style={{height: 10}}/>}
