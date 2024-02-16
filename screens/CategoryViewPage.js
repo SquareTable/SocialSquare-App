@@ -61,11 +61,9 @@ import {
     MsgBox,
     ImagePostTextFrame,
     CategoriesTopBtns,
-    Navigator_BackButton
+    Navigator_BackButton,
+    TestText
 } from '../screens/screenStylings/styling';
-
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterPrimary, descTextColor, darkest, red} = Colors;
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -90,6 +88,7 @@ import usePostReducer from '../hooks/usePostReducer';
 import ParseErrorMessage from '../components/ParseErrorMessage';
 
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 const CategoryViewPage = ({route, navigation}) => {
     const {colors, dark, indexNum} = useTheme()
@@ -492,23 +491,17 @@ const CategoryViewPage = ({route, navigation}) => {
                 <>
                     {displayAgeRequirementWarning == false ?
                         <>
-                            <View style={{paddingTop: StatusBarHeight - 15, color: colors.primary, flexDirection: 'row', justifyContent: 'center'}}>
-                                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
-                                    <Image
-                                        source={require('../assets/app_icons/back_arrow.png')}
-                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary, top: -11}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </Navigator_BackButton>
-                                {categoryData.NSFW == true && (
-                                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFW)</SubTitle>
-                                )}
-                                {categoryData.NSFL == true && (
-                                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFL)</SubTitle>
-                                )}
-                                <PageTitle style={{fontSize: 26}} welcome={true}>{categoryData.categoryTitle || "Couldn't get name"}</PageTitle>
-                            </View>
+                            <TopNavBar screenName={
+                                <>
+                                    {categoryData.NSFW == true && (
+                                        <SubTitle style={{color: colors.red, marginBottom: 0}}>(NSFW)</SubTitle>
+                                    )}
+                                    {categoryData.NSFL == true && (
+                                        <SubTitle style={{color: colors.red, marginBottom: 0}}>(NSFL)</SubTitle>
+                                    )}
+                                    <TestText style={{color: colors.tertiary}}>{categoryData.categoryTitle || "Couldn't get name"}</TestText>
+                                </>
+                            }/>
                             {selectedPostFormat == "One" && (<FlatList
                                 data={threads.posts}
                                 keyExtractor={(item) => item._id}
