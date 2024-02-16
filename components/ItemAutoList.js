@@ -3,7 +3,7 @@ import { FlatList, RefreshControl, TouchableOpacity } from "react-native";
 import { View, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
-import axios from "axios";
+import axios, { CanceledError } from "axios";
 import { ServerUrlContext } from "./ServerUrlContext";
 import ParseErrorMessage from "./ParseErrorMessage";
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -28,6 +28,10 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
     
                 dispatch({type: 'addItems', items, noMoreItems})
             }).catch(error => {
+                if (error instanceof CanceledError) {
+                    return dispatch({type: 'error', error: 'Network request was cancelled because list was unmounted.'})
+                }
+
                 dispatch({type: 'error', error: ParseErrorMessage(error)})
                 console.error(error)
                 console.error(ParseErrorMessage(error))
@@ -41,6 +45,7 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
         return () => {
             console.warn('Aborting network requests from ItemAutoList as component is getting unmounted.')
             AbortControllerRef.current.abort();
+            AbortControllerRef.current = new AbortController();
         }
     }, [dispatch])
 
