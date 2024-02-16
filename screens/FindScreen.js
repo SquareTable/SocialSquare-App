@@ -336,6 +336,23 @@ const FindScreen = ({navigation}) => {
             }
         }
     }, [filterFormatSearch])
+
+    function abortNetworkRequests() {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = new AbortController()
+    }
+
+    function changeToUsers() {
+        abortNetworkRequests();
+        setChangeSectionsOne([])
+        setFilterFormatSearch("Users") 
+    }
+
+    function changeToCategories() {
+        abortNetworkRequests();
+        dispatchCategories({type: 'resetCategories'})
+        setFilterFormatSearch("Categories");
+    }
     return(
         <>
             <StatusBar style={colors.StatusBarColor}/>
@@ -348,56 +365,21 @@ const FindScreen = ({navigation}) => {
                                 <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', marginTop: -20}}>
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Users</SubTitle>
-                                        {filterFormatSearch == "Users" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                                            </TouchableOpacity>
-                                        )}
-                                        {filterFormatSearch !== "Users" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                abortControllerRef.current.abort();
-                                                abortControllerRef.current = new AbortController()
-                                                setChangeSectionsOne([])
-                                                setFilterFormatSearch("Users")  
-                                            }}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                                            </TouchableOpacity>
-                                        )}
+                                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: filterFormatSearch === 'Users' ? colors.brand : colors.borderColor, borderWidth: 3, padding: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center'}} onPress={() => filterFormatSearch !== 'Users' ? changeToUsers() : null}>
+                                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Categories</SubTitle>
-                                        {filterFormatSearch == "Categories" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                                            </TouchableOpacity>
-                                        )}
-                                        {filterFormatSearch !== "Categories" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                abortControllerRef.current.abort();
-                                                abortControllerRef.current = new AbortController();
-                                                dispatchCategories({type: 'resetCategories'})
-                                                setFilterFormatSearch("Categories");
-                                            }}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                                            </TouchableOpacity>
-                                        )}
+                                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: filterFormatSearch === 'Categories' ? colors.brand : colors.borderColor, borderWidth: 3, padding: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center'}} onPress={() => filterFormatSearch !== 'Categories' ? changeToCategories() : null}>
+                                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
-                                        {filterFormatSearch == "Images" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                                            </TouchableOpacity>
-                                        )}
-                                        {filterFormatSearch !== "Images" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                //setChangeSections([])
-                                                //setFilterFormatSearch("Images")
-                                                alert('This feature is coming soon')
-                                            }}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                                            </TouchableOpacity>
-                                        )}
+                                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.borderColor, borderWidth: 3, padding: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center'}} onPress={() => alert('This feature is coming soon')}>
+                                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </>
