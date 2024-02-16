@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { FlatList, RefreshControl, TouchableOpacity } from "react-native";
 import { View, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
@@ -10,7 +10,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, extraPOSTData = {}, DisplayComponent, extraProps = {}, state, dispatch, noMoreItemsText}) {
     const {colors} = useTheme();
-    const {serverUrl} = useContext(ServerUrlContext)
+    const {serverUrl} = useContext(ServerUrlContext);
+    const AbortControllerRef = useRef(new AbortController());
 
     function loadItems(reload) {
         if ((!state.noMoreItems || reload) && !state.loading && !state.reloading) {
@@ -22,7 +23,7 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
                 ...extraPOSTData
             }
     
-            axios.post(urlToUse, toSend).then(response => {
+            axios.post(urlToUse, toSend, {signal: AbortControllerRef.current.signal}).then(response => {
                 const {items, noMoreItems} = response.data.data;
     
                 dispatch({type: 'addItems', items, noMoreItems})
@@ -36,6 +37,11 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
 
     useEffect(() => {
         loadItems()
+
+        return () => {
+            console.warn('Aborting network requests from ItemAutoList as component is getting unmounted.')
+            AbortControllerRef.current.abort();
+        }
     }, [dispatch])
 
     return (
