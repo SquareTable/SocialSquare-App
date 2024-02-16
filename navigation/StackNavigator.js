@@ -1,22 +1,14 @@
 import React, {useContext} from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
-import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
-
-import {Colors} from '../screens/screenStylings/styling.js'
-const {primary, tertiary} = Colors;
 
 import { ExperimentalFeaturesEnabledContext } from "../components/ExperimentalFeaturesEnabledContext.js";
 
 import ProfileScreen from "../screens/ProfileScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
-import LoginScreen from "../screens/LoginScreen";
 import AccountSettings from "../screens/AccountSettings";
-import Signup from "../screens/Signup.js";
 
-import { CredentialsContext } from "../components/CredentialsContext.js";
-import { NavigationContainer, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import ProfilePages from '../screens/ProfilePages.js'
 
@@ -31,7 +23,6 @@ import SelectCategorySearchScreen from '../screens/SelectCategorySearchScreen'
 import AccountBadges from "../screens/AccountBadges.js";
 import ChangeEmailPage from "../screens/ChangeEmailPage";
 
-import Conversations from "../screens/Conversations.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
@@ -64,8 +55,6 @@ import HomeScreenSettings from "../screens/HomeScreenSettings.js";
 import Filter_HomeScreenSettings from "../screens/HomeScreenSettings/Filter_HomeScreenSettings.js";
 import Algorithm_HomeScreenSettings from "../screens/HomeScreenSettings/Algorithm_HomeScreenSettings.js";
 import Audio_HomeScreenSettings from "../screens/HomeScreenSettings/Audio_HomeScreenSettings.js";
-import CreateConversationSelection from "../screens/CreateConversationSelection.js";
-import ConversationCreationPage from "../screens/CreateConversation.js";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen.js";
 import EditProfile from "../screens/EditProfile.js";
 import AccountFollowRequestsScreen from "../screens/AccountFollowRequestsScreen.js";
@@ -75,7 +64,6 @@ import ActivateEmailMFA from "../screens/SecuritySettingsScreens/MFAScreens/Acti
 import VerifyEmailScreen from "../screens/VerifyEmailScreen.js";
 import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
 import DataControl from "../screens/SecuritySettingsScreens/DataControl.js";
-import DeleteAccountConfirmation from "../screens/DeleteAccountConfirmation.js";
 import ExperimentalFeatures from "../screens/ExperimentalFeatures.js";
 import ActivityScreen from "../screens/ActivityScreen.js";
 import PrivacySettings from "../screens/PrivacySettings.js";
@@ -87,14 +75,6 @@ import PollVoteViewPage from "../screens/PollVoteViewPage.js";
 
 
 const Stack = createStackNavigator();
-
-const screenOptionStyle = {
-  headerStyle: {
-    backgroundColor: "#9AC4F8",
-  },
-  headerTintColor: "white",
-  headerBackTitle: "Back",
-};
 
 const RootStack = () => {
   const { colors } = useTheme();

@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
-import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
 import {Colors} from '../screens/screenStylings/styling.js'
 const {primary, tertiary} = Colors;

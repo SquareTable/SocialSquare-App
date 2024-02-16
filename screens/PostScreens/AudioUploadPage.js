@@ -1,60 +1,16 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Audio } from 'expo-av';
 import { useTheme } from '@react-navigation/native';
 
 import {
-    InnerContainer,
-    PageTitle,
-    SubTitle,
-    StyledFormArea,
-    StyledButton,
-    ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
-    Avatar,
-    StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    PostTypeSelector,
-    PostHorizontalView,
-    PostIcons,
-    PostCollectionView,
-    PostMsgBox,
     BackgroundDarkColor,
     FlexRow,
     LeftButton_AudioUploadScreen,
     RightButton_AudioUploadScreen,
-    darkModeOn,
-    darkModeStyling,
-    lightModeStyling,
     AudioUploadScreenUploadButtons,
-    HorizontalLineAcrossScreen,
-    RecordAudio_AudioUploadPage,
-    RecordButton_RecordScreen_AudioUploadPage,
-    RecordButtonChanger_RecordScreen_AudioUploadPage,
-    AudioWaveBox_RecordScreen_AudioUploadPage,
-    ViewHider
 } from '../screenStylings/styling.js';
 
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-//credentials context
-import { CredentialsContext } from './../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { Image, TouchableOpacity, Text, View } from 'react-native';
 import { StatusBarHeightContext } from '../../components/StatusBarHeightContext.js';
 import TopNavBar from '../../components/TopNavBar.js';
 

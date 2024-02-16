@@ -29,9 +29,6 @@ import {
     ExtraText,
     TextLink,
     TextLinkContent,
-    darkModeOn,
-    darkModeStyling,
-    lightModeStyling
 } from '../screens/screenStylings/styling.js';
 import {View, ActivityIndicator, TouchableOpacity, Text} from 'react-native';
 
@@ -62,11 +59,6 @@ import KeyboardAvoidingScrollView from '../components/KeyboardAvoidingScrollView
 
 
 const Signup = ({navigation, route}) => {
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-    } else {
-        var styling = lightModeStyling;
-    }
     const [webBrowserResult, setWebBrowserResult] = useState(null);
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
