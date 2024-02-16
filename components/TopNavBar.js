@@ -13,11 +13,12 @@ const TopNavBar = ({extraStyles = {}, rightIcon, screenName, hideBackButton, hid
     const {colors} = useTheme();
     const navigation = useNavigation();
 
+
     return (
-        <ChatScreen_Title style={[{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight + 10}, extraStyles]}>
+        <ChatScreen_Title style={[{backgroundColor: colors.primary, borderWidth: 0, paddingTop: StatusBarHeight, height: 'auto', paddingBottom: 5}, extraStyles]}>
             {hideBackButton ? null :
                 leftIcon || (
-                    <Navigator_BackButton style={{paddingTop: StatusBarHeight + 2}} onPress={() => {navigation.goBack()}}>
+                    <Navigator_BackButton style={{paddingTop: StatusBarHeight - 8}} onPress={() => {navigation.goBack()}}>
                         {leftIconChild || (
                             <Image
                                 source={require('../assets/app_icons/back_arrow.png')}
