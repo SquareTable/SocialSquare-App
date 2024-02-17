@@ -45,7 +45,7 @@ export default function VotesViewPage({route}) {
                         }
                     }
                 }}
-                keyExtractor={(item) => item.secondId}
+                keyExtractor={(item) => item.pubId}
                 noMoreItemsText="No more items left"
             />
         </>
