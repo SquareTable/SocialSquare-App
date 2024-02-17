@@ -502,10 +502,10 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
     } else {
         return (
             <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
-                <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                <TouchableOpacity onPress={navigateToProfileScreen}>
                     <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey]}} defaultSource={{uri: profilePictures[item.profileImageKey]}}/>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                <TouchableOpacity onPress={navigateToProfileScreen}>
                     <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
                 </TouchableOpacity>
                 {isSelf && (
