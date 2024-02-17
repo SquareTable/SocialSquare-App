@@ -31,7 +31,7 @@ export default function PollVoteViewPage({route}) {
                 state={state}
                 dispatch={dispatch}
                 noMoreItemsText="No more votes left."
-                keyExtractor={(item) => item.secondId}
+                keyExtractor={(item) => item.pubId}
             />
         </>
     )
