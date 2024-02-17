@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { FlatList, RefreshControl, TouchableOpacity } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, useWindowDimensions } from "react-native";
 import { View, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
@@ -14,6 +14,8 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
     const {colors} = useTheme();
     const {serverUrl} = useContext(ServerUrlContext);
     const AbortControllerRef = useRef(new AbortController());
+    const {height} = useWindowDimensions();
+
 
     function loadItems(reload) {
         if ((!state.noMoreItems || reload) && !state.loading && !state.reloading) {
@@ -113,6 +115,11 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
                                 }
                             </>
                         }
+                        onContentSizeChange={(contentWidth, contentHeight) => {
+                            if (height > contentHeight) {
+                                loadItems(false)
+                            }
+                        }}
                     />
             }
         </>
