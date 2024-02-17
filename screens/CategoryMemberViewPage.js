@@ -29,6 +29,7 @@ export default function CategoryMemberViewPage({route}) {
                 DisplayComponent={UserItem}
                 state={state}
                 dispatch={dispatch}
+                keyExtractor={(item) => item.secondId}
             />
         </>
     )

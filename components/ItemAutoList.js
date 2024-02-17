@@ -8,7 +8,9 @@ import { ServerUrlContext } from "./ServerUrlContext";
 import ParseErrorMessage from "./ParseErrorMessage";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, extraPOSTData = {}, DisplayComponent, extraProps = {}, state, dispatch, noMoreItemsText}) {
+const defaultKeyExtractor = item => item._id
+
+export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, extraPOSTData = {}, DisplayComponent, extraProps = {}, state, dispatch, noMoreItemsText, keyExtractor = defaultKeyExtractor}) {
     const {colors} = useTheme();
     const {serverUrl} = useContext(ServerUrlContext);
     const AbortControllerRef = useRef(new AbortController());
@@ -82,7 +84,7 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
                             />
                         }
                         renderItem={({item, index}) => <DisplayComponent item={item} index={index}/>}
-                        keyExtractor={item => item._id}
+                        keyExtractor={keyExtractor}
                         onEndReachedThreshold={3}
                         onEndReached = {({distanceFromEnd})=>{
                             if (distanceFromEnd > 0) {
