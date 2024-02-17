@@ -142,7 +142,7 @@ const Item = ({item, index, dispatch, profilePictures, navigation}) => {
     }
 
     const navigateToProfileScreen = () => {
-        navigation.navigate('ProfilePages', {pubId: item.pubId})
+        navigation.push('ProfilePages', {pubId: item.pubId})
     }
     
     return (

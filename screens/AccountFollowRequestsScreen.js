@@ -82,7 +82,7 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
     }
 
     const navigateToProfileScreen = (pubId) => {
-        navigation.navigate('ProfilePages', {pubId})
+        navigation.push('ProfilePages', {pubId})
     }
 
     const Item = ({item, index}) => {

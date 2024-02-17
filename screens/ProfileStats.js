@@ -489,7 +489,7 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
     }
 
     const navigateToProfileScreen = () => {
-        navigation.navigate('ProfilePages', {pubId: item.pubId})
+        navigation.push('ProfilePages', {pubId: item.pubId})
     }
 
     if (item.status === 'FAILED') {
@@ -536,7 +536,7 @@ class FollowersItem extends PureComponent {
     }
 
     navigateToProfileScreen = () => {
-        this.props.navigation.navigate('ProfilePages', {pubId: this.props.item.pubId})
+        this.props.navigation.push('ProfilePages', {pubId: this.props.item.pubId})
     }
 
     render() {
