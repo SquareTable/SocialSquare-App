@@ -61,7 +61,7 @@ const CategoryHome = ({navigation}) => {
     var userLoadMax = 10;
 
     const Item = ({name, displayName, following, followers, totalLikes}) => (
-        <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes})}>
+        <SearchFrame onPress={() => navigation.push("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes})}>
             <Avatar resizeMode="cover" searchPage={true} source={AvatarImg} />
             <SubTitle searchResTitle={true}>{name}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>@{displayName}</SubTitle>

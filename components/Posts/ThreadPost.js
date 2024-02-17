@@ -149,7 +149,7 @@ class Thread extends Component {
     })
 
     navigateToProfileScreen = () => {
-        this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
+        this.props.navigation.push('ProfilePages', {pubId: this.props.post.creatorPublicId})
     }
 
     navigateToCategory = () => {

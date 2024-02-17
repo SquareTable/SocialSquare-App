@@ -322,7 +322,7 @@ const ProfilePages = ({ route, navigation }) => {
                 </ProfInfoAreaImage>
                 <ProfileHorizontalView>
                     <ProfileHorizontalViewItem profLeftIcon={true}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Followers', followers: profileData.followers, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={() => {navigation.push('ProfileStats', {type: 'Followers', followers: profileData.followers, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
                             {pubId === secondId ?
                                 <>
                                     <SubTitle welcome={true} style={{color: colors.tertiary}}> Followers </SubTitle> 
@@ -405,7 +405,7 @@ const ProfilePages = ({ route, navigation }) => {
                         </TouchableOpacity>
                     </ProfileHorizontalViewItem>
                     <ProfileHorizontalViewItem profCenterIcon={true}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Following', followers: profileData.following, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={() => {navigation.push('ProfileStats', {type: 'Following', followers: profileData.following, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                             <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> {profileData.following} </SubTitle>

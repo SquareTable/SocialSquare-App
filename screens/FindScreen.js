@@ -40,7 +40,7 @@ class UserItem extends PureComponent {
 
     render() {
         /* OLD DESIGN
-            <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
+            <SearchFrame onPress={() => navigation.push("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
                 {profileKey !== null && (
                     <Avatar resizeMode="cover" searchPage={true} source={{uri: profileKey}} />
                 )}
@@ -83,7 +83,7 @@ class UserItem extends PureComponent {
         }
 
         return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("ProfilePages", {paramsProfileData: data, pubId: this.props.pubId})} style={{borderColor: this.props.colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+            <TouchableOpacity onPress={() => this.props.navigation.push("ProfilePages", {paramsProfileData: data, pubId: this.props.pubId})} style={{borderColor: this.props.colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
                     <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: this.props.profileKey != null ? this.props.profileKey : SocialSquareLogo_B64_png}} />
                     <SubTitle style={{color: this.props.colors.tertiary, marginTop: 24, marginLeft: 10}} searchResTitle={true}>{this.props.displayName || this.props.name}</SubTitle>
