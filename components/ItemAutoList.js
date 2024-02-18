@@ -116,7 +116,7 @@ export default function ItemAutoList({noItemsFoundText, centreIfNoItems, url, ex
                             </>
                         }
                         onContentSizeChange={(contentWidth, contentHeight) => {
-                            if (height > contentHeight) {
+                            if (height > contentHeight && !state.error) {
                                 loadItems(false)
                             }
                         }}
