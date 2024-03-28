@@ -40,8 +40,8 @@ const RecordAudioPage = ({navigation}) => {
 
         console.log(timeSpentRecording);
 
-        const pkg = Constants.manifest.releaseChannel
-        ? Constants.manifest.android.package 
+        const pkg = Constants.expoConfig.releaseChannel
+        ? Constants.expoConfig.android.package 
         : 'host.exp.exponent'
 
         const onChangeRecordingStatus = (status) => {
