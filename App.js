@@ -197,7 +197,7 @@ const App = () => {
       if (status == 401) {
         console.log("No JWT passed?")
         //setAuthAsHeaders() // why not // cant do anymore since userid is used in the keys for multiple accounts
-      } else if (status == 403) {
+      } else if (status == 403 && error?.response?.config?.url !== `${serverUrl}/tempRoute/logoutdevice`) {
         if (ParseErrorMessage(error) == "Token generated.") {
           console.log("New token generated.")
           //refresh occured so repeat last request
