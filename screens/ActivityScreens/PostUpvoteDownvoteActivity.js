@@ -23,7 +23,7 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [feed, dispatch] = usePostReducer();
     const [errorFetching, setErrorFetching] = useState(null)
-    const lastVoteIdRef = useRef(null)
+    const lastItemIdRef = useRef(null)
     const abortController = useRef(new AbortController())
 
     //any image honestly
@@ -45,25 +45,25 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
             
             const url = serverUrl + '/tempRoute/getUserActivity';
             const toSend = {
-                skip: lastVoteIdRef.current || undefined,
+                skip: lastItemIdRef.current || undefined,
                 voteType: voteType === 'Upvote' ? 'up' : 'down',
                 postFormat
             }
 
             axios.post(url, toSend, {signal: abortController.current.signal}).then(result => {
                 const response = result.data;
-                const {data, message} = response;
-                const {posts, lastVoteId, noMoreVotes} = data;
+                const {data} = response;
+                const {items, lastItemId, noMoreItems} = data;
 
-                if (posts.length === 0) {
+                if (items.length === 0) {
                     dispatch({type: 'noMorePosts'})
                 }
 
-                lastVoteIdRef.current = lastVoteId
+                lastItemIdRef.current = lastItemId
 
                 const processedPosts = []
 
-                posts.forEach((item, index, dataArray) => {
+                items.forEach((item, index, dataArray) => {
                     async function loadImages() {
                         const post = dataArray[index];
 
@@ -84,9 +84,9 @@ const PostUpvoteDownvoteActivity = ({navigation, route}) => {
                         }
 
                         
-                        if (processedPosts.length === posts.length) {
+                        if (processedPosts.length === items.length) {
                             dispatch({type: 'addPosts', posts: processedPosts})
-                            if (noMoreVotes) {
+                            if (noMoreItems) {
                                 dispatch({type: 'noMorePosts'})
                             }
                         }

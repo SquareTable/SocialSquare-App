@@ -229,7 +229,8 @@ const ProfilePages = ({ route, navigation }) => {
                         totalLikes: data.totalLikes,
                         profileKey: profileImage,
                         badges: data.badges,
-                        privateAccount: data.privateAccount
+                        privateAccount: data.privateAccount,
+                        bio: data.bio
                     })
                     setLoadingFollowers(false)
 
@@ -321,7 +322,7 @@ const ProfilePages = ({ route, navigation }) => {
                 </ProfInfoAreaImage>
                 <ProfileHorizontalView>
                     <ProfileHorizontalViewItem profLeftIcon={true}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Followers', followers: profileData.followers, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={() => {navigation.push('ProfileStats', {type: 'Followers', followers: profileData.followers, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
                             {pubId === secondId ?
                                 <>
                                     <SubTitle welcome={true} style={{color: colors.tertiary}}> Followers </SubTitle> 
@@ -369,17 +370,17 @@ const ProfilePages = ({ route, navigation }) => {
                                     {togglingFollow == false && pubId !== secondId && (
                                         <View style={{width: '80%', borderRadius: 5, backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 3, paddingHorizontal: 10, paddingTop: 2}}>
                                             {userIsFollowed == false && (
-                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => followUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Follow </SubTitle>
                                                 </TouchableOpacity>
                                             )}
                                             {userIsFollowed == true && (
-                                                <TouchableOpacity onPress={() => profileData.privateAccount == true ? UnfollowPrivateAccountConfirmationPickerMenu.current.show() : toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => profileData.privateAccount == true ? UnfollowPrivateAccountConfirmationPickerMenu.current.show() : unfollowUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Unfollow </SubTitle>
                                                 </TouchableOpacity>
                                             )}
                                             {userIsFollowed == 'Requested' && (
-                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => unfollowUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary, fontSize: 14}}> Requested </SubTitle>
                                                 </TouchableOpacity>
                                             )}
@@ -404,7 +405,7 @@ const ProfilePages = ({ route, navigation }) => {
                         </TouchableOpacity>
                     </ProfileHorizontalViewItem>
                     <ProfileHorizontalViewItem profCenterIcon={true}>
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {type: 'Following', followers: profileData.following, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={() => {navigation.push('ProfileStats', {type: 'Following', followers: profileData.following, publicId: pubId, isSelf: pubId === secondId, name: profileData.profilesDisplayName || profileData.profilesName})}} style={{alignItems: 'center'}}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                             <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> {profileData.following} </SubTitle>
@@ -575,7 +576,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const layoutImagePosts = (data) => {
-        var imageData = data.data.posts
+        var imageData = data.data.items
         console.log("The Image data")
         console.log(imageData)
         console.log(imageData.length)
@@ -614,7 +615,7 @@ const ProfilePages = ({ route, navigation }) => {
                 posts: posts
             })
 
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchImages({type: 'noMorePosts'})
             }
         }).catch(error => {
@@ -639,7 +640,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && images.posts.length > 0) {
-                toSend.previousPostId = images.posts[images.posts.length - 1]._id
+                toSend.lastItemId = images.posts[images.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -670,7 +671,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const layoutPollPosts = (data) => {
-        const {posts: pollData, noMorePosts} = data;
+        const {items: pollData, noMoreItems} = data;
 
         console.log('Poll Data:', pollData)
         console.log('Number of polls received:', pollData.length)
@@ -776,7 +777,7 @@ const ProfilePages = ({ route, navigation }) => {
             }
             getPfpImageForPollWithAsync()
         });
-        if (noMorePosts) {
+        if (noMoreItems) {
             dispatchPolls({type: 'noMorePosts'})
         }
     }
@@ -797,7 +798,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && polls.posts.length > 0) {
-                toSend.previousPostId = polls.posts[polls.posts.length - 1]._id
+                toSend.lastItemId = polls.posts[polls.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -819,7 +820,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const layoutThreadPosts = (data) => {
-        var threadData = data.data.posts
+        var threadData = data.data.items
         console.log("The Thread data")
         console.log(threadData)
         console.log(threadData.length)
@@ -893,7 +894,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
         ).then(posts => {
             dispatchThreads({type: 'addPosts', posts})
-            if (data.data.noMorePosts) {
+            if (data.data.noMoreItems) {
                 dispatchThreads({type: 'noMorePosts'})
             }
         }).catch(error => {
@@ -918,7 +919,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && threads.posts.length > 0) {
-                toSend.previousPostId = threads.posts[threads.posts.length - 1]._id
+                toSend.lastItemId = threads.posts[threads.posts.length - 1]._id
             }
 
             axios.post(url, toSend).then((response) => {
@@ -940,7 +941,7 @@ const ProfilePages = ({ route, navigation }) => {
 
     const layoutCategoriesFound = (data) => {
         console.log('DATA:', data)
-        var allData = data.categories
+        var allData = data.items
 
         Promise.all(
             allData.map(category => {
@@ -983,7 +984,7 @@ const ProfilePages = ({ route, navigation }) => {
                 })
             })
         ).then(categories => {
-            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreCategories})
+            dispatchCategories({type: 'addCategories', categories, noMoreCategories: data.noMoreItems})
         }).catch(error => {
             dispatchCategories({type: 'error', error: String(error)})
         })
@@ -1005,7 +1006,7 @@ const ProfilePages = ({ route, navigation }) => {
             const toSend = {pubId};
 
             if (!reload && categories.categories.length > 0) {
-                toSend.previousCategoryMemberId = categories.categories[categories.categories.length - 1].memberId
+                toSend.lastItemId = categories.categories[categories.categories.length - 1].memberId
             }
 
             axios.post(url, toSend).then((response) => {
@@ -1276,45 +1277,53 @@ const ProfilePages = ({ route, navigation }) => {
         }
     }
 
-    const toggleFollowOfAUser = () => {
+    const followUser = () => {
         if (storedCredentials) {
             setTogglingFollow(true)
-            const url = `${serverUrl}/tempRoute/toggleFollowOfAUser`;
-            axios.post(url, {userToFollowPubId: pubId}).then((response) => {
-                const result = response.data;
-                const { message, status, data } = result;
+            const url = `${serverUrl}/tempRoute/followuser`;
+            const toSend = {userPubId: pubId}
+            
+            axios.post(url, toSend).then(response => {
+                const {message} = response.data
+                
+                if (message == "Requested To Follow User") {
+                    setUserIsFollowed('Requested')
+                } else if (message == "Followed User") {
+                    setUserIsFollowed(true)
+                }
+                
+                setTogglingFollow(false)
+            }).catch(error => {
+                console.error(error)
+                setTogglingFollow(false)
+                handleMessage(ParseErrorMessage(error))
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
+    }
 
-                if (status !== "SUCCESS") {
-                    console.log(status + message)
-                    handleMessage(message)
-                    setTogglingFollow(false)
-                } else {
-                    console.log(status + message)
-                    if (message == "Followed User") {
-                        //Followed
-                        setUserIsFollowed(true)
-                        setTogglingFollow(false)
-                    } else if (message == "Requested To Follow User") {
-                        //Requested
-                        setUserIsFollowed('Requested')
-                        setTogglingFollow(false)
-                    } else {
-                        //Unfollowed or unrequested
-                        setUserIsFollowed(false)
-                        setTogglingFollow(false)
-                        if (profileData.privateAccount == true) {
-                            cancelTokenPostFormatOne.cancel()
-                            cancelTokenPostFormatTwo.cancel()
-                            cancelTokenPostFormatThree.cancel()
-                            cancelTokenPostFormatFour.cancel()
-                            cancelTokenPostFormatFive.cancel()
-                        }
-                    }
+    const unfollowUser = () => {
+        if (storedCredentials) {
+            setTogglingFollow(true)
+            const url = `${serverUrl}/tempRoute/unfollowuser`;
+            const toSend = {userPubId: pubId}
+            
+            axios.post(url, toSend).then(() => {
+                setTogglingFollow(false)
+                setUserIsFollowed(false)
+
+                if (profileData.privateAccount == true) {
+                    cancelTokenPostFormatOne.cancel()
+                    cancelTokenPostFormatTwo.cancel()
+                    cancelTokenPostFormatThree.cancel()
+                    cancelTokenPostFormatFour.cancel()
+                    cancelTokenPostFormatFive.cancel()
                 }
             }).catch(error => {
-                console.log(error);
+                console.error(error)
                 setTogglingFollow(false)
-                handleMessage(ParseErrorMessage(error));
+                handleMessage(ParseErrorMessage(error))
             })
         } else {
             navigation.navigate('ModalLoginScreen', {modal: true})
@@ -1369,7 +1378,7 @@ const ProfilePages = ({ route, navigation }) => {
                 destructiveButtonIndex={0}
                 onPress={(index) => {
                     if (index == 0) {
-                        toggleFollowOfAUser()
+                        unfollowUser()
                     } else {
                         console.log('Cancelled')
                     }
@@ -1401,7 +1410,7 @@ const ProfilePages = ({ route, navigation }) => {
                     </ProfileOptionsView>
                 :
                     <ProfileOptionsView style={{backgroundColor: colors.primary, height: 500}} viewHidden={false}>
-                        <ProfileOptionsViewText style={{color: colors.tertiary}}>{profileData.profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
+                        <ProfileOptionsViewText style={{color: colors.tertiary}}>{profileData.profilesDisplayName || profileData.profilesName || "Couldn't get profile name"}</ProfileOptionsViewText>
                         <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
                         <ProfileOptionsViewButtons greyButton={true} style={{height: 'auto', paddingVertical: 10}} onPress={changeProfilesOptionsView}>
                             <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
@@ -1459,7 +1468,7 @@ const ProfilePages = ({ route, navigation }) => {
                         <ProfileGridPosts>
                             {selectedPostFormat == "One" && (<FlatList
                                 data={images.posts}
-                                keyExtractor={(item) => item.imageKey}
+                                keyExtractor={(item) => item._id}
                                 renderItem={({ item, index }) => <ImagePost post={item} index={index} dispatch={dispatchImages} colors={colors} colorsIndexNum={indexNum}/> }
                                 ListFooterComponent={<ListFooters feedData={images} loadMoreFunction={loadImages} postFormat="image"/>}
                                 ItemSeparatorComponent={() => <View style={{height: 10}}/>}

@@ -48,6 +48,7 @@ const ProfileStats = ({navigation, route}) => {
     const [profilePictures, setProfilePictures] = useState({
         SocialSquareLogo_B64_png
     })
+    const skipRef = useRef(0);
 
     const accountIndex = allCredentialsStoredList.findIndex(x => x._id === _id)
 
@@ -62,16 +63,17 @@ const ProfileStats = ({navigation, route}) => {
             setError(null)
 
             const url = serverUrl + '/tempRoute/getProfileStats'
-            const toSend = {pubId: publicId, skip: listItems.length, stat: type[0].toLowerCase() + type.slice(1)}
+            const toSend = {pubId: publicId, skip: skipRef.current, stat: type[0].toLowerCase() + type.slice(1)}
             axios.post(url, toSend).then(response => {
                 const result = response.data;
                 const {status, message, data} = result;
-                const {items, noMoreItems} = data || {};
+                const {items, noMoreItems, skip} = data || {};
 
                 if (status !== "SUCCESS") {
                     setError(message)
                     setLoading(false)
                 } else {
+                    skipRef.current = skip;
                     PromiseAllSettled(
                         items.map(item => {
                             return new Promise(resolve => {
@@ -487,7 +489,7 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
     }
 
     const navigateToProfileScreen = () => {
-        navigation.navigate('ProfilePages', {pubId: item.pubId})
+        navigation.push('ProfilePages', {pubId: item.pubId})
     }
 
     if (item.status === 'FAILED') {
@@ -500,10 +502,10 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
     } else {
         return (
             <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
-                <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                <TouchableOpacity onPress={navigateToProfileScreen}>
                     <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: profilePictures[item.profileImageKey]}} defaultSource={{uri: profilePictures[item.profileImageKey]}}/>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.navigateToProfileScreen}>
+                <TouchableOpacity onPress={navigateToProfileScreen}>
                     <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
                 </TouchableOpacity>
                 {isSelf && (
@@ -534,7 +536,7 @@ class FollowersItem extends PureComponent {
     }
 
     navigateToProfileScreen = () => {
-        this.props.navigation.navigate('ProfilePages', {pubId: this.props.item.pubId})
+        this.props.navigation.push('ProfilePages', {pubId: this.props.item.pubId})
     }
 
     render() {

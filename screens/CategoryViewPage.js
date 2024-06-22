@@ -61,11 +61,9 @@ import {
     MsgBox,
     ImagePostTextFrame,
     CategoriesTopBtns,
-    Navigator_BackButton
+    Navigator_BackButton,
+    TestText
 } from '../screens/screenStylings/styling';
-
-// Colors
-const {brand, primary, tertiary, greyish, darkLight, slightlyLighterPrimary, descTextColor, darkest, red} = Colors;
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -90,6 +88,7 @@ import usePostReducer from '../hooks/usePostReducer';
 import ParseErrorMessage from '../components/ParseErrorMessage';
 
 import Ionicons from 'react-native-vector-icons/Ionicons.js';
+import TopNavBar from '../components/TopNavBar.js';
 
 const CategoryViewPage = ({route, navigation}) => {
     const {colors, dark, indexNum} = useTheme()
@@ -294,8 +293,8 @@ const CategoryViewPage = ({route, navigation}) => {
                         threadNSFW: threadData[index].threadNSFW,
                         threadNSFL: threadData[index].threadNSFL,
                         datePosted: threadData[index].datePosted,
-                        threadUpVoted: threadData[index].threadUpVoted,
-                        threadDownVoted: threadData[index].threadDownVoted,
+                        upvoted: threadData[index].upvoted,
+                        downvoted: threadData[index].downvoted,
                         creatorDisplayName: threadData[index].creatorDisplayName,
                         creatorName: threadData[index].creatorName,
                         creatorImageB64: pfpB64,
@@ -397,34 +396,36 @@ const CategoryViewPage = ({route, navigation}) => {
                 ) : null}
                 <ProfileHorizontalView>
                     <ProfileHorizontalViewItem profLeftIcon={true}>
-                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
-                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                        {initialInCategory == true && (
-                            <View>
-                                {inCategory == true && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
-                                )}
-                                {inCategory == false && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members-1} </SubTitle>
-                                )}
-                            </View>
-                        )}
-                        {initialInCategory == false && (
-                            <View>
-                                {inCategory == true && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members+1} </SubTitle>
-                                )}
-                                {inCategory == false && (
-                                    <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
-                                )}
-                            </View>
-                        )}
-                        <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinLeaveCategory}>
-                            {typeof inCategory === "boolean" ?
-                                <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
-                            : inCategory === "Changing" || inCategory === "Finding" ?
-                                <ActivityIndicator size="small" color={colors.brand}/>
-                            : null}
+                        <TouchableOpacity onPress={() => navigation.navigate('CategoryMemberViewPage', {categoryId})} style={{width: '100%', alignItems: 'center'}}>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                            {initialInCategory == true && (
+                                <View>
+                                    {inCategory == true && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
+                                    )}
+                                    {inCategory == false && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members-1} </SubTitle>
+                                    )}
+                                </View>
+                            )}
+                            {initialInCategory == false && (
+                                <View>
+                                    {inCategory == true && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members+1} </SubTitle>
+                                    )}
+                                    {inCategory == false && (
+                                        <SubTitle welcome={true} style={{marginBottom: 0, color: colors.tertiary}}> {members} </SubTitle>
+                                    )}
+                                </View>
+                            )}
+                            <TouchableOpacity style={{height: 30, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5}} onPress={JoinLeaveCategory}>
+                                {typeof inCategory === "boolean" ?
+                                    <Text style={{fontSize: 20, color: colors.tertiary}}>{inCategory ? 'Leave' : 'Join'}</Text>
+                                : inCategory === "Changing" || inCategory === "Finding" ?
+                                    <ActivityIndicator size="small" color={colors.brand}/>
+                                : null}
+                            </TouchableOpacity>
                         </TouchableOpacity>
                     </ProfileHorizontalViewItem>
                     <ProfileHorizontalViewItem profCenterIcon={true}>
@@ -490,23 +491,17 @@ const CategoryViewPage = ({route, navigation}) => {
                 <>
                     {displayAgeRequirementWarning == false ?
                         <>
-                            <View style={{paddingTop: StatusBarHeight - 15, color: colors.primary, flexDirection: 'row', justifyContent: 'center'}}>
-                                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
-                                    <Image
-                                        source={require('../assets/app_icons/back_arrow.png')}
-                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary, top: -11}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </Navigator_BackButton>
-                                {categoryData.NSFW == true && (
-                                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFW)</SubTitle>
-                                )}
-                                {categoryData.NSFL == true && (
-                                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFL)</SubTitle>
-                                )}
-                                <PageTitle style={{fontSize: 26}} welcome={true}>{categoryData.categoryTitle || "Couldn't get name"}</PageTitle>
-                            </View>
+                            <TopNavBar screenName={
+                                <>
+                                    {categoryData.NSFW == true && (
+                                        <SubTitle style={{color: colors.red, marginBottom: 0}}>(NSFW)</SubTitle>
+                                    )}
+                                    {categoryData.NSFL == true && (
+                                        <SubTitle style={{color: colors.red, marginBottom: 0}}>(NSFL)</SubTitle>
+                                    )}
+                                    <TestText style={{color: colors.tertiary}}>{categoryData.categoryTitle || "Couldn't get name"}</TestText>
+                                </>
+                            }/>
                             {selectedPostFormat == "One" && (<FlatList
                                 data={threads.posts}
                                 keyExtractor={(item) => item._id}

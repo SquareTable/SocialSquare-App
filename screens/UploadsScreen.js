@@ -88,6 +88,7 @@ const UploadsScreen = ({navigation}) => {
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>Subtitle: {item.post.threadSubtitle || 'None Provided'}</Text>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginVertical: 10}}>Body: {item.post.threadBody}</Text>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Category: {item.post.selectedCategory}</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Tags: {item.post.threadTags || 'None Provided'}</Text>
                         <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
                         {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
                         <View style={{flexDirection: 'row'}}>
@@ -111,8 +112,9 @@ const UploadsScreen = ({navigation}) => {
                         <Image style={{height: 100, width: 100}} source={item.post.image}/>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>Title: {item.post.threadTitle}</Text>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>Subtitle: {item.post.threadSubtitle || 'None Provided'}</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginVertical: 10}}>Body: {item.post.threadBody}</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginVertical: 10}}>Image Description: {item.post.threadImageDescription || 'None Provided'}</Text>
                         <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Category: {item.post.selectedCategory}</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Tags: {item.post.threadTags || 'None Provided'}</Text>
                         <Text style={{fontSize: 16, color: colors.tertiary, marginLeft: 10}}>{uploading ? 'Uploading...' : 'Upload Failed'}</Text>
                         {!uploading && <Text style={{fontSize: 16, color: colors.errorColor, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{uploadErrors.find(uploadObj => uploadObj.uploadId === item.uploadId).error || 'Failed to find error message'}</Text>}
                         <View style={{flexDirection: 'row'}}>

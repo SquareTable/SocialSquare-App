@@ -65,11 +65,11 @@ class PollWithVotes extends PollClass {
     }
 
     runIfAuthenticated = (func) => {
-        return () => {
+        return (...params) => {
             if (this.props.userId === 'SSGUEST' || !this.props.userId) {
                 this.props.navigation.navigate('ModalLoginScreen', {modal: true})
             } else {
-                func()
+                func(...params)
             }
         }
     }
@@ -150,18 +150,33 @@ class PollWithVotes extends PollClass {
         'Six': 6
     }
 
+    numberOfOptions = this.voteTextToNumberObject[this.props.post.totalNumberOfOptions]
+
+    calculateZeroVoteLength = (optionNumber) => {
+        if (optionNumber <= this.numberOfOptions) return 100 / this.numberOfOptions
+        return 0
+    }
+
     navigateToProfileScreen = () => {
-        this.props.navigation.navigate('ProfilePages', {pubId: this.props.post.creatorPublicId})
+        this.props.navigation.push('ProfilePages', {pubId: this.props.post.creatorPublicId})
+    }
+
+    navigateToVotesViewPage = () => {
+        this.props.navigation.navigate('VotesViewPage', {postId: this.props.post._id, postFormat: 'Poll'})
+    }
+
+    navigateToPollVotesViewPage = (pollOption) => {
+        this.props.navigation.navigate('PollVoteViewPage', {pollId: this.props.post._id, pollOption})
     }
 
     render() {
         this.votes = this.props.post.optionOnesVotes + this.props.post.optionTwosVotes + this.props.post.optionThreesVotes + this.props.post.optionFoursVotes + this.props.post.optionFivesVotes + this.props.post.optionSixesVotes;
-        this.optionOnesBarLength = this.votes === 0 ? this.voteTextToNumberObject[this.props.post.totalNumberOfOptions] / 100 : this.props.post.optionOnesVotes / this.votes * 100
-        this.optionTwosBarLength = this.votes === 0 ? this.voteTextToNumberObject[this.props.post.totalNumberOfOptions] / 100 : this.props.post.optionTwosVotes / this.votes * 100
-        this.optionThreesBarLength = this.votes === 0 ? this.voteTextToNumberObject[this.props.post.totalNumberOfOptions] / 100 : this.props.post.optionThreesVotes / this.votes * 100
-        this.optionFoursBarLength = this.votes === 0 ? this.voteTextToNumberObject[this.props.post.totalNumberOfOptions] / 100 : this.props.post.optionFoursVotes / this.votes * 100
-        this.optionFivesBarLength = this.votes === 0 ? this.voteTextToNumberObject[this.props.post.totalNumberOfOptions] / 100 : this.props.post.optionFivesVotes / this.votes * 100
-        this.optionSixesBarLength = this.votes === 0 ? this.voteTextToNumberObject[this.props.post.totalNumberOfOptions] / 100 : this.props.post.optionSixesVotes / this.votes * 100
+        this.optionOnesBarLength = this.votes === 0 ? this.calculateZeroVoteLength(1) : this.props.post.optionOnesVotes / this.votes * 100
+        this.optionTwosBarLength = this.votes === 0 ? this.calculateZeroVoteLength(2) : this.props.post.optionTwosVotes / this.votes * 100
+        this.optionThreesBarLength = this.votes === 0 ? this.calculateZeroVoteLength(3) : this.props.post.optionThreesVotes / this.votes * 100
+        this.optionFoursBarLength = this.votes === 0 ? this.calculateZeroVoteLength(4) : this.props.post.optionFoursVotes / this.votes * 100
+        this.optionFivesBarLength = this.votes === 0 ? this.calculateZeroVoteLength(5) : this.props.post.optionFivesVotes / this.votes * 100
+        this.optionSixesBarLength = this.votes === 0 ? this.calculateZeroVoteLength(6) : this.props.post.optionSixesVotes / this.votes * 100
 
         return (
             <>
@@ -235,9 +250,11 @@ class PollWithVotes extends PollClass {
                     
                     <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "One"}>
                         <PollHorizontalViewItem>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
-                            <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionOnesVotes} </PollPostSubTitle>
+                            <TouchableOpacity onPress={() => this.navigateToPollVotesViewPage("One")} style={{width: '100%', alignItems: 'center'}}>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
+                                <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionOnesVotes} </PollPostSubTitle>
+                            </TouchableOpacity>
                         </PollHorizontalViewItem>
 
                         <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "One" ? this.handleRemoveVoteOnPoll() : this.handleVoteOnPoll("One")}} disabled={this.props.post.pollVoteChanging}>
@@ -273,9 +290,11 @@ class PollWithVotes extends PollClass {
                     
                     <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Two"}>
                         <PollHorizontalViewItem>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
-                            <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionTwosVotes} </PollPostSubTitle>
+                            <TouchableOpacity onPress={() => this.navigateToPollVotesViewPage("Two")} style={{width: '100%', alignItems: 'center'}}>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
+                                <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionTwosVotes} </PollPostSubTitle>
+                            </TouchableOpacity>
                         </PollHorizontalViewItem>
 
                         <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Two" ? this.handleRemoveVoteOnPoll() : this.handleVoteOnPoll("Two")}}>
@@ -309,9 +328,11 @@ class PollWithVotes extends PollClass {
                     
                     <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Three"}>
                         <PollHorizontalViewItem>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
-                            <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionThreesVotes} </PollPostSubTitle>
+                            <TouchableOpacity onPress={() => this.navigateToPollVotesViewPage("Three")} style={{width: '100%', alignItems: 'center'}}>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
+                                <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionThreesVotes} </PollPostSubTitle>
+                            </TouchableOpacity>
                         </PollHorizontalViewItem>
 
                         <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Three" ? this.handleRemoveVoteOnPoll() : this.handleVoteOnPoll("Three")}}>
@@ -345,9 +366,11 @@ class PollWithVotes extends PollClass {
 
                     <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Four"}>
                         <PollHorizontalViewItem>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
-                            <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFoursVotes} </PollPostSubTitle>
+                            <TouchableOpacity onPress={() => this.navigateToPollVotesViewPage("Four")} style={{width: '100%', alignItems: 'center'}}>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
+                                <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFoursVotes} </PollPostSubTitle>
+                            </TouchableOpacity>
                         </PollHorizontalViewItem>
 
                         <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Four" ? this.handleRemoveVoteOnPoll() : this.handleVoteOnPoll("Four")}}>
@@ -381,9 +404,11 @@ class PollWithVotes extends PollClass {
 
                     <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Five"}>
                         <PollHorizontalViewItem>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
-                            <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFivesVotes} </PollPostSubTitle>
+                            <TouchableOpacity onPress={() => this.navigateToPollVotesViewPage("Five")} style={{width: '100%', alignItems: 'center'}}>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
+                                <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionFivesVotes} </PollPostSubTitle>
+                            </TouchableOpacity>
                         </PollHorizontalViewItem>
 
                         <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Five" ? this.handleRemoveVoteOnPoll() : this.handleVoteOnPoll("Five")}}>
@@ -417,9 +442,11 @@ class PollWithVotes extends PollClass {
 
                     <PollPostHorizontalView visible={this.props.post.openPollVoteMenu === "Six"}>
                         <PollHorizontalViewItem>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
-                            <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                            <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionSixesVotes} </PollPostSubTitle>
+                            <TouchableOpacity onPress={() => this.navigateToPollVotesViewPage("Six")} style={{width: '100%', alignItems: 'center'}}>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
+                                <ProfIcons source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                                <PollPostSubTitle style={{color: this.props.colors.tertiary}} welcome={true}> {this.props.post.optionSixesVotes} </PollPostSubTitle>
+                            </TouchableOpacity>
                         </PollHorizontalViewItem>
 
                         <PollHorizontalViewItemCenter onPress={() => {this.props.post.votedFor === "Six" ? this.handleRemoveVoteOnPoll() : this.handleVoteOnPoll("Six")}}>
@@ -452,7 +479,7 @@ class PollWithVotes extends PollClass {
                                 <PostsIconFrame onPress={() => this.props.post.upvoted ? this.removeVote("Up") : this.upvote()}>
                                     <PostsIcons style={{flex: 1, tintColor: this.props.post.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                                 </PostsIconFrame>
-                                <PostsIconFrame>
+                                <PostsIconFrame onPress={this.navigateToVotesViewPage}>
                                     <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: this.props.colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{this.props.post.votes}</SubTitle>
                                 </PostsIconFrame>
                                 <PostsIconFrame onPress={() => this.props.post.downvoted ? this.removeVote("Down") : this.downvote()}>
