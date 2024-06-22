@@ -17,7 +17,7 @@ import { AppStylingContext } from './components/AppStylingContext.js';
 import { RefreshAppStylingContext } from './components/RefreshAppStylingContext.js';
 import { SimpleStylingVersion } from './components/StylingVersionsFile.js';
 import SocialSquareLogo_B64_png from './assets/SocialSquareLogo_Base64_png.js';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
 import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
 import { v4 as uuidv4 } from 'uuid';
@@ -1549,65 +1549,67 @@ const App = () => {
                                     <ExperimentalFeaturesEnabledContext.Provider value={{experimentalFeaturesEnabled, setExperimentalFeaturesEnabled}}>
                                       <UseUploadContext.Provider value={{uploadPost, retryUpload, cancelRetry, numPostsUploading, numUploadErrors, postsToUpload, postsUploading, uploadErrors}}>
                                         <StatusBarHeightContext.Provider value={StatusBarHeight}>
-                                          {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
-                                          <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}} onReady={() => {
-                                            setTimeout(() => {
-                                              // DOCS SAY TO USE ONLAYOUT ON A VIEW TO MAKE SURE THAT AS SOON AS CONTENT LOADS THE SPLASH SCREEN WILL HIDE
-                                              // BUT BECAUSE WE DO NOT HAVE A PARENT VIEW LOADING I CANNOT SEE HOW THAT WOULD BE POSSIBLE
-                                              // PR TO FIX THIS WOULD BE GREATLY APPRECIATED :)
-                                              SplashScreen.hideAsync(); // Use setTimeout to prevent showing nothing while content loads
-                                            }, 500);
-                                          }}>
-                                            {lockSocialSquare == false ?
-                                              showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
-                                                  <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                              :
-                                                showSocialSquareLockedWarning == false ?
-                                                  previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
-                                                    biometricsCanBeUsed == false ? null :
-                                                      openApp == false ?
+                                          <GestureHandlerRootView style={{flex: 1}}>
+                                            {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
+                                            <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}} onReady={() => {
+                                              setTimeout(() => {
+                                                // DOCS SAY TO USE ONLAYOUT ON A VIEW TO MAKE SURE THAT AS SOON AS CONTENT LOADS THE SPLASH SCREEN WILL HIDE
+                                                // BUT BECAUSE WE DO NOT HAVE A PARENT VIEW LOADING I CANNOT SEE HOW THAT WOULD BE POSSIBLE
+                                                // PR TO FIX THIS WOULD BE GREATLY APPRECIATED :)
+                                                SplashScreen.hideAsync(); // Use setTimeout to prevent showing nothing while content loads
+                                              }, 500);
+                                            }}>
+                                              {lockSocialSquare == false ?
+                                                showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
+                                                    <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                                :
+                                                  showSocialSquareLockedWarning == false ?
+                                                    previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
+                                                      biometricsCanBeUsed == false ? null :
+                                                        openApp == false ?
+                                                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                                        : null
+                                                    : appStateVisible == 'inactive' || appStateVisible == 'background' ?
+                                                          <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                                      : openApp == false ? biometricsCanBeUsed == false ? null :
                                                           <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                                       : null
-                                                  : appStateVisible == 'inactive' || appStateVisible == 'background' ?
-                                                        <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                                    : openApp == false ? biometricsCanBeUsed == false ? null :
-                                                        <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                                    : null
-                                                :
-                                                  <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000, alignItems: 'center', paddingTop: StatusBarHeight}}>
-                                                    <Image style={{width: 200, height: 200, zIndex: 1001}} source={{uri: SocialSquareLogo_B64_png}}/>
-                                                    <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
-                                                    <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
-                                                      <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
-                                                    </TouchableOpacity>
-                                                  </View>
-                                            }
-                                            <BadgeEarntBox/>
-                                            <NotificationBox/>
-                                            <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
-                                              <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
-                                                  console.log('Account Switcher Dismiss Box pressed')
-                                                  Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
-                                                  Animated.timing(AccountSwitcherY, {toValue: 250, duration: 100, useNativeDriver: true}).start()
-                                                }}
-                                              />
-                                            </Animated.View>
-                                            {checkingConnectionPopUp !== false && (
-                                                <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
-                                                    <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.1, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
-                                                        <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> Checking Connection </ButtonText>
-                                                        <View style={{width: Dimensions.get('window').width * 0.6, marginLeft: Dimensions.get('window').width * 0.1}}>
-                                                            <ActivityIndicator size={30} color={appTheme.colors.brand} style={{marginBottom: 25}}/>
-                                                        </View>
+                                                  :
+                                                    <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000, alignItems: 'center', paddingTop: StatusBarHeight}}>
+                                                      <Image style={{width: 200, height: 200, zIndex: 1001}} source={{uri: SocialSquareLogo_B64_png}}/>
+                                                      <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
+                                                      <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
+                                                        <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
+                                                      </TouchableOpacity>
                                                     </View>
-                                                </View>
-                                            )}
-                                            <DisconnectedFromInternetBox/>
-                                            <AccountSwitcher/>
-                                            <AccountSwitchedBox/>
-                                            <Uploads/>
-                                            <Start_Stack />
-                                          </NavigationContainer>
+                                              }
+                                              <BadgeEarntBox/>
+                                              <NotificationBox/>
+                                              <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
+                                                <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
+                                                    console.log('Account Switcher Dismiss Box pressed')
+                                                    Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
+                                                    Animated.timing(AccountSwitcherY, {toValue: 250, duration: 100, useNativeDriver: true}).start()
+                                                  }}
+                                                />
+                                              </Animated.View>
+                                              {checkingConnectionPopUp !== false && (
+                                                  <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
+                                                      <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.1, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
+                                                          <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> Checking Connection </ButtonText>
+                                                          <View style={{width: Dimensions.get('window').width * 0.6, marginLeft: Dimensions.get('window').width * 0.1}}>
+                                                              <ActivityIndicator size={30} color={appTheme.colors.brand} style={{marginBottom: 25}}/>
+                                                          </View>
+                                                      </View>
+                                                  </View>
+                                              )}
+                                              <DisconnectedFromInternetBox/>
+                                              <AccountSwitcher/>
+                                              <AccountSwitchedBox/>
+                                              <Uploads/>
+                                              <Start_Stack />
+                                            </NavigationContainer>
+                                          </GestureHandlerRootView>
                                         </StatusBarHeightContext.Provider>
                                       </UseUploadContext.Provider>
                                     </ExperimentalFeaturesEnabledContext.Provider>

@@ -25,7 +25,7 @@ PODS:
     - React-Core
   - EXNotifications (0.27.6):
     - ExpoModulesCore
-  - EXPermissions (14.1.1):
+  - EXPermissions (14.1.2):
     - ExpoModulesCore
   - Expo (50.0.14):
     - ExpoModulesCore
@@ -1181,7 +1181,9 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNVectorIcons (9.2.0):
+  - RNVectorIcons (10.0.3):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - SocketRocket (0.6.1)
   - sqlite3 (3.42.0):
@@ -1494,7 +1496,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
-  DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
+  DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   EASClient: a42ee8bf36c93b3128352faf2ae49405ab4f80bd
   EXApplication: 137189a3f149b4e8e546884629392c3efc94cbd3
   EXAV: 07e50f934907fa8274dd06fbcd20ee4b9478c619
@@ -1505,7 +1507,7 @@ SPEC CHECKSUMS:
   EXManifests: 5e8c29f36c716af768a4ea47ec05e1b89ab93091
   EXMediaLibrary: 59077ec70ec8b0460447fadebaa1ba7361a18efe
   EXNotifications: e11f0e9a5b657c064a481a5d522f3bc5a07bf7cd
-  EXPermissions: 2291c6736a823b4c680d5bf8e12d3c1c5d11da35
+  EXPermissions: ee60d7978aba135b8b391185b039d78f151c376a
   Expo: e01a77c6fa4bc80a6d1bb949cda1d12d21044abd
   ExpoBlur: e832d874bd94afc0645daddbd3162ec1ce172080
   ExpoCamera: 53f5ef81bab088b2edcf94d05e4da3bc84f46383
@@ -1529,7 +1531,7 @@ SPEC CHECKSUMS:
   FBLazyVector: f64d1e2ea739b4d8f7e4740cde18089cd97fe864
   FBReactNativeSpec: 9f2b8b243131565335437dba74923a8d3015e780
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   Google-Mobile-Ads-SDK: 5a6d005a6cb5b5e8f4c7b69ca05cdea79c181139
   GoogleUserMessagingPlatform: b1ad7bb1ee3ce64749d4fec24f667b36e45c396c
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
@@ -1589,7 +1591,7 @@ SPEC CHECKSUMS:
   RNGoogleMobileAds: e15b667be74c66dcbd78ee87699cf7ee2e7d13bb
   RNReanimated: f6b02d8f5eaa2830296411d4ec3b8ef5442dd13d
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
-  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
+  RNVectorIcons: 73ab573085f65a572d3b6233e68996d4707fd505
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   sqlite3: f163dbbb7aa3339ad8fc622782c2d9d7b72f7e9c
   Yoga: 805bf71192903b20fc14babe48080582fee65a80

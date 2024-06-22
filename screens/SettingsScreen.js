@@ -217,4 +217,3 @@ const SettingsPage = ({navigation}) => {
 }
 
 export default SettingsPage;
-const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';
