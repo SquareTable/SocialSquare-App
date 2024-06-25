@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext, useRef} from 'react';
-import {View, Text, Image, TouchableOpacity, ActivityIndicator, ScrollView, Keyboard, Switch, Alert} from 'react-native';
+import {View, Text, Platform, TouchableOpacity, ActivityIndicator, ScrollView, Keyboard, Switch, Alert} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import {
     Avatar,
@@ -90,7 +90,7 @@ const EditProfile = ({navigation, route}) => {
         
         if (!result.canceled) {
             console.log(result)
-            uploadPFP(result)
+            uploadPFP(result.assets[0])
         }
     };
 
