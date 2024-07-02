@@ -187,6 +187,7 @@ export default function Comments({postId, postFormat, onDeleteCallback = () => {
                     keyExtractor={(item, index) => item + index}
                     renderItem={({ item, index }) => <Comment comment={item} index={index} dispatch={dispatch} onDeleteCallback={onDeleteCallback}/>}
                     ListFooterComponent={ListFooter}
+                    style={{width: '100%'}}
                 />
             </ViewScreenPollPostCommentsFrame>
         </>

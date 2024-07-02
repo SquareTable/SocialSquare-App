@@ -132,12 +132,23 @@ class CommentClass extends Component {
                         <ActivityIndicator color='#FFFFFF' size="large"/>
                     </View>
                 : null}
-                <CommentsContainer>
-                    <CommentsHorizontalView>
-                        <CommentsVerticalView alongLeft={true}>
-                            <TouchableOpacity>
-                                <CommenterIcon source={{uri: this.props.comment.commenterImageB64}}/>
-                            </TouchableOpacity>
+                <View>
+                    <View style={{flexDirection: 'row', borderColor: this.props.colors.darkest, borderTopWidth: 3, paddingBottom: 8}}>
+                        <View style={{flexGrow: 1}}>
+                            <View style={{justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row'}}>
+                                <TouchableOpacity>
+                                    <CommenterIcon source={{uri: this.props.comment.commenterImageB64}}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <CommenterName style={{color: this.props.colors.tertiary}} displayName={true}>{this.props.comment.commenterDisplayName}</CommenterName>
+                                    <CommenterName>@{this.props.comment.commenterName}</CommenterName>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{justifyContent: 'flex-start', alignItems: 'flex-start', flexDirection: 'row'}}>
+                                <Text style={{color: this.props.colors.tertiary}}>{this.props.comment.text}</Text>
+                            </View>
+                        </View>
+                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
                             <TouchableOpacity onPress={() => this.props.comment.upvoted ? this.neutralVote() : this.upvote()}>
                                 <CommentIcons style={{tintColor: this.props.comment.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                             </TouchableOpacity>
@@ -151,23 +162,16 @@ class CommentClass extends Component {
                             <TouchableOpacity onPress={() => this.props.comment.downvoted ? this.neutralVote() : this.downvote()}>
                                 <CommentIcons style={{tintColor: this.props.comment.downvoted ? this.props.colors.brand : this.props.colors.tertiary}} downVoteButton={true} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                             </TouchableOpacity>
-                        </CommentsVerticalView>
-                        <CommentsVerticalView>
-                            <TouchableOpacity>
-                                <CommenterName style={{color: this.props.colors.tertiary}} displayName={true}>{this.props.comment.commenterDisplayName}</CommenterName>
-                                <CommenterName>@{this.props.comment.commenterName}</CommenterName>
-                            </TouchableOpacity>
-                            <CommentText style={{color: this.props.colors.tertiary}}>{this.props.comment.text}</CommentText>
-                        </CommentsVerticalView>
-                    </CommentsHorizontalView>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderColor: this.props.colors.darkest, borderTopWidth: 3}}>
-                        <TouchableOpacity onPress={this.openThreeDotsMenu}>
-                            <Image style={{width: 25, height: 25, tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
-                        </TouchableOpacity>
-                        <Text style={{fontSize: 12, textAlign: 'center', color: this.props.colors.tertiary}}>{getTimeFromUTCMS(this.props.comment.datePosted)}</Text>
-                        <View style={{width: 25, height: 25}}/> 
+                        </View>
                     </View>
-                </CommentsContainer>
+                    <View style={{borderColor: this.props.colors.greyish, borderTopWidth: 3, justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', paddingVertical: 3}}>
+                            <TouchableOpacity onPress={this.openThreeDotsMenu}>
+                                <Image style={{width: 25, height: 25, tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
+                            </TouchableOpacity>
+                            <Text style={{color: this.props.colors.tertiary, textAlign: 'center', fontSize: 12}}>{getTimeFromUTCMS(this.props.comment.datePosted)}</Text>
+                            <View style={{height: 25, width: 25}}/>
+                    </View>
+                </View>
             </>
         )
     }
