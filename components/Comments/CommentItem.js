@@ -123,6 +123,10 @@ class CommentClass extends Component {
         }
     })
 
+    navigateToProfileScreen = () => {
+        this.props.navigation.push('ProfilePages', {pubId: this.props.comment.commenterPubId})
+    }
+
     render() {
         return (
             <>
@@ -136,10 +140,10 @@ class CommentClass extends Component {
                     <View style={{flexDirection: 'row', borderColor: this.props.colors.darkest, borderTopWidth: 3, paddingBottom: 8}}>
                         <View style={{flexGrow: 1}}>
                             <View style={{justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row'}}>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={this.navigateToProfileScreen}>
                                     <CommenterIcon source={{uri: this.props.comment.commenterImageB64}}/>
                                 </TouchableOpacity>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={this.navigateToProfileScreen}>
                                     <CommenterName style={{color: this.props.colors.tertiary}} displayName={true}>{this.props.comment.commenterDisplayName}</CommenterName>
                                     <CommenterName>@{this.props.comment.commenterName}</CommenterName>
                                 </TouchableOpacity>
