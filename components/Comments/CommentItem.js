@@ -1,5 +1,5 @@
 import { Component, useContext } from 'react'
-import { TouchableOpacity, View, Text, ActivityIndicator } from 'react-native'
+import { TouchableOpacity, View, Text, ActivityIndicator, Image } from 'react-native'
 import {
     CommentsContainer,
     CommentsHorizontalView,
@@ -29,9 +29,8 @@ class CommentClass extends Component {
         const deletingIsSame = nextProps.comment.deleting === this.props.comment.deleting;
         const commentIdIsSame = nextProps.comment._id === this.props.comment._id;
         const userIdIsSame = nextProps.userId === this.props.userId;
-        const deletedIsSame = nextProps.comment.deleted === this.props.comment.deleted;
 
-        if (colorsAreSame && votesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame && userIdIsSame && deletedIsSame) return false;
+        if (colorsAreSame && votesAreSame && changingVoteIsSame && deletingIsSame && commentIdIsSame && userIdIsSame) return false;
 
         return true;
     }
@@ -124,84 +123,51 @@ class CommentClass extends Component {
         }
     })
 
-    navigateToCommentViewPage = () => {
-        this.props.navigation.navigate("CommentViewPage", {comment: this.props.comment})
-    }
-
     render() {
         return (
             <>
-                {this.props.comment.deleted ?
-                    <CommentsContainer style={{justifyContent: 'center', alignItems: 'center', paddingVertical: 10}}>
-                        <Text style={{color: this.props.colors.tertiary, fontSize: 20}}>[Deleted]</Text>
-                        <Text style={{color: this.props.colors.tertiary, fontSize: 14}}>Posted {getTimeFromUTCMS(this.props.comment.datePosted)}</Text>
-                        <TouchableOpacity onPress={() => {this.props.navigation.navigate("CommentViewPage", {comment: this.props.comment})}}>
-                            <VoteText style={{color: this.props.colors.brand}}>
-                                {this.props.comment.replies} {this.props.comment.replies === 1 ? 'reply' : 'replies'}
-                            </VoteText>
+                {this.props.comment.deleting ?
+                    <View style={{position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', backgroundColor: 'rgba(0, 0, 0, 0.7)', zIndex: 2, justifyContent: 'center', alignItems: 'center', borderRadius: 15}}>
+                        <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginBottom: 15}}>Deleting...</Text>
+                        <ActivityIndicator color='#FFFFFF' size="large"/>
+                    </View>
+                : null}
+                <CommentsContainer>
+                    <CommentsHorizontalView>
+                        <CommentsVerticalView alongLeft={true}>
+                            <TouchableOpacity>
+                                <CommenterIcon source={{uri: this.props.comment.commenterImageB64}}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.props.comment.upvoted ? this.neutralVote() : this.upvote()}>
+                                <CommentIcons style={{tintColor: this.props.comment.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                            </TouchableOpacity>
+                            {this.props.comment.changingVote ?
+                                <ActivityIndicator color={this.props.colors.brand} size="small"/>
+                            :
+                                <VoteText style={{color: this.props.colors.tertiary}}>
+                                    {this.props.comment.votes}
+                                </VoteText>
+                            }
+                            <TouchableOpacity onPress={() => this.props.comment.downvoted ? this.neutralVote() : this.downvote()}>
+                                <CommentIcons style={{tintColor: this.props.comment.downvoted ? this.props.colors.brand : this.props.colors.tertiary}} downVoteButton={true} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                            </TouchableOpacity>
+                        </CommentsVerticalView>
+                        <CommentsVerticalView>
+                            <TouchableOpacity>
+                                <CommenterName style={{color: this.props.colors.tertiary}} displayName={true}>{this.props.comment.commenterDisplayName}</CommenterName>
+                                <CommenterName>@{this.props.comment.commenterName}</CommenterName>
+                            </TouchableOpacity>
+                            <CommentText style={{color: this.props.colors.tertiary}}>{this.props.comment.text}</CommentText>
+                        </CommentsVerticalView>
+                    </CommentsHorizontalView>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderColor: this.props.colors.darkest, borderTopWidth: 3}}>
+                        <TouchableOpacity onPress={this.openThreeDotsMenu}>
+                            <Image style={{width: 25, height: 25, tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
                         </TouchableOpacity>
-                    </CommentsContainer>
-                :
-                    <>
-                        {this.props.comment.deleting ?
-                            <View style={{position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', backgroundColor: 'rgba(0, 0, 0, 0.7)', zIndex: 2, justifyContent: 'center', alignItems: 'center', borderRadius: 15}}>
-                                <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginBottom: 15}}>Deleting...</Text>
-                                <ActivityIndicator color='#FFFFFF' size="large"/>
-                            </View>
-                        : null}
-                        <CommentsContainer>
-                            <CommentsHorizontalView>
-                                <CommentsVerticalView alongLeft={true}>
-                                    <TouchableOpacity>
-                                        <CommenterIcon source={{uri: this.props.comment.commenterImageB64}}/>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => this.props.comment.upvoted ? this.neutralVote() : this.upvote()}>
-                                        <CommentIcons style={{tintColor: this.props.comment.upvoted ? this.props.colors.brand : this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                                    </TouchableOpacity>
-                                    {this.props.comment.changingVote ?
-                                        <ActivityIndicator color={this.props.colors.brand} size="small"/>
-                                    :
-                                        <VoteText style={{color: this.props.colors.tertiary}}>
-                                            {this.props.comment.votes}
-                                        </VoteText>
-                                    }
-                                    <TouchableOpacity onPress={() => this.props.comment.downvoted ? this.neutralVote() : this.downvote()}>
-                                        <CommentIcons style={{tintColor: this.props.comment.downvoted ? this.props.colors.brand : this.props.colors.tertiary}} downVoteButton={true} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                                    </TouchableOpacity>
-                                </CommentsVerticalView>
-                                <CommentsVerticalView>
-                                    <TouchableOpacity>
-                                        <CommenterName style={{color: this.props.colors.tertiary}} displayName={true}>{this.props.comment.commenterDisplayName}</CommenterName>
-                                        <CommenterName>@{this.props.comment.commenterName}</CommenterName>
-                                    </TouchableOpacity>
-                                    <CommentText style={{color: this.props.colors.tertiary}}>{this.props.comment.text}</CommentText>
-                                </CommentsVerticalView>
-                            </CommentsHorizontalView>
-                            <CommentsHorizontalView bottomIcons={true}>
-                                <CommentsVerticalView alongLeft={true}>
-                                    <TouchableOpacity onPress={this.openThreeDotsMenu}>
-                                        <CommentIcons style={{tintColor: this.props.colors.tertiary}} source={require('../../assets/img/ThreeDots.png')}/>
-                                    </TouchableOpacity>
-                                </CommentsVerticalView>
-                                <CommentsVerticalView datePosted={true}>
-                                    <VoteText style={{color: this.props.colors.tertiary}}>
-                                        {getTimeFromUTCMS(this.props.comment.datePosted)}
-                                    </VoteText>
-                                    <TouchableOpacity onPress={this.navigateToCommentViewPage}>
-                                        <VoteText style={{color: this.props.colors.brand}}>
-                                            {this.props.comment.replies} {this.props.comment.replies === 1 ? 'reply' : 'replies'}
-                                        </VoteText>
-                                    </TouchableOpacity>
-                                </CommentsVerticalView>
-                                <CommentsVerticalView alongLeft={true}>
-                                    <TouchableOpacity onPress={this.navigateToCommentViewPage}>
-                                        <CommentIcons style={{tintColor: this.props.colors.tertiary}} source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/107-reply.png')}/>
-                                    </TouchableOpacity>
-                                </CommentsVerticalView>
-                            </CommentsHorizontalView>
-                        </CommentsContainer>
-                    </>
-                }
+                        <Text style={{fontSize: 12, textAlign: 'center', color: this.props.colors.tertiary}}>{getTimeFromUTCMS(this.props.comment.datePosted)}</Text>
+                        <View style={{width: 25, height: 25}}/> 
+                    </View>
+                </CommentsContainer>
             </>
         )
     }

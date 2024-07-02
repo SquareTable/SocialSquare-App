@@ -29,7 +29,6 @@ import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 import AppStyling from '../screens/AppStyling.js';
 
 import CategoryViewPage from '../screens/CategoryViewPage'
-import CommentViewPage from '../screens/CommentViewPage'
 import ThreadViewPage from '../screens/ThreadViewPage'
 import ViewImagePostPage from '../screens/ViewImagePostPage'
 import ViewPollPostPage from '../screens/ViewPollPostPage'
@@ -121,7 +120,6 @@ const RootStack = () => {
         <Stack.Screen name="EditProfile" component={EditProfile}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
         <Stack.Screen name="CategoryMemberViewPage" component={CategoryMemberViewPage}/>
-        <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
         <Stack.Screen name="ProfilePages" component={ProfilePages}/>
         <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       </Stack.Group>
@@ -156,7 +154,6 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
         <Stack.Screen name="PollVoteViewPage" component={PollVoteViewPage}/>
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
-        <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
         <Stack.Screen name="VotesViewPage" component={VotesViewPage}/>
       </Stack.Group>
       <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}/>

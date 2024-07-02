@@ -31,16 +31,14 @@ export default function Comments({postId, postFormat, onDeleteCallback = () => {
     const {colors} = useTheme();
     const [reducer, dispatch] = useCommentReducer()
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext)
-    const {name, displayName} = storedCredentials;
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
     const [commentPostError, setCommentPostError] = useState(null)
 
     const loadComments = () => {
         dispatch({type: 'startLoad'})
 
-        const url = serverUrl + '/tempRoute/' + (postFormat === 'Comment' ? 'getcommentreplies' : 'searchforpostcomments')
-        const toSend = postFormat === "Comment" ? {commentId: postId} : {postId, postFormat}
+        const url = serverUrl + '/tempRoute/searchforpostcomments'
+        const toSend = {postId, postFormat}
 
         axios.post(url, toSend).then(response => {
             const result = response.data;
@@ -97,7 +95,7 @@ export default function Comments({postId, postFormat, onDeleteCallback = () => {
 
     const handleCommentPost = (commentProperties, setSubmitting) => {
         setCommentPostError(null);
-        const url = serverUrl + "/tempRoute/" + (postFormat === "Comment" ? 'replytocomment' : 'postcomment');
+        const url = serverUrl + "/tempRoute/postcomment";
         Keyboard.dismiss();
 
         axios.post(url, commentProperties).then((response) => {
@@ -121,10 +119,10 @@ export default function Comments({postId, postFormat, onDeleteCallback = () => {
         <>
             <ThreeDotMenuActionSheet dispatch={dispatch} threeDotsMenu={reducer.threeDotsMenu}/>
             <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
-                <PollPostTitle commentsTitle={true}>{postFormat === "Comment" ? "Comment Replies" : "Comments"}</PollPostTitle>
+                <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                 <CommentsHorizontalView writeCommentArea={true}>
                     <Formik
-                        initialValues={postFormat === "Comment" ? {comment: "", commentId: postId} : {comment: '', postId, postFormat}}
+                        initialValues={{comment: '', postId, postFormat}}
                         onSubmit={(values, {setSubmitting}) => {
                             if (values.comment == "") {
                                 setCommentPostError("You can't post an empty comment.");
@@ -153,7 +151,7 @@ export default function Comments({postId, postFormat, onDeleteCallback = () => {
                                     </CommentsVerticalView>
                                     <CommentsVerticalView>
                                         <UserTextInput
-                                            placeholder={postFormat === "Comment" ? "Post a comment reply" : "Post a comment"}
+                                            placeholder="Post a comment"
                                             placeholderTextColor={colors.darkLight}
                                             onChangeText={handleChange('comment')}
                                             onBlur={handleBlur('comment')}
@@ -183,7 +181,7 @@ export default function Comments({postId, postFormat, onDeleteCallback = () => {
                             )}
                     </Formik>
                 </CommentsHorizontalView>
-                <PollPostSubTitle style={{color: colors.tertiary}}>{reducer.loadingFeed ? 'Loading...' : reducer.error ? 'Error Occurred' : reducer.comments.length === 0 ? (postFormat === 'Comment' ? 'No Comment Replies' : 'No Comments') : 'Comments:'}</PollPostSubTitle>
+                <PollPostSubTitle style={{color: colors.tertiary}}>{reducer.loadingFeed ? 'Loading...' : reducer.error ? 'Error Occurred' : reducer.comments.length === 0 ? 'No Comments' : 'Comments:'}</PollPostSubTitle>
                 <FlatList
                     data={reducer.comments}
                     keyExtractor={(item, index) => item + index}
