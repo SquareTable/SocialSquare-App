@@ -329,12 +329,12 @@ const LoginScreen = ({navigation, route}) => {
                                                     <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
                                             </StyledButton>
 
-                                            {!storedCredentials &&
+                                            {/*!storedCredentials &&
                                                 <TouchableOpacity onPress={() => {modal == true ? navigation.goBack() : navigation.replace('Tabs')}} style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
                                                     <ButtonText style={{color: colors.tertiary, fontSize: 20}}>Continue without an account</ButtonText>
                                                     <AntDesign name="arrowright" size={40} color={colors.tertiary} style={{marginLeft: 5}}/>
                                                 </TouchableOpacity>
-                                            }
+                                            */}
 
                                             {modal == true && storedCredentials ?
                                                 <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.goBack()}>
