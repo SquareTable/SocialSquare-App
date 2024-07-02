@@ -97,18 +97,17 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             const url = `${serverUrl}/tempRoute/searchpagesearchcategories`;
             const toSend = {
                 val,
-                lastCategoryId: categories.categories.length ? categories.categories[categories.categories.length - 1].categoryId : undefined
+                lastItemId: categories.categories.length ? categories.categories[categories.categories.length - 1].categoryId : undefined
             }
             axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                 const result = response.data;
                 const {data} = result;
 
-                const {categories, noMoreCategories} = data;
+                const {items, noMoreItems} = data;
 
-                if (categories?.length === 0) return dispatch({type: 'noMoreCategories'})
+                if (items?.length === 0) return dispatch({type: 'noMoreCategories'})
 
-                console.log(categories)
-                layoutCategoriesFound(categories, noMoreCategories)
+                layoutCategoriesFound(items, noMoreItems)
                 console.log('Search complete.')
 
             }).catch(error => {

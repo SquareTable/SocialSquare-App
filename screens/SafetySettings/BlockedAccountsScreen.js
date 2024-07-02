@@ -37,9 +37,9 @@ const BlockedAccountsScreen = ({navigation}) => {
                 const result = response.data;
                 const {data} = result;
 
-                const {blockedAccounts, noMoreItems} = data || {};
+                const {items, noMoreItems} = data || {};
 
-                const profileImageKeys = blockedAccounts.map(user => user.profileImageKey).filter(key => typeof key === 'string' && key.length > 1)
+                const profileImageKeys = items.map(user => user.profileImageKey).filter(key => typeof key === 'string' && key.length > 1)
 
                 const profileImageData = {};
 
@@ -57,7 +57,7 @@ const BlockedAccountsScreen = ({navigation}) => {
                         }
                     })
 
-                    dispatch({type: 'addUsers', users: blockedAccounts})
+                    dispatch({type: 'addUsers', users: items})
                     dispatch({type: 'addProfilePictures', profilePictures: profileImageData})
                     if (noMoreItems) dispatch({type: 'noMoreUsers'})
                 })
@@ -142,7 +142,7 @@ const Item = ({item, index, dispatch, profilePictures, navigation}) => {
     }
 
     const navigateToProfileScreen = () => {
-        navigation.navigate('ProfilePages', {pubId: item.pubId})
+        navigation.push('ProfilePages', {pubId: item.pubId})
     }
     
     return (

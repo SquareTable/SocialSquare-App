@@ -40,7 +40,7 @@ class UserItem extends PureComponent {
 
     render() {
         /* OLD DESIGN
-            <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
+            <SearchFrame onPress={() => navigation.push("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
                 {profileKey !== null && (
                     <Avatar resizeMode="cover" searchPage={true} source={{uri: profileKey}} />
                 )}
@@ -83,7 +83,7 @@ class UserItem extends PureComponent {
         }
 
         return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("ProfilePages", {paramsProfileData: data, pubId: this.props.pubId})} style={{borderColor: this.props.colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+            <TouchableOpacity onPress={() => this.props.navigation.push("ProfilePages", {paramsProfileData: data, pubId: this.props.pubId})} style={{borderColor: this.props.colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
                     <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: this.props.profileKey != null ? this.props.profileKey : SocialSquareLogo_B64_png}} />
                     <SubTitle style={{color: this.props.colors.tertiary, marginTop: 24, marginLeft: 10}} searchResTitle={true}>{this.props.displayName || this.props.name}</SubTitle>
@@ -201,21 +201,14 @@ const FindScreen = ({navigation}) => {
             }
             axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const {data} = result;
+                const {items, noMoreItems} = data;
 
-                if (status !== 'SUCCESS') {
-                    setErrorOccured(message)
-                    setLoadingOne(false)
-                    setNoResults(false)
-                    console.error(message)
-                } else {
-                    console.log(data)
-                    layoutUsersFound(data)
-                    console.log('Search complete.')
-                    setNoResults(false)
-                    //persistLogin({...data[0]}, message, status);
-                }
+                setLoadingOne(false)
 
+                layoutUsersFound(items)
+
+                if (noMoreItems) setNoResults(true)
             }).catch(error => {
                 if (error instanceof CanceledError) {
                     console.warn('Cancelled intentionally')
@@ -230,6 +223,7 @@ const FindScreen = ({navigation}) => {
             console.log('Empty search')
             setNoResults(false)
             setChangeSectionsOne([])
+            setLoadingOne(false)
         }
     }
 
@@ -285,16 +279,16 @@ const FindScreen = ({navigation}) => {
                 const url = serverUrl + '/tempRoute/searchpagesearchcategories'
                 const toSend = {
                     val,
-                    lastCategoryId: categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
+                    lastItemId: clear ? undefined : categoriesReducer.categories.length ? categoriesReducer.categories[categoriesReducer.categories.length - 1].categoryId : undefined
                 }
                 axios.post(url, toSend, {signal: abortControllerRef.current.signal}).then((response) => {
                     const result = response.data;
                     const {data} = result;
     
-                    const {categories, noMoreCategories} = data;
+                    const {items, noMoreItems} = data;
     
                     console.log(data)
-                    layoutCategoriesFound(categories, noMoreCategories)
+                    layoutCategoriesFound(items, noMoreItems)
                     console.log('Category search was a success')
     
                 }).catch(error => {
@@ -308,6 +302,7 @@ const FindScreen = ({navigation}) => {
             } else {
                 console.log('Empty category search')
                 dispatchCategories({type: 'resetCategories'})
+                dispatchCategories({type: 'stopLoad'})
             }
         }
     }
@@ -341,6 +336,23 @@ const FindScreen = ({navigation}) => {
             }
         }
     }, [filterFormatSearch])
+
+    function abortNetworkRequests() {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = new AbortController()
+    }
+
+    function changeToUsers() {
+        abortNetworkRequests();
+        setChangeSectionsOne([])
+        setFilterFormatSearch("Users") 
+    }
+
+    function changeToCategories() {
+        abortNetworkRequests();
+        dispatchCategories({type: 'resetCategories'})
+        setFilterFormatSearch("Categories");
+    }
     return(
         <>
             <StatusBar style={colors.StatusBarColor}/>
@@ -353,83 +365,48 @@ const FindScreen = ({navigation}) => {
                                 <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', marginTop: -20}}>
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Users</SubTitle>
-                                        {filterFormatSearch == "Users" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                                            </TouchableOpacity>
-                                        )}
-                                        {filterFormatSearch !== "Users" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                abortControllerRef.current.abort();
-                                                abortControllerRef.current = new AbortController()
-                                                setChangeSectionsOne([])
-                                                setFilterFormatSearch("Users")  
-                                            }}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                                            </TouchableOpacity>
-                                        )}
+                                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: filterFormatSearch === 'Users' ? colors.brand : colors.borderColor, borderWidth: 3, padding: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center'}} onPress={() => filterFormatSearch !== 'Users' ? changeToUsers() : null}>
+                                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Categories</SubTitle>
-                                        {filterFormatSearch == "Categories" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                                            </TouchableOpacity>
-                                        )}
-                                        {filterFormatSearch !== "Categories" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                abortControllerRef.current.abort();
-                                                abortControllerRef.current = new AbortController();
-                                                dispatchCategories({type: 'resetCategories'})
-                                                setFilterFormatSearch("Categories");
-                                            }}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                                            </TouchableOpacity>
-                                        )}
+                                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: filterFormatSearch === 'Categories' ? colors.brand : colors.borderColor, borderWidth: 3, padding: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center'}} onPress={() => filterFormatSearch !== 'Categories' ? changeToCategories() : null}>
+                                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
-                                        {filterFormatSearch == "Images" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.brand, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                                            </TouchableOpacity>
-                                        )}
-                                        {filterFormatSearch !== "Images" && (
-                                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark ? colors.darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                                                //setChangeSections([])
-                                                //setFilterFormatSearch("Images")
-                                                alert('This feature is coming soon')
-                                            }}>
-                                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                                            </TouchableOpacity>
-                                        )}
+                                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: colors.borderColor, borderWidth: 3, padding: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center'}} onPress={() => alert('This feature is coming soon')}>
+                                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </>
                         )}
                     </TouchableWithoutFeedback>
-                    {filterFormatSearch == "Users" && (
+                    {filterFormatSearch == "Users" ? (
                         <FlatList
                             data={changeSectionsOne}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} badges={item.badges} index={index} pubId={item.pubId} bio={item.bio} privateAccount={item.privateAccount} colors={colors} navigation={navigation}/>}
                             ListFooterComponent={
                                 <>
-                                    {noResults == true && (
+                                    {noResults === true ? (
                                         <View style={{marginTop: 20}}>
-                                            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{changeSectionsOne.length > 0 ? 'No more results' : 'No results found'}</Text>
+                                            <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.errorColor, textAlign: 'center'}}>{changeSectionsOne.length > 0 ? 'No more results' : 'No results'}</Text>
                                         </View>
-                                    )}
-                                    {errorOccured !== null && (
+                                    ) : null}
+                                    {errorOccured !== null ? (
                                         <View style={{marginTop: 20}}>
                                             <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.errorColor, textAlign: 'center'}}>{errorOccured}</Text>
                                         </View>
-                                    )}
-                                    {loadingOne == true && (
+                                    ) : null}
+                                    {loadingOne == true ? (
                                         <View style={{marginTop: 20}}>
                                             <ActivityIndicator size="large" color={colors.brand} />
                                         </View>
-                                    )}
+                                    ) : null}
                                 </>
                             }
                             keyboardDismissMode="on-drag"
@@ -446,9 +423,10 @@ const FindScreen = ({navigation}) => {
                             onContentSizeChange={(contentWidth, contentHeight) => {
                                 userListHeight.current = contentHeight;
                             }}
+                            extraData={noResults}
                         />
-                    )}
-                    {filterFormatSearch == "Categories" && (
+                    ) : null}
+                    {filterFormatSearch == "Categories" ? (
                         <FlatList
                             data={categoriesReducer.categories}
                             keyExtractor={(item) => item.categoryId}
@@ -493,13 +471,14 @@ const FindScreen = ({navigation}) => {
                                     }
                                 }
                             }}
+                            extraData={noResults}
                         />
-                    )}
-                    {filterFormatSearch == "Images" && (
+                    ) : null}
+                    {filterFormatSearch == "Images" ? (
                         <View style={{alignSelf: 'center', textAlign: 'center'}}>
                             <SubTitle style={{alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>This feature is not out yet...</SubTitle>
                         </View>
-                    )}
+                    ) : null}
                 </>
             :
                 <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>

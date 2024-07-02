@@ -1,13 +1,10 @@
-import React, { useState, useContext, useRef, useEffect, useCallback, memo, useReducer } from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, useWindowDimensions, Animated, ActivityIndicator, TouchableWithoutFeedback, RefreshControl} from 'react-native';
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { Text, View, Image, TouchableOpacity, ScrollView, FlatList, ActivityIndicator, TouchableWithoutFeedback, RefreshControl} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTheme, useFocusEffect, useIsFocused, CommonActions } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
-    darkModeStyling, 
-    darkModeOn, 
-    lightModeStyling,
     ProfileOptionsView,
     ProfileOptionsViewText,
     ProfileOptionsViewSubtitleText,
@@ -18,81 +15,16 @@ import {
     ReportProfileOptionsViewButtonsText,
     ReportProfileOptionsViewSubtitleText,
     ReportProfileOptionsViewText,
-    InnerContainer,
-    PageTitle,
     SubTitle,
-    StyledFormArea,
     StyledButton,
     ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
-    Avatar,
-    Colors,
-    StyledContainer,
-    ProfileHorizontalView,
-    ProfileHorizontalViewItem,
-    ProfIcons,
-    ProfInfoAreaImage,
-    ProfileBadgesView,
-    ProfileBadgeIcons,
-    ProfilePostsSelectionView,
-    ProfilePostsSelectionBtns,
-    ProfileGridPosts,
-    ProfileFeaturedPosts,
-    ProfileTopBtns,
-    TopButtonIcons,
-    ProfileSelectMediaTypeItem,
-    ProfileSelectMediaTypeHorizontalView,
-    ProfileSelectMediaTypeIcons,
-    ProfileSelectMediaTypeIconsBorder,
-    PollPostFrame,
-    PollPostTitle,
-    PollPostSubTitle,
-    PollBarOutline,
-    PollBarItem,
-    PollKeyViewOne,
-    PollKeyViewTwo,
-    PollKeyViewThree,
-    PollKeyViewFour,
-    PollKeyViewFive,
-    PollKeyViewSix,
-    PollKeysCircle,
-    PollPostHorizontalView,
-    PollPostIcons,
-    AboveBarPollPostHorizontalView,
-    BottomPollPostHorizontalView,
-    LikesView,
-    CommentsView,
-    PollBottomItem,
-    MultiMediaPostFrame,
-    ImagePostFrame,
-    PostCreatorIcon,
-    PostsHorizontalView,
-    PostsVerticalView,
-    PostHorizontalView,
-    PostsIcons,
-    PostsIconFrame,
     MsgBox,
-    ImagePostTextFrame,
-    SearchFrame,
-    SearchHorizontalView,
-    SearchHorizontalViewItem,
-    SearchHorizontalViewItemCenter,
-    SearchSubTitle,
-    ConfirmLogoutButtons,
-    ConfirmLogoutButtonText,
-    ViewHider,
 } from '../screens/screenStylings/styling.js';
 import { CredentialsContext } from '../components/CredentialsContext.js';
-import { AdIDContext } from '../components/AdIDContext.js';
-import { Audio } from 'expo-av';
 import { SimpleStylingVersion } from '../components/StylingVersionsFile.js';
 import { AppStylingContext } from '../components/AppStylingContext.js';
 import axios from 'axios';
-import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
-import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { BadgeEarntNotificationContext } from '../components/BadgeEarntNotificationContext.js';
 import * as Haptics from 'expo-haptics';
 
@@ -105,39 +37,23 @@ import PollPost from '../components/Posts/PollPost.js';
 import ThreadPost from '../components/Posts/ThreadPost.js';
 import { StatusBarHeightContext } from '../components/StatusBarHeightContext.js';
 import ThreeDotMenuActionSheet from '../components/Posts/ThreeDotMenuActionSheet.js';
-import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import ParseErrorMessage from '../components/ParseErrorMessage.js';
-
-const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
+import AppBannerAd from '../components/ads/AppBannerAd.js';
 
 const HomeScreen = ({navigation, route}) => {
     const [followingFeed, dispatchFollowingFeed] = usePostReducer()
     const [forYouFeed, dispatchForYouFeed] = usePostReducer();
     console.log('Refresh items:', followingFeed.refreshItems)
     // Filter code
-    const [showPhotos, setShowPhotos] = useState(undefined);
-    const [showVideos, setShowVideos] = useState(undefined);
-    const [showAudio, setShowAudio] = useState(undefined);
-    const [showThreads, setShowThreads] = useState(undefined);
-    const [showPolls, setShowPolls] = useState(undefined);
-    const [showCategories, setShowCategories] = useState(undefined);
-    const [PlayVideoSoundInSilentMode, setPlayVideoSoundInSilentMode] = useState(undefined)
-    const OutputAsyncStorageToConsole = false
     const [updateSimpleStylesWarningHidden, setUpdateSimpleStylesWarningHidden] = useState(true);
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
     const adContent = `<iframe data-aa='1882208' src='https://ad.a-ads.com/1882208?size=300x250' style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>`
-    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
     const [usernameToReport, setUsernameToReport] = useState(null);
     const [postEncrypted, setPostEncrypted] = useState(null);
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const [postSent, setPostSent] = useState(null);
-    const {AdID, setAdID} = useContext(AdIDContext);
     const StatusBarHeight = useContext(StatusBarHeightContext);
-    async function unloadAudioFunction() {
-        playRecording.unloadAsync;
-    }
-    if (storedCredentials) {var {name, displayName, _id} = storedCredentials} else {var {name, displayName, _id} = {name: 'SSGUEST', displayName: 'SSGUEST', _id: 'SSGUEST'}}
+    if (storedCredentials) {var {_id} = storedCredentials} else {var {_id} = {_id: 'SSGUEST'}}
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const {badgeEarntNotification, setBadgeEarntNotification} = useContext(BadgeEarntNotificationContext);
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
@@ -356,7 +272,7 @@ const HomeScreen = ({navigation, route}) => {
 
     const handleRecievedThreadPost = (threadData, indexInRecieved, callback) => {
         async function findImages() {
-            const creatorImageB64 = threadData.creatorImageKey ? await getImageWithKey(threadData.creatorImageKey) : null
+            const creatorImageB64 = threadData.creatorPfpKey ? await getImageWithKey(threadData.creatorPfpKey) : null
             const imageInThreadB64 = threadData.threadImageKey ? await getImageWithKey(threadData.threadImageKey) : null
             return callback({
                 ...threadData,
@@ -1031,14 +947,7 @@ const HomeScreen = ({navigation, route}) => {
 
                 {index % 5 == 0 && index !== 0 && (
                     <View style={{alignItems: 'center'}}>
-                        <BannerAd
-                            unitId={AdID}
-                            size={BannerAdSize.MEDIUM_RECTANGLE}
-                            requestOptions={{
-                                requestNonPersonalizedAdsOnly: true,
-                            }}
-                            onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
-                        />
+                        <AppBannerAd/>
                     </View>
                 )}
 
@@ -1353,14 +1262,7 @@ const HomeScreen = ({navigation, route}) => {
 
                                     {index % 5 == 0 && index !== 0 && (
                                         <View style={{alignItems: 'center'}}>
-                                            <BannerAd
-                                                unitId={AdID}
-                                                size={BannerAdSize.MEDIUM_RECTANGLE}
-                                                requestOptions={{
-                                                    requestNonPersonalizedAdsOnly: true,
-                                                }}
-                                                onAdFailedToLoad={(error) => console.warn('An error occured while loading ad:', error)}
-                                            />
+                                            <AppBannerAd/>
                                         </View>
                                     )}
 

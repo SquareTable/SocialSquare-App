@@ -88,7 +88,7 @@ const ThreadUploadPage = ({route, navigation}) => {
         if (imageFromRoute) {
             setImage(imageFromRoute);
         }
-    })
+    }, [imageFromRoute])
     
     console.log("Format:", threadFormat, "Title:", threadTitle, "Subtitle:", threadSubtitle, "Tags:", threadTags, "CategoryTitle:", categoryTitle, "Body:", threadBody, "ImageFromRoute:", imageFromRoute, "ThreadImageDescription:", threadImageDescription, "ThreadNSFW:", threadNSFW, "ThreadNSFL:", threadNSFL, "allowScreenShots:", allowScreenShots)
     console.log("SelectedCategory:", selectedCategory)
@@ -200,8 +200,12 @@ const ThreadUploadPage = ({route, navigation}) => {
         });
         
         if (!result.canceled) {
-            console.log(result)
-            navigation.setParams({imageFromRoute: result})
+            const selected = result.assets[0]
+            if (selected.type == 'video') {
+                alert('Sorry we do not allow uploading videos yet. That will be coming soon though :)')
+            } else {
+                navigation.setParams({imageFromRoute: selected})
+            }
         }
     };
 

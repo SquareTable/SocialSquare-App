@@ -369,7 +369,7 @@ const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, 
             <StyledTextInput onSubmitEditing={handleSubmit} {...props} />
             {isPassword && (
                 <RightIcon style={{top: 31}} onPress={() => setHidePassword(!hidePassword)}>
-                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={colors.brand}/>
+                    <Ionicons name={hidePassword ? 'eye-off' : 'eye'} size={30} color={colors.brand}/>
                 </RightIcon>
             )}
         </View>

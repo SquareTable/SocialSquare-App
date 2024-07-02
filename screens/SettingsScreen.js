@@ -1,6 +1,5 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import * as Haptics from 'expo-haptics';
 
 import {
     WelcomeContainer,
@@ -12,9 +11,6 @@ import {
     ConfirmLogoutText,
     ConfirmLogoutButtons,
     ConfirmLogoutButtonText,
-    darkModeOn,
-    darkModeStyling,
-    lightModeStyling,
     BackgroundDarkColor,
     TextLink,
     TextLinkContent
@@ -30,9 +26,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, Switch, Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import * as Linking from 'expo-linking';
-import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import * as WebBrowser from 'expo-web-browser';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
@@ -222,4 +217,3 @@ const SettingsPage = ({navigation}) => {
 }
 
 export default SettingsPage;
-const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';
