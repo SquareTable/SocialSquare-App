@@ -249,6 +249,7 @@ const Signup = ({navigation, route}) => {
                                     colors={colors}
                                     textContentType="username"
                                     usernameAvailabilityLoading={usernameAvailabilityLoading}
+                                    onSubmitEditing={handleSubmit}
                                 />
 
                                 {usernameAvailableMessage ? <Text style={{color: usernameAvailableMessageColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>{usernameAvailabilityLoading ? ' ' : usernameAvailableMessage}</Text> : null}
@@ -266,6 +267,7 @@ const Signup = ({navigation, route}) => {
                                     autoCapitalize="none"
                                     colors={colors}
                                     textContentType="emailAddress"
+                                    onSubmitEditing={handleSubmit}
                                 />
 
                                 <UserTextInput
@@ -284,6 +286,7 @@ const Signup = ({navigation, route}) => {
                                     colors={colors}
                                     textContentType="newPassword"
                                     passwordRules="minlength: 8; maxlength: 17;"
+                                    onSubmitEditing={handleSubmit}
                                 />
 
                                 <UserTextInput
@@ -302,6 +305,7 @@ const Signup = ({navigation, route}) => {
                                     colors={colors}
                                     textContentType="newPassword"
                                     passwordRules="minlength: 8; maxlength: 17;"
+                                    onSubmitEditing={handleSubmit}
                                 />
                                 <MsgBox type={messageType}>{message}</MsgBox>
                                 {!isSubmitting && (<StyledButton onPress={handleSubmit} style={usernameIsAvailable !== false ? {opacity: 1} : {opacity: 0.2}} disabled={usernameIsAvailable === false}>
